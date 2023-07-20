@@ -39,4 +39,9 @@ Map<String, dynamic> toMap() {
   String toJson() => json.encode(toMap());
 
   factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  //get all the task plan related to 
+  getTaskPlans(){
+    return ['Task plan - 1', 'Task plan - 2'];
+  }
 }

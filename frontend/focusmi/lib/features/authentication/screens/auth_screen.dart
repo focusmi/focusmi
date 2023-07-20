@@ -1,6 +1,10 @@
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/authentication/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/authentication/widgets/textfield.dart';
+import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/main.dart';
+import 'package:focusmi/validators.dart';
 
 class AuthScreen extends StatefulWidget {
   static const String routeName = '/auth_screen';
@@ -15,6 +19,9 @@ class _AuthScreenState extends State<AuthScreen> {
   late final TextEditingController _password;
   late final TextEditingController _username;
   final AuthService authService = AuthService();
+  final _form_key = GlobalKey<FormState>();
+  Validators  local_validator =  new Validators();
+  final FormTextField textField = FormTextField();
 
   @override
   void initState() {
@@ -38,43 +45,41 @@ class _AuthScreenState extends State<AuthScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-
-      body: Column(
-        children: [
-          TextField(
-            controller: _username,
-            decoration: const InputDecoration(
-              hintText: "Enter You Username"
+    LayOut layout = new LayOut();
+    return layout.mainLayout(
+      Form(
+        key:_form_key,
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            children: [
+              textField.createFormField(_username, "Enter Your Username", false),
+              const SizedBox(height: 10),
+              textField.createFormField(_email, "Enter Your Emaio", false),
+              const SizedBox(height: 10),
+              textField.createFormField(_password, "Enter Your Password", true),
+              const SizedBox(
+                height: 25
+              ),
+              
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                foregroundColor:Colors.white ,
+                backgroundColor: GlobalVariables.primaryColor,
+                shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+                minimumSize: const Size.fromHeight(50), // NEW
             ),
+                onPressed: () async {
+                  signUpUser();
+              }
+              
+              , child: const Text("Sign Up")
+              )
+            ],
           ),
-          TextField(
-            controller: _email,
-            decoration:const InputDecoration(
-                hintText: "Enter Your Email"
-            ),
-          ),
-          TextField(
-            controller: _password,
-            decoration:const InputDecoration(
-                hintText: "Enter Your Password"
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              signUpUser();
-          }
-          
-          , child: const Text("SingUp")
-          ),
-            ElevatedButton(
-            onPressed: () async {
-             Navigator.pushNamed(context, HomePage.routeName);
-          }
-          
-          , child: const Text("Back")
-          ),
-        ],
+        ),
       ),
     );
   }

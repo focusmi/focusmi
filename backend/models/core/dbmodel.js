@@ -2,7 +2,7 @@ const { Pool } = require("pg");
 const dotenv = require("dotenv");
 dotenv.config();
  
-class dbmodel{
+class DbModel{
     constructor(pool=null){
         this.pool=pool;
     }
@@ -23,7 +23,7 @@ class dbmodel{
             return null;
         }
     }
-    cquery = async (query) => {
+    cQuery = async (query) => {
         let result = await this.pool.query(query);
         if(result.rowCount!=0) return (result.rows);
         else if(result.rowCount==0) return 0;
@@ -33,4 +33,4 @@ class dbmodel{
 
 }
 
-module.exports = dbmodel;
+module.exports = DbModel;

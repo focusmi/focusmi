@@ -1,20 +1,20 @@
 const pool = require("../database/dbconnection");
 const {hash, compare} = require("bcryptjs");
 
-class authUser {
+class AuthUser {
 
     constructor(email, password, username) {
       this.username = username;
       this.email = email;
       this.password = password;
-      this.token = '',
-      this.id = ''
+      this.token = '';
+      this.id = '';
 
     }
 
     //check user if exist
     async checkEmailExist(){
-      const res =await pool.cquery(`Select * from application_user where email='${this.email}'`);
+      const res = await pool.cQuery(`Select * from application_user where email='${this.email}'`);
       if(res){
         return true;
       }
@@ -30,7 +30,7 @@ class authUser {
       }
       else{
         try{
-          const res =  pool.cquery(`Insert into application_user (user_name,email,password) values('${this.username}', '${this.email}', '${await hash(this.password, 10)}')`);
+          const res = await pool.cQuery(`Insert into application_user (user_name,email,password) values('${this.username}', '${this.email}', '${await hash(this.password, 10)}')`);
           return true;
         }
         catch{
@@ -42,9 +42,8 @@ class authUser {
 
     //check if the password is correct 
     async checkUser() {
-     
-      const res = await pool.cquery(`Select password from application_user where email='${this.email}'`);
-      const id = await pool.cquery(`Select * from application_user where email='${this.email}'`);
+      const res = await pool.cQuery(`Select password from application_user where email='${this.email}'`);
+      const id = await pool.cQuery(`Select * from application_user where email='${this.email}'`);
       if(!res) return 'nouser'; 
       var result = await compare(this.password, res[0].password)
       if(result){
@@ -57,15 +56,15 @@ class authUser {
     
     //updaee web token field
     async createToken() {
-      const res =  await pool.cquery(`update application_user set token='${this.token}' where email='${this.email}'`)
+      const res =  await pool.cQuery(`update application_user set token='${this.token}' where email='${this.email}'`)
     }
 
     async createTokenByID(id) {
-      const res =  await pool.cquery(`update application_user set token='${this.token}' where "user_ID"='${this.id}'`)
+      const res =  await pool.cQuery(`update application_user set token='${this.token}' where "user_ID"='${this.id}'`)
     }
     
     async getUserByID(id){
-      const res= await pool.cquery(`select * from application_user where "user_ID"=${id}`)
+      const res= await pool.cQuery(`select * from application_user where "user_ID"=${id}`)
       if(res==0) return false;
       else return true;
     }
@@ -76,4 +75,4 @@ class authUser {
 
   }
 
-  module.exports = authUser;
+  module.exports = AuthUser;

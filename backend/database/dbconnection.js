@@ -1,5 +1,5 @@
 //database connection
-const dbmodel = require("../models/core/dbmodel");
-const pool= new dbmodel();
+const DbModel = require("../models/core/dbmodel");
+const pool= new DbModel();
 pool.connect();
 module.exports = pool
