@@ -9,8 +9,7 @@ const auth = require('../middleware/auth');
 
 authRouterTherapist.post('/apis/signup', validation.validateInput, validation.validate, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    console.log(name, email, password)
+    const { name, email, password } = JSON.parse(req.body);
     const existingUser = await User.findOneByEmail(email);
     if (existingUser) {
       return res.status(400).json({ msg: 'User already exists!' });
@@ -30,12 +29,13 @@ authRouterTherapist.post('/apis/signin', async (req, res) => {
     if (!user) {
       return res.status(400).json({ msg: 'User not found!' });
     }
+
     const isMatch = await bcrypt.compare(password,user.password);
     if (!isMatch) {
       return res.status(400).json({ msg: 'Invalid password!' });
     }
 
-    const token =  jwt.sign({id:user.id}, "passwordKey");
+    const token =  jwt.sign({id:user.admin_user_ID}, "passwordKey");
     res.json({ success: true,token, ...user});
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -56,36 +56,33 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
   }
 });
 
-authRouterTherapist.put('/apis/user/:id', auth, async (req, res) => {
+authRouterTherapist.put('/apis/user/:id',validation.validateInput, validation.validate, auth, async (req, res) => {
   try {
-    const { name ,email} = JSON.parse(req.body);
-    console.log(JSON.parse(req.body))
+    const {user_name ,email} = JSON.parse(req.body);
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
     const id = {id: req.params.id }.id
-    // const hashPassword =  await bcrypt.hash(password, 8)
-    const updatedUser = await User.updateUser(id, name, email);
+    const updatedUser = await User.updateUser(id, user_name, email);
     res.json({ success: true, msg: 'User updated successfully!', user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-authRouterTherapist.put('/api/user/:id/change-password',auth, async (req, res) => {
+authRouterTherapist.put('/apis/user/:id/change-password',auth, async (req, res) => {
   
   try {
     const { currentPassword, newPassword } = req.body;
-    console.log(req.body)
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
-    
-    console.log(user);
+
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
+      console.log('Invalid current password!')
       return res.status(400).json({ msg: 'Invalid current password!' });
     }
 
