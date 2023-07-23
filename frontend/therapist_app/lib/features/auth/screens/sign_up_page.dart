@@ -60,17 +60,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   CustomTextField(
                     controller: _emailController,
-                    hinText: 'Email',
+                    hintText: 'Email',
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
                     controller: _nameController,
-                    hinText: 'Name',
+                    hintText: 'Full Name',
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
                     controller: _passwordController,
-                    hinText: 'Password',
+                    hintText: 'Password',
+                    obscureText: true, 
                   ),
                   const SizedBox(height: 16),
                   CustomButton(
