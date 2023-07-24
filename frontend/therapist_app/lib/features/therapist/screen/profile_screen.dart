@@ -5,18 +5,60 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../common/widgets/custom_app_bar.dart';
 import '../profile_service/profile_service.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static String routeName = "/profile";
+
+  const ProfileScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  // ignore: prefer_final_fields
+  ScrollController _scrollController = ScrollController();
+  bool _showFlexibleSpaceTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updateFlexibleSpaceTitleVisibility);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateFlexibleSpaceTitleVisibility);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateFlexibleSpaceTitleVisibility() {
+    setState(() {
+      _showFlexibleSpaceTitle = _scrollController.hasClients &&
+          _scrollController.offset >= (kToolbarHeight - kToolbarHeight / 4);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("Settings")),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          CustomAppBar(
+            title: "Settings",
+            scrollController: _scrollController, // Pass the scroll controller
+            showFlexibleSpaceTitle: _showFlexibleSpaceTitle, // Pass the showFlexibleSpaceTitle value
+          ),
+          const SliverFillRemaining(
+            child: Body(),
+          ),
+        ],
       ),
-      body: Body(),
     );
   }
 }
@@ -31,7 +73,7 @@ class Body extends StatelessWidget {
       child: Column(
         children: [
           ProfilePic(),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ProfileMenu(
             text: "My Account",
             icon: Icons.people_alt_sharp,
@@ -87,15 +129,15 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
           foregroundColor: GlobalVariables.primaryText,
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),
-          backgroundColor: Color(0xFFF5F6F9),
+          backgroundColor: const Color(0xFFF5F6F9),
         ),
         onPressed: press,
         child: Row(
@@ -104,9 +146,9 @@ class ProfileMenu extends StatelessWidget {
               icon,
               size: 24,
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(child: Text(text)),
-            Icon(Icons.arrow_forward_ios),
+            const Icon(Icons.arrow_forward_ios),
           ],
         ),
       ),
@@ -189,7 +231,7 @@ class _ProfilePicState extends State<ProfilePic> {
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50),
-                    side: BorderSide(color: Colors.white),
+                    side: const BorderSide(color: Colors.white),
                   ),
                   backgroundColor: GlobalVariables.primaryText,
                 ),

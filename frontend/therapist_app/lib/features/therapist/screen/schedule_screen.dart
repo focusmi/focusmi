@@ -2,8 +2,12 @@ import 'package:therapist_app/features/therapist/screen/available_Schedule_Scree
 import 'package:flutter/material.dart';
 import 'package:therapist_app/features/therapist/screen/upcomming_schedule_screen.dart';
 
+import '../../../constants/global_variables.dart';
+
 class ScheduleScreen extends StatefulWidget {
-  const ScheduleScreen({super.key});
+  static String routeName = "/schedule";
+
+  ScheduleScreen({Key? key}) : super(key: key);
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
@@ -11,10 +15,32 @@ class ScheduleScreen extends StatefulWidget {
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
   int _buttonIndex = 0;
+  ScrollController _scrollController = ScrollController();
+  bool _showFlexibleSpaceTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updateFlexibleSpaceTitleVisibility);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateFlexibleSpaceTitleVisibility);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updateFlexibleSpaceTitleVisibility() {
+    setState(() {
+      _showFlexibleSpaceTitle = _scrollController.hasClients &&
+          _scrollController.offset >= (kToolbarHeight - kToolbarHeight / 4);
+    });
+  }
 
   final _scheduleWidgets = [
     UpcomingScheduleScreen(),
-    Container(),
+    UpcomingScheduleScreen(),
     Container(),
     // Container(),
   ];
@@ -23,32 +49,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        controller: _scrollController, // Add the scroll controller here
         slivers: [
           SliverAppBar(
             pinned: true,
-            // backgroundColor:GlobalVariables.primaryText,
             elevation: 0,
             expandedHeight: 90,
-            flexibleSpace: const FlexibleSpaceBar(
-              centerTitle: false,
+            backgroundColor: _showFlexibleSpaceTitle
+                ? GlobalVariables.primaryText
+                : Colors.white,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
               title: Text(
                 "Schedule",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  color: _showFlexibleSpaceTitle ? Colors.white : Colors.black,
                 ),
               ),
-              
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.more_vert),
+                icon: Icon(Icons.more_vert),
                 onPressed: () {
                   // Handle more options button press
-                   Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (context) => AvailableSchedulePage(),
+                      builder: (context) => AvailableSchedulePage(),
                     ),
                   );
                 },
