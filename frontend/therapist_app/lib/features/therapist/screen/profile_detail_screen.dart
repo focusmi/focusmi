@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../../../common/widgets/custom_profile_app_bar.dart';
 import '../../../provider/user_provider.dart';
 import '../../auth/services/auth_service.dart';
-import '../profile_service/profile_service.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-    print(user.token);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Profile Details'),
-      ),
+      appBar: const CustomProfileAppBar(title: 'Profile Details'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -28,7 +24,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   navigateToEditPage(context, 'Full Name', user.name);
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ProfileField(
                 label: 'Email',
                 value: user.email,
@@ -36,7 +32,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   navigateToEditPage(context, 'Email', user.email);
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ProfileField(
                 label: 'Address',
                 value: 'address',
@@ -44,7 +40,7 @@ class ProfileDetailsPage extends StatelessWidget {
                   navigateToEditPage(context, 'Address', '');
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ProfileField(
                 label: 'Password',
                 value: '********',
@@ -123,16 +119,16 @@ class ProfileField extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         fontWeight: FontWeight.normal,
                         letterSpacing: 0.5,
                       ),
                     ),
-                    SizedBox(height: 4.0),
+                    const SizedBox(height: 4.0),
                     Text(
                       fieldValue,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14.0,
                         color: Colors.black, // Black value text color
                         fontWeight: FontWeight.w300,
@@ -192,9 +188,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit ${widget.field}'),
-      ),
+      appBar: CustomProfileAppBar(title: "Edit ${widget.field}"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -269,9 +263,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Change Password'),
-      ),
+      appBar: const CustomProfileAppBar(title: "Change Password"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -287,7 +279,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _newPasswordController,
               obscureText: true,
@@ -298,10 +290,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _changePassword,
-              child: Text('Change Password'),
+              child: const Text('Change Password'),
             ),
           ],
         ),
