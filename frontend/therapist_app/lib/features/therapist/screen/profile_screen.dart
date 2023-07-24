@@ -72,7 +72,7 @@ class Body extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
-          ProfilePic(),
+          const ProfilePic(),
           const SizedBox(height: 20),
           ProfileMenu(
             text: "My Account",
@@ -132,7 +132,7 @@ class ProfileMenu extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
-          foregroundColor: GlobalVariables.primaryText,
+          foregroundColor: GlobalVariables.greyTextColor,
           padding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -233,12 +233,12 @@ class _ProfilePicState extends State<ProfilePic> {
                     borderRadius: BorderRadius.circular(50),
                     side: const BorderSide(color: Colors.white),
                   ),
-                  backgroundColor: GlobalVariables.primaryText,
+                  backgroundColor: GlobalVariables.greyBackgroundCOlor,
                 ),
                 onPressed: () {
                   _showSelectPhotoOptions(context);
                 },
-                child: const Icon(Icons.camera_alt_sharp),
+                child: const Icon(Icons.edit,color:GlobalVariables.greyTextColor),
               ),
             ),
           ),
