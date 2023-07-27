@@ -35,63 +35,66 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      // Wrap with SingleChildScrollView
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Login to \nyour account',
-              style: TextStyle(
-                color: GlobalVariables.greyTextColor,
-                fontSize: 26,
-                fontWeight: FontWeight.w500,
+    // Get the device's screen size
+    final screenSize = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(screenSize.width * 0.05), // Adjust padding based on screen width
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: screenSize.height * 0.04), // Adjust spacing based on screen height
+              Text(
+                'Login to \nyour account',
+                style: TextStyle(
+                  color: GlobalVariables.greyTextColor,
+                  fontSize: screenSize.width * 0.05, // Adjust font size based on screen width
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            const SizedBox(height: 25),
-            Form(
-              key: _signInFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
-                children: [
-                  CustomTextField(
-                    controller: _emailController,
-                     hintText: 'Email',
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _passwordController,
-                    hintText: 'Password',
-                    obscureText: true, 
-                  ),
-                  const SizedBox(height: 16),
-                  CustomButton(
-                    text: 'Sign In',
-                    onTap: () {
-                      if (_signInFormKey.currentState!.validate()) {
-                        signInUser();
-                      }
-                    },
-                  ),
-                ],
+              SizedBox(height: screenSize.height * 0.03), // Adjust spacing based on screen height
+              Form(
+                key: _signInFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
+                  children: [
+                    CustomTextField(
+                      controller: _emailController,
+                      hintText: 'Email',
+                    ),
+                    SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+                    CustomTextField(
+                      controller: _passwordController,
+                      hintText: 'Password',
+                      obscureText: true,
+                    ),
+                    SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+                    CustomButton(
+                      text: 'Sign In',
+                      onTap: () {
+                        if (_signInFormKey.currentState!.validate()) {
+                          signInUser();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-          
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-                onPressed: (){},
-                child: const Text(
-                      'Have yor forgotten yor password ?',
+              SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+              TextButton(
+                onPressed: () {},
+                child: Text(
+                  'Have you forgotten your password?',
                   style: TextStyle(
                     color: GlobalVariables.greyTextColor,
-                    fontSize: 16,
+                    fontSize: screenSize.width * 0.04, // Adjust font size based on screen width
                   ),
                 ),
-             ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );

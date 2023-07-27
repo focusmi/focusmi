@@ -7,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'common/widgets/bottom_bar.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-
-void main() {
+void main() async{
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  await dotenv.load(fileName: ".env");
   runApp(
     MultiProvider(
       providers: [

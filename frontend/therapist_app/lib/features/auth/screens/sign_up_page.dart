@@ -33,65 +33,69 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       email: _emailController.text,
       password: _passwordController.text,
-      name: _nameController.text
+      name: _nameController.text,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // Wrap with SingleChildScrollView
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-              const Text('Create your account',
-              style: TextStyle(
-              color: GlobalVariables.greyTextColor,
-              fontSize: 26,
-              fontWeight: FontWeight.w500,
-               ),
+    // Get the device's screen size
+    final screenSize = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Container(
+          padding: EdgeInsets.all(screenSize.width * 0.05), // Adjust padding based on screen width
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: screenSize.height * 0.04), // Adjust spacing based on screen height
+              Text(
+                'Create your account',
+                style: TextStyle(
+                  color: GlobalVariables.greyTextColor,
+                  fontSize: screenSize.width * 0.05, // Adjust font size based on screen width
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              const SizedBox(height: 25),
-            Form(
-              key: _signUpFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
-                children: [
-                  CustomTextField(
-                    controller: _emailController,
-                    hintText: 'Email',
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _nameController,
-                    hintText: 'Full Name',
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    controller: _passwordController,
-                    hintText: 'Password',
-                    obscureText: true, 
-                  ),
-                  const SizedBox(height: 16),
-                  CustomButton(
-                    text: 'Proceed',
-                    
-                    onTap: () {
-                      // if (_signUpFormKey.currentState!.validate()) {
-                      //   signUpUser();
-                      // }
-                      Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => EmailVerificationPage()),
-                          );
-                      
-                    },
-                  ),
-                ],
+              SizedBox(height: screenSize.height * 0.03), // Adjust spacing based on screen height
+              Form(
+                key: _signUpFormKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
+                  children: [
+                    CustomTextField(
+                      controller: _emailController,
+                      hintText: 'Email',
+                    ),
+                    SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+                    CustomTextField(
+                      controller: _nameController,
+                      hintText: 'Full Name',
+                    ),
+                    SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+                    CustomTextField(
+                      controller: _passwordController,
+                      hintText: 'Password',
+                      obscureText: true,
+                    ),
+                    SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
+                    CustomButton(
+                      text: 'Proceed',
+                      onTap: () {
+                        // if (_signUpFormKey.currentState!.validate()) {
+                        //   signUpUser();
+                        // }
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => EmailVerificationPage()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

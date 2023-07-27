@@ -6,6 +6,8 @@ import 'package:therapist_app/features/auth/screens/mobile_number_screen.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
 import '../../../constants/global_variables.dart';
 
+// ... (imports and other code) ...
+
 class EmailVerificationPage extends StatefulWidget {
   @override
   _EmailVerificationPageState createState() => _EmailVerificationPageState();
@@ -37,11 +39,13 @@ class VerificationForm extends StatefulWidget {
 }
 
 class _VerificationFormState extends State<VerificationForm> {
-  final _formKey = GlobalKey<FormState>();
   List<String> _verificationCodes = ['', '', '', ''];
 
   @override
   Widget build(BuildContext context) {
+    // Get the device's screen size
+    final screenSize = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       // Wrap the VerificationForm with SingleChildScrollView
       child: Padding(
@@ -49,25 +53,30 @@ class _VerificationFormState extends State<VerificationForm> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Column(
-              children: [Lottie.asset('assets/images/Mailing.json')],
+            Container(
+              // Wrap the Lottie animation with a Container
+              width: screenSize.width * 0.6, // Set the width based on screen width
+              height: screenSize.width * 0.6, // Set the height based on screen width
+              child: Lottie.asset('assets/images/Mailing.json'),
             ),
             const SizedBox(height: 10),
-            const Text("Verify it's you",
-                style: TextStyle(
-                  color: GlobalVariables.greyTextColor,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w500,
-                )),
+            Text(
+              "Verify it's you",
+              style: TextStyle(
+                color: GlobalVariables.greyTextColor,
+                fontSize: screenSize.width * 0.05, // Adjust font size based on screen width
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             const SizedBox(height: 15),
-            const Text(
+            Text(
               'We send a one-time code \n to your email to confirm',
               textAlign: TextAlign.center,
               style: TextStyle(
-              color: GlobalVariables.blackText,
-              fontSize: 16,
-              fontWeight: FontWeight.w300,
-               ),
+                color: GlobalVariables.blackText,
+                fontSize: screenSize.width * 0.03, // Adjust font size based on screen width
+                fontWeight: FontWeight.w300,
+              ),
             ),
             const SizedBox(height: 40),
             Row(
@@ -75,8 +84,8 @@ class _VerificationFormState extends State<VerificationForm> {
               children: [
                 for (int i = 0; i < _verificationCodes.length; i++)
                   SizedBox(
-                    width: 50,
-                    height: 50,
+                    width: screenSize.width * 0.15, // Adjust width based on screen width
+                    height: screenSize.width * 0.15, // Adjust height based on screen width
                     child: TextFormField(
                       keyboardType: TextInputType.number,
                       textAlign: TextAlign.center,
@@ -119,17 +128,12 @@ class _VerificationFormState extends State<VerificationForm> {
             CustomButton(
               text: "Proceed",
               onTap: () {
-
-                // if (_formKey.currentState!.validate()) {
-                //   FocusScope.of(context).unfocus();
-                //   widget.onSubmit(_verificationCodes.join());
-                // }
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PhoneNumberInputPage(),
-                    ),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PhoneNumberInputPage(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 16), // Add some spacing at the bottom
