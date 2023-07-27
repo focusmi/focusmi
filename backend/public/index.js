@@ -11,6 +11,8 @@ let dotenv = require("dotenv");
 let  {verify} = require('jsonwebtoken');
 const dbmodel = require("../models/core/dbmodel");
 const authRoutes = require("../routes/user_auth");
+const authRouterTherapist = require("../routes/therapist_auth")
+const ScheduleRouter = require('../routes/schedule')
 const pool = require("../database/dbconnection");
 
 
@@ -25,13 +27,16 @@ app.use(cors({
 }))
 
 app.use(cors())
-app.use(express.json())
+// app.use(express.json())
+app.use(express.json({ limit: '10mb', extended: true, strict: false }));
 app.use(express.urlencoded({extended: true}))//url encoded bodies)
 app.use(bodyParser.json())
 app.use(express.static('public'))
 
 //all routes
 app.use(authRoutes)
+app.use(authRouterTherapist)
+app.use(ScheduleRouter)
 
 
 
