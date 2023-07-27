@@ -1,9 +1,9 @@
 import 'package:therapist_app/features/home/screen/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../features/therapist/screen/message_screen.dart';
-import '../../features/therapist/screen/profile_screen.dart';
-import '../../features/therapist/screen/schedule_screen.dart';
+import '../../features/messages/screen/message_screen.dart';
+import '../../features/profile/screen/profile_screen.dart';
+import '../../features/schedule/screen/schedule_screen.dart';
 
 
 class NavBarRoots extends StatefulWidget {
@@ -54,7 +54,7 @@ class _NavBarRootsState extends State<NavBarRoots> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month_outlined), label: "Schedule"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: "Settings"),
+                icon: Icon(CupertinoIcons.person_fill,), label: "Profile"),
           ],
         ),
       ),

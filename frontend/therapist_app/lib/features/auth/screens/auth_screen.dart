@@ -36,43 +36,58 @@ class _AuthScreenState extends State<AuthScreen> {
 
     return Scaffold(
       body: SafeArea(
-          child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              alignment: Alignment.center,
-              child: const Text(
-                'FocusMi',
-                style: TextStyle(
-                  color: GlobalVariables.primaryText,
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(child: currentPage),
-            Center(
-              child: TextButton(
-                onPressed: toggleAuthPage,
-                child: Text(
-                  _authPage == AuthPage.signUp
-                      ? 'Already have an account? Sign In'
-                      : 'Don\'t have an account? Sign Up',
-                  style: const TextStyle(
-                    color: GlobalVariables.greyTextColor,
-                    fontSize: 16,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(top: 50),
+                child: const Text(
+                  'FocusMi',
+                  style: TextStyle(
+                    color: GlobalVariables.primaryText,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                
               ),
-            ),
-            const SizedBox(height: 35),
-          ],
+              Expanded(child: currentPage),
+              Align(
+                // Center the Row horizontally
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _authPage == AuthPage.signUp
+                          ? 'Already have an account?'
+                          : 'Don\'t have an account?',
+                      style: const TextStyle(
+                        color: GlobalVariables.greyTextColor,
+                        fontSize: 16,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: toggleAuthPage,
+                      child: Text(
+                        _authPage == AuthPage.signUp ? 'Sign In' : 'Sign Up',
+                        style: const TextStyle(
+                          color: GlobalVariables.primaryText,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 35),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

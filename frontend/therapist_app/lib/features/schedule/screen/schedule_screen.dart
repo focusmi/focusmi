@@ -1,6 +1,6 @@
-import 'package:therapist_app/features/therapist/screen/available_Schedule_Screen.dart';
+import 'package:therapist_app/features/schedule/screen/available_Schedule_Screen.dart';
 import 'package:flutter/material.dart';
-import 'package:therapist_app/features/therapist/screen/upcomming_schedule_screen.dart';
+import 'package:therapist_app/features/schedule/screen/upcomming_schedule_screen.dart';
 
 import '../../../constants/global_variables.dart';
 

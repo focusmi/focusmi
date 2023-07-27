@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../profile_service/availableSchedule_service.dart';
+import '../service/availableSchedule_service.dart';
 // import 'AvailableScheduleService.dart';
 
 class AvailableSchedulePage extends StatefulWidget {

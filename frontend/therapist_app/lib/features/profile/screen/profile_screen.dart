@@ -1,12 +1,12 @@
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
-import 'package:therapist_app/features/therapist/screen/profile_detail_screen.dart';
+import 'package:therapist_app/features/profile/screen/profile_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../common/widgets/custom_app_bar.dart';
-import '../profile_service/profile_service.dart';
+import '../service/profile_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   static String routeName = "/profile";
@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         controller: _scrollController,
         slivers: [
           CustomAppBar(
-            title: "Settings",
+            title: "Profile",
             scrollController: _scrollController, // Pass the scroll controller
             showFlexibleSpaceTitle: _showFlexibleSpaceTitle, // Pass the showFlexibleSpaceTitle value
           ),

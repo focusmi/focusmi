@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:therapist_app/features/auth/screens/verify_screen.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
 import 'package:therapist_app/common/widgets/custom_textfield.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
@@ -45,10 +46,10 @@ class _SignUpPageState extends State<SignUpPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-              const Text('Create account',
+              const Text('Create your account',
               style: TextStyle(
               color: GlobalVariables.greyTextColor,
-              fontSize: 16,
+              fontSize: 26,
               fontWeight: FontWeight.w500,
                ),
               ),
@@ -75,11 +76,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   const SizedBox(height: 16),
                   CustomButton(
-                    text: 'Sign Up',
+                    text: 'Proceed',
+                    
                     onTap: () {
-                      if (_signUpFormKey.currentState!.validate()) {
-                        signUpUser();
-                      }
+                      // if (_signUpFormKey.currentState!.validate()) {
+                      //   signUpUser();
+                      // }
+                      Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => EmailVerificationPage()),
+                          );
+                      
                     },
                   ),
                 ],

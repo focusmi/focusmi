@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:therapist_app/common/widgets/upcoming_schedule.dart';
-import 'package:therapist_app/features/therapist/profile_service/scheduleservice.dart';
+import 'package:therapist_app/features/schedule/service/scheduleservice.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../provider/user_provider.dart';

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
+import '../../../constants/util.dart';
 import '../../../provider/user_provider.dart';
+import '../../../validation/form_validators.dart';
 import '../../auth/services/auth_service.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
@@ -163,6 +165,8 @@ class ProfileEditPage extends StatefulWidget {
 class _ProfileEditPageState extends State<ProfileEditPage> {
   final AuthService _authService = AuthService();
   late TextEditingController _textEditingController;
+  String?
+      _errorText; // Store the error message if data is invalid, otherwise null.
 
   @override
   void initState() {
@@ -176,13 +180,37 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     super.dispose();
   }
 
+  // Validation functions for email and full name.
+  String? _validateEmail(String value) {
+    return FormValidators.validateEmail(value);
+  }
+
+  String? _validateFullName(String value) {
+    return FormValidators.validateFullName(value);
+  }
+
   void _updateUser() {
     final updatedValue = _textEditingController.text;
-    _authService.updateUser(
-      context: context,
-      field: widget.field,
-      value: updatedValue,
-    );
+    String? error;
+
+    // Validate the input based on the field being edited.
+    if (widget.field == 'Email') {
+      error = _validateEmail(updatedValue);
+    } else if (widget.field == 'Full Name') {
+      error = _validateFullName(updatedValue);
+    }
+
+    if (error == null) {
+      // Data is valid, proceed with the update.
+      _authService.updateUser(
+        context: context,
+        field: widget.field,
+        value: updatedValue,
+      );
+    } else {
+      // Show an error message or take appropriate actions.
+      showSnackBar(context, error.toString());
+    }
   }
 
   @override
@@ -197,16 +225,20 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
             TextField(
               controller: _textEditingController,
               onChanged: (value) {
-                // No need to use setState here as we are directly updating the controller's value
+                // Clear the error message when the user starts typing.
+                setState(() {
+                  _errorText = null;
+                });
               },
               decoration: InputDecoration(
                 labelText: 'Edit ${widget.field}',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
+                errorText: _errorText, // Display the error message if present.
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _updateUser,
               child: Text('Update ${widget.field}'),

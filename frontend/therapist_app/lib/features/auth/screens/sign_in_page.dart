@@ -44,10 +44,10 @@ class _SignInPageState extends State<SignInPage> {
           children: [
             const SizedBox(height: 20),
             const Text(
-              'Login to your account',
+              'Login to \nyour account',
               style: TextStyle(
                 color: GlobalVariables.greyTextColor,
-                fontSize: 16,
+                fontSize: 26,
                 fontWeight: FontWeight.w500,
               ),
             ),
