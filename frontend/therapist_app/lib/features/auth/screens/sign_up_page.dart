@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:therapist_app/features/auth/screens/verify_screen.dart';
+import 'package:therapist_app/features/auth/screens/email_verification_screen.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
 import 'package:therapist_app/common/widgets/custom_textfield.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
@@ -87,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         //   signUpUser();
                         // }
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => EmailVerificationPage()),
+                          MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
                         );
                       },
                     ),
