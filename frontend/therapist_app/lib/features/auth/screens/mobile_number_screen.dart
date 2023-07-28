@@ -59,15 +59,20 @@ class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
                     // Add horizontal padding to the input field
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      color: Colors.grey.withOpacity(0.1), // Set the background color here
+                      // color: Colors.grey.withOpacity(0.1), // Set the background color here
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.1),
+                         borderRadius: BorderRadius.circular(12),
+                      ),
                       child: InternationalPhoneNumberInput(
+                        
                         onInputChanged: (PhoneNumber number) {
                           setState(() {
                             _phoneNumber = number;
                           });
                         },
                         selectorConfig: SelectorConfig(
-                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          selectorType: PhoneInputSelectorType.DROPDOWN,
                         ),
                         ignoreBlank: false,
                         autoValidateMode: AutovalidateMode.disabled,
@@ -80,9 +85,16 @@ class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
                         inputDecoration: InputDecoration(
                           contentPadding: EdgeInsets.only(bottom: 15, left: 0),
                           border: InputBorder.none,
+                          enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(12),
+                         ),
+
                           hintText: 'Phone Number',
                           hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 16),
                         ),
+                        spaceBetweenSelectorAndTextField: 0,
+                        
                         onSaved: (PhoneNumber number) {
                           print('On Saved: $number');
                         },
