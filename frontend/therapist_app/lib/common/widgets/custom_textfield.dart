@@ -31,12 +31,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
       padding: const EdgeInsets.only(top: 3, left: 15),
       height: 55,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.grey.withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 7,
+            color: Colors.black.withOpacity(0),
+            // blurRadius: 7,
           ),
         ],
       ),
