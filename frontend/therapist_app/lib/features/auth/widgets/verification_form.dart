@@ -110,7 +110,7 @@ class _VerificationFormState extends State<VerificationForm> {
             ),
             const SizedBox(height: 30),
             CustomButton(
-              text: "Proceed",
+              text: (widget.verificationType == VerificationType.Email) ? "Verify Email" : "Verify Phone Number",
               onTap: () {
                 if (widget.verificationType == VerificationType.Email) {
                   Navigator.push(
