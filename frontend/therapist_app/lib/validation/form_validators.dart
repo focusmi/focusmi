@@ -15,7 +15,9 @@ class FormValidators {
 
     // Check the format of the email address.
     final emailParts = value.split('@');
-    if (emailParts.length != 2 || emailParts[0].isEmpty || emailParts[1].isEmpty) {
+    if (emailParts.length != 2 ||
+        emailParts[0].isEmpty ||
+        emailParts[1].isEmpty) {
       return 'Please enter a valid email address';
     }
 
@@ -75,12 +77,44 @@ class FormValidators {
       return 'Please avoid excessive spaces in the full name';
     }
 
-
     // Check for proper capitalization.
     if (!value.split(' ').every((part) => part[0].toUpperCase() == part[0])) {
       return 'Please capitalize the first letter of each name part';
     }
 
     return null; // Return null if the full name is valid.
+  }
+
+  static String? validateEmptyEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an email address';
+    }
+    return null;
+  }
+  static String? validateEmptyPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    return null;
+  }
+
+  static String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    if (value.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    return null;
+  }
+
+  static String? validateConfirmPassword(String? value, String password) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a password';
+    }
+    if (value != password) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 }
