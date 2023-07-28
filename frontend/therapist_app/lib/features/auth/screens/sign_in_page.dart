@@ -1,7 +1,9 @@
+import 'package:therapist_app/features/auth/screens/reset_password/fogot_password_screen.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/common/widgets/custom_textfield.dart';
+import 'package:therapist_app/validation/form_validators.dart';
 
 import '../../../constants/global_variables.dart';
 
@@ -63,12 +65,14 @@ class _SignInPageState extends State<SignInPage> {
                     CustomTextField(
                       controller: _emailController,
                       hintText: 'Email',
+                      validator: FormValidators.validateEmptyEmail,
                     ),
                     SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
                     CustomTextField(
                       controller: _passwordController,
                       hintText: 'Password',
                       obscureText: true,
+                      validator: FormValidators.validateEmptyPassword,
                     ),
                     SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
                     CustomButton(
@@ -84,12 +88,17 @@ class _SignInPageState extends State<SignInPage> {
               ),
               SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
               TextButton(
-                onPressed: () {},
-                child: Text(
+                onPressed: () {
+                   Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                        );
+                },
+                child: const Text(
                   'Have you forgotten your password?',
                   style: TextStyle(
                     color: GlobalVariables.greyTextColor,
-                    fontSize: screenSize.width * 0.04, // Adjust font size based on screen width
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16, // Adjust font size based on screen width
                   ),
                 ),
               ),
