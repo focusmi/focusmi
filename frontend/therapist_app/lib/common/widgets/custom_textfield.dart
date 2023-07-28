@@ -4,12 +4,14 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
+  final String? Function(String?)? validator; // Add the validator parameter
 
   const CustomTextField({
     Key? key,
     required this.controller,
     required this.hintText,
     this.obscureText = false,
+    this.validator, // Provide a default value of null for the validator
   }) : super(key: key);
 
   @override
@@ -29,50 +31,57 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 3, left: 15),
-      height: 55,
-      decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0),
-            // blurRadius: 7,
-          ),
-        ],
-      ),
-      child: Row( // Wrap the TextFormField and IconButton in a Row
+      child: Row(
+        // Wrap the TextFormField and IconButton in a Row
         children: [
           Expanded(
             child: TextFormField(
               controller: widget.controller,
               obscureText: _obscureText, // Use the local _obscureText variable
               decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 hintText: widget.hintText,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.all(0),
-                hintStyle: const TextStyle(
-                  height: 1,
+                filled: true,
+                fillColor: Colors.grey.withOpacity(0.1),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                errorStyle: TextStyle(
+                  color: Colors.red,
+                  fontSize: 14,
+                  fontWeight: FontWeight
+                      .bold, // Set the font weight of the error message text
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide
+                      .none, // Set the border to none when there is an error
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                // contentPadding: const EdgeInsets.all(0),
               ),
-              validator: (val) {
-                if (val == null || val.isEmpty) {
-                  return 'Enter your ${widget.hintText}';
-                }
-                return null;
-              },
+              validator: widget.validator, // Use the provided validator
             ),
           ),
           if (widget.obscureText) // Only show the icon if it's a password field
-            IconButton(
-              icon: Icon(
-                _obscureText ? Icons.visibility : Icons.visibility_off,
-                color: Colors.grey,
+            Center(
+              child: IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscureText = !_obscureText;
+                  });
+                },
               ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
             ),
         ],
       ),
