@@ -57,7 +57,7 @@ class _VerificationFormState extends State<VerificationForm> {
               // Wrap the Lottie animation with a Container
               width: screenSize.width * 0.6, // Set the width based on screen width
               height: screenSize.width * 0.6, // Set the height based on screen width
-              child: Lottie.asset('assets/images/Mailing.json'),
+              child: Lottie.asset('assets/images/animation_lkl9la4o.json'),
             ),
             const SizedBox(height: 10),
             Text(
@@ -65,7 +65,7 @@ class _VerificationFormState extends State<VerificationForm> {
               style: TextStyle(
                 color: GlobalVariables.greyTextColor,
                 fontSize: screenSize.width * 0.05, // Adjust font size based on screen width
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w500, 
               ),
             ),
             const SizedBox(height: 15),
@@ -144,8 +144,3 @@ class _VerificationFormState extends State<VerificationForm> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: EmailVerificationPage(),
-  ));
-}
