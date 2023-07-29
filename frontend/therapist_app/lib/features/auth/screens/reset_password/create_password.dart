@@ -72,7 +72,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       ),
                       const SizedBox(height: 30),
                       CustomButton(
-                        text: "Continue",
+                        text: "Reset Password",
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
                             // Handle password creation logic here
