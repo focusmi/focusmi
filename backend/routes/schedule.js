@@ -13,4 +13,15 @@ ScheduleRouter.get('/apis/schedule/:userId', auth, async (req, res) => {
   }
 });
 
+ScheduleRouter.post('/apis/schedule/create/:userId', auth, async (req, res) => {
+  try {
+    const { start, end } = req.body;
+    const userId = req.params.userId;
+    const newSchedule = await Schedule.createSchedule(userId,50,start,end);
+    res.json(newSchedule);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = ScheduleRouter;
