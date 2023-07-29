@@ -1,4 +1,4 @@
-import 'package:therapist_app/features/schedule/screen/available_Schedule_Screen.dart';
+import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:therapist_app/features/schedule/screen/upcomming_schedule_screen.dart';
 
@@ -77,7 +77,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AvailableSchedulePage(),
+                      builder: (context) => SetTimeScheduleScreen(),
                     ),
                   );
                 },
