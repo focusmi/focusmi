@@ -13,6 +13,8 @@ class PhoneNumberInputPage extends StatefulWidget {
 class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   PhoneNumber _phoneNumber = PhoneNumber(isoCode: 'LK');
+  bool _isPhoneNumberErrorVisible =
+      false; // Track visibility of the error message
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +35,12 @@ class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
                     'assets/images/Phone like.json',
                     width: MediaQuery.of(context).size.width * 0.6,
                     height: MediaQuery.of(context).size.width * 0.6,
-                    // Adjust animation size based on screen width
                   ),
                   Text(
                     "Add phone number",
                     style: TextStyle(
                       color: GlobalVariables.greyTextColor,
-                      fontSize: MediaQuery.of(context).size.width * 0.05, // Adjust font size based on screen width
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -49,63 +50,100 @@ class _PhoneNumberInputPageState extends State<PhoneNumberInputPage> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: GlobalVariables.blackText,
-                      fontSize: MediaQuery.of(context).size.width * 0.03, // Adjust font size based on screen width
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
                       fontWeight: FontWeight.w300,
                     ),
                   ),
                   const SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    // Add horizontal padding to the input field
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      // color: Colors.grey.withOpacity(0.1), // Set the background color here
                       decoration: BoxDecoration(
                         color: Colors.grey.withOpacity(0.1),
-                         borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: InternationalPhoneNumberInput(
-                        
                         onInputChanged: (PhoneNumber number) {
                           setState(() {
                             _phoneNumber = number;
+                            // Hide the error message when the user starts typing
+                            _isPhoneNumberErrorVisible = false;
                           });
                         },
                         selectorConfig: SelectorConfig(
                           selectorType: PhoneInputSelectorType.DROPDOWN,
                         ),
                         ignoreBlank: false,
-                        autoValidateMode: AutovalidateMode.disabled,
+                        autoValidateMode: AutovalidateMode.onUserInteraction,
                         selectorTextStyle: TextStyle(color: Colors.black),
-                        initialValue: _phoneNumber, // Set the default country code here
+                        initialValue: _phoneNumber,
                         formatInput: false,
                         maxLength: 9,
-                        keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
                         cursorColor: Colors.black,
                         inputDecoration: InputDecoration(
                           contentPadding: EdgeInsets.only(bottom: 15, left: 0),
                           border: InputBorder.none,
                           enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(12),
-                         ),
-
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          errorStyle: TextStyle(
+                            color: Colors.transparent,
+                            fontSize: 0,
+                          ),
                           hintText: 'Phone Number',
-                          hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                          hintStyle: TextStyle(
+                              color: Colors.grey.shade500, fontSize: 16),
                         ),
                         spaceBetweenSelectorAndTextField: 0,
-                        
                         onSaved: (PhoneNumber number) {
                           print('On Saved: $number');
+                        },
+                        // Validate the phone number when the user moves to the next field
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a valid phone number';
+                          }
+                          if (!value.trim().contains(RegExp(r'^\d{9}$'))) {
+                            return 'Please enter a valid phone number';
+                          }
+                          return null;
                         },
                       ),
                     ),
                   ),
+
+                  // Display error message outside the container
+                  Visibility(
+                    visible: _isPhoneNumberErrorVisible,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: Text(
+                        'Please enter a valid phone number',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
                   const SizedBox(height: 30),
                   CustomButton(
                     text: "Proceed",
                     onTap: () {
-                      if (_formKey.currentState!.validate()) {
+                      // Show the error message immediately if there is a validation error
+                      setState(() {
+                        _isPhoneNumberErrorVisible =
+                            !_formKey.currentState!.validate();
+                      });
+
+                      if (!_isPhoneNumberErrorVisible) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
