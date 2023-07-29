@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
-import 'package:therapist_app/common/widgets/custom_profile_app_bar.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/auth/screens/reset_password/create_password.dart';
 // ... (imports and other code) ...
@@ -15,7 +14,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomProfileAppBar(title: ''),
+      appBar: AppBar(),
       body: VerificationForm(
         onSubmit: (code) {
           // Add your verification logic here
