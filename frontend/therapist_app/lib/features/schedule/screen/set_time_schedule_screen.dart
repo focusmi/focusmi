@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:therapist_app/constants/global_variables.dart';
+
 
 import '../service/set_time_schedule_service.dart';
-// import 'AvailableScheduleService.dart';
 
 class SetTimeScheduleScreen extends StatefulWidget {
   @override
@@ -22,32 +24,70 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
   Map<String, List<TimeRange>> selectedTimePeriods = {};
 
   @override
+  void initState() {
+    super.initState();
+    // Fetch schedules when the screen is initialized
+    _fetchSchedules();
+  }
+
+  Future<void> _fetchSchedules() async {
+    try {
+      List<Schedule> schedules =
+          await SetTimeScheduleService.fetchSchedules(context);
+
+      // Clear the existing selectedTimePeriods map
+      selectedTimePeriods.clear();
+
+      // Update the selectedTimePeriods map with the fetched schedules
+      for (Schedule schedule in schedules) {
+        String weekday = DateFormat('EEEE', 'en_US').format(schedule.start);
+        if (!weekdays.contains(weekday)) continue;
+
+        selectedTimePeriods[weekday] ??= [];
+        selectedTimePeriods[weekday]!.add(TimeRange(
+          context: context,
+          start: schedule.start,
+          end: schedule.end,
+        ));
+      }
+
+      // Force a rebuild of the widget tree
+      setState(() {});
+    } catch (error) {
+      // Handle error if needed
+      print('Error fetching schedules: $error');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Available Schedule'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              _editSchedule();
-            },
+
+        centerTitle: true,
+         backgroundColor:GlobalVariables.primaryText,
+        title: const Text('Set Appointment Time',
+        style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-        ],
+          ),
+        
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Select weekdays:',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: weekdays.map((weekday) {
@@ -55,6 +95,12 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                 return FilterChip(
                   label: Text(weekday),
                   selected: isSelected,
+                  selectedColor: GlobalVariables.primaryText,
+                  checkmarkColor: Colors.white,
+                  backgroundColor: Colors.black,
+                  labelStyle: const TextStyle(
+                   color: Colors.white
+                  ),
                   onSelected: (value) {
                     setState(() {
                       if (value) {
@@ -67,15 +113,15 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               'Select time periods:',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -89,12 +135,12 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                     children: [
                       Text(
                         weekday,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         children: timePeriods.map((timeRange) {
@@ -102,6 +148,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                             label: Text(
                               timeRange.formatTimeRange(),
                             ),
+                            deleteIconColor:Colors.red,
                             onDeleted: () {
                               setState(() {
                                 timePeriods.remove(timeRange);
@@ -110,14 +157,31 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                           );
                         }).toList(),
                       ),
-                      SizedBox(height: 8),
-                      ElevatedButton(
+                      const SizedBox(height: 8),
+                      FloatingActionButton.small(
                         onPressed: () {
                           _showDateTimePicker(context, weekday);
                         },
-                        child: Text('Add Time Period'),
+                        child: const Icon(Icons.add),
                       ),
-                      SizedBox(height: 16),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     _showDateTimePicker(context, weekday);
+                      //   },
+                      //   child: Text(
+                      //     'Add Time Period',
+                      //     style: TextStyle(
+                      //       color: Colors.white,
+                      //       fontWeight: FontWeight.w500,
+                      //       fontSize: 14,
+                      //     ),
+                      //   ),
+                      //   style: ElevatedButton.styleFrom(
+                      //     elevation: 2,
+                      //     backgroundColor: GlobalVariables.primaryText,
+                      //   ),
+                      // ),
+                      const SizedBox(height: 16),
                     ],
                   );
                 },
@@ -134,51 +198,52 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
   }
 
   Future<void> _showDateTimePicker(BuildContext context, String weekday) async {
-  final initialTime = TimeOfDay.now();
-  final pickedDate = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime.now(),
-    lastDate: DateTime.now().add(Duration(days: 7)), // Adjust as needed
-  );
-
-  if (pickedDate != null) {
-    final pickedStartTime = await showTimePicker(
+    final initialTime = TimeOfDay.now();
+    final pickedDate = await showDatePicker(
       context: context,
-      initialTime: initialTime,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 7)), // Adjust as needed
     );
 
-    if (pickedStartTime != null) {
-      final pickedEndTime = await showTimePicker(
+    if (pickedDate != null) {
+      final pickedStartTime = await showTimePicker(
         context: context,
         initialTime: initialTime,
       );
 
-      if (pickedEndTime != null) {
-        final startDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedStartTime.hour,
-          pickedStartTime.minute,
+      if (pickedStartTime != null) {
+        final pickedEndTime = await showTimePicker(
+          context: context,
+          initialTime: initialTime,
         );
-        final endDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedEndTime.hour,
-          pickedEndTime.minute,
-        );
-        final timeRange = TimeRange(context: context, start: startDateTime, end: endDateTime);
-        setState(() {
-          selectedTimePeriods[weekday]?.add(timeRange);
-        });
 
-        // Call the service method to create the schedule
-        SetTimeScheduleService.createSchedule(timeRange.toSchedule(), context);
+        if (pickedEndTime != null) {
+          final startDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedStartTime.hour,
+            pickedStartTime.minute,
+          );
+          final endDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedEndTime.hour,
+            pickedEndTime.minute,
+          );
+          final timeRange = TimeRange(
+              context: context, start: startDateTime, end: endDateTime);
+          setState(() {
+            selectedTimePeriods[weekday]?.add(timeRange);
+          });
+
+          // Call the service method to create the schedule
+          SetTimeScheduleService.createSchedule(
+              timeRange.toSchedule(), context);
+        }
       }
     }
   }
-}
-
 }
