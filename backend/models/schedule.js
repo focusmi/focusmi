@@ -14,6 +14,16 @@ const Schedule = {
     }
   },
 
+  getScheduleDateTime: async (userId) => {
+    try { 
+      const query = `SELECT * FROM new_therapy_session WHERE "admin_user_ID" = '${userId}'`;
+      const scheduleDateTime = await pool.cQuery(query);
+      return scheduleDateTime;
+    } catch (error) {
+      throw new Error('Error getting schedule data:', error);
+    }
+  },
+
   getScheduleDataForUser: async (userId) => {
     try {
       const query = `SELECT * FROM appointments WHERE admin_user_id = '${userId}'`;
