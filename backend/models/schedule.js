@@ -1,6 +1,19 @@
 const pool = require("../database/dbconnection");
 
 const Schedule = {
+
+  createSchedule: async (adminUserID, fee, sessionTime, sessionEndTime) => {
+    try {
+      const query = `INSERT INTO new_therapy_session ("admin_user_ID", fee, session_time, session_end_time) 
+                     VALUES (${adminUserID}, ${fee}, '${sessionTime}','${sessionEndTime}')`;
+      console.log(query)
+      const insertedSchedule = await pool.cQuery(query);
+      return insertedSchedule;
+    } catch (error) {
+      throw new Error('Error creating schedule:', error);
+    }
+  },
+
   getScheduleDataForUser: async (userId) => {
     try {
       const query = `SELECT * FROM appointments WHERE admin_user_id = '${userId}'`;
