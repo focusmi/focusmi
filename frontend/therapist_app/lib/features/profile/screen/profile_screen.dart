@@ -4,6 +4,7 @@ import 'package:therapist_app/features/profile/screen/profile_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 
 import '../../../common/widgets/custom_app_bar.dart';
 import '../service/profile_service.dart';
@@ -49,14 +50,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          CustomAppBar(
-            title: "Profile",
-            scrollController: _scrollController, // Pass the scroll controller
-            showFlexibleSpaceTitle: _showFlexibleSpaceTitle, // Pass the showFlexibleSpaceTitle value
+          SliverAppBar(
+            pinned: true,
+            elevation: 0,
+            expandedHeight: 90,
+            backgroundColor: _showFlexibleSpaceTitle
+                ? GlobalVariables.primaryText
+                : Colors.white,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Text(
+                "Profile",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: _showFlexibleSpaceTitle ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
           ),
-          const SliverFillRemaining(
-            child: Body(),
-          ),
+          SliverPadding(
+            padding:const EdgeInsets.only(top: 10),
+            sliver: SliverToBoxAdapter(
+              child: Body(),
+            ),
+          )
         ],
       ),
     );
@@ -73,7 +91,7 @@ class Body extends StatelessWidget {
       child: Column(
         children: [
           const ProfilePic(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           ProfileMenu(
             text: "My Account",
             icon: Icons.people_alt_sharp,
@@ -90,6 +108,18 @@ class Body extends StatelessWidget {
             text: "Notifications",
             icon: Icons.notifications,
             press: () {},
+          ),
+          ProfileMenu(
+            text: "Set Appointments Time",
+            icon: Icons.timelapse,
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SetTimeScheduleScreen(),
+                ),
+              );
+            },
           ),
           ProfileMenu(
             text: "Settings",
