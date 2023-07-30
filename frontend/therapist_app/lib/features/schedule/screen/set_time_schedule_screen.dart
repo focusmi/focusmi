@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:therapist_app/common/widgets/custom_profile_app_bar.dart';
 import 'package:therapist_app/constants/global_variables.dart';
-
 
 import '../service/set_time_schedule_service.dart';
 
@@ -18,7 +18,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
     'Thursday',
     'Friday',
     'Saturday',
-    'Sunday'
+    'Sunday',
   ];
 
   Map<String, List<TimeRange>> selectedTimePeriods = {};
@@ -26,15 +26,11 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch schedules when the screen is initialized
-    _fetchSchedules();
   }
 
-  Future<void> _fetchSchedules() async {
+  Future<List<Schedule>> _fetchSchedules() async {
     try {
-      List<Schedule> schedules =
-          await SetTimeScheduleService.fetchSchedules(context);
-
+      List<Schedule> schedules = await SetTimeScheduleService.fetchSchedules(context);
       // Clear the existing selectedTimePeriods map
       selectedTimePeriods.clear();
 
@@ -51,144 +47,143 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
         ));
       }
 
-      // Force a rebuild of the widget tree
-      setState(() {});
+      return schedules;
     } catch (error) {
       // Handle error if needed
       print('Error fetching schedules: $error');
+      return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-
-        centerTitle: true,
-         backgroundColor:GlobalVariables.primaryText,
-        title: const Text('Set Appointment Time',
-        style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          ),
-        
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select weekdays:',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: weekdays.map((weekday) {
-                final isSelected = selectedTimePeriods.containsKey(weekday);
-                return FilterChip(
-                  label: Text(weekday),
-                  selected: isSelected,
-                  selectedColor: GlobalVariables.primaryText,
-                  checkmarkColor: Colors.white,
-                  backgroundColor: Colors.black,
-                  labelStyle: const TextStyle(
-                   color: Colors.white
+      appBar: const CustomProfileAppBar(title: 'Set Appointment Time'),
+      body: FutureBuilder<List<Schedule>>(
+        future: _fetchSchedules(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // If the future is still waiting, show a loading indicator
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            // If there was an error while fetching data, show an error message
+            return Center(
+              child: Text('Error fetching schedules: ${snapshot.error}'),
+            );
+          } else {
+            // If the data was fetched successfully, build the rest of the screen
+            // using the fetched data.
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Select weekdays:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  onSelected: (value) {
-                    setState(() {
-                      if (value) {
-                        selectedTimePeriods[weekday] = [];
-                      } else {
-                        selectedTimePeriods.remove(weekday);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Select time periods:',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: selectedTimePeriods.length,
-                itemBuilder: (context, index) {
-                  final entry = selectedTimePeriods.entries.toList()[index];
-                  final weekday = entry.key;
-                  final timePeriods = entry.value;
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        weekday,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        children: timePeriods.map((timeRange) {
-                          return Chip(
-                            label: Text(
-                              timeRange.formatTimeRange(),
-                            ),
-                            deleteIconColor:Colors.red,
-                            onDeleted: () {
-                              setState(() {
-                                timePeriods.remove(timeRange);
-                              });
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 8),
-                      FloatingActionButton.small(
-                        onPressed: () {
-                          _showDateTimePicker(context, weekday);
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: weekdays.map((weekday) {
+                      final isSelected = selectedTimePeriods.containsKey(weekday);
+                      return FilterChip(
+                        label: Text(weekday),
+                        selected: isSelected,
+                        selectedColor: GlobalVariables.primaryText,
+                        checkmarkColor: Colors.white,
+                        backgroundColor: Colors.black,
+                        labelStyle: const TextStyle(color: Colors.white),
+                        onSelected: (value) {
+                          setState(() {
+                            if (value) {
+                              selectedTimePeriods[weekday] = [];
+                            } else {
+                              selectedTimePeriods.remove(weekday);
+                            }
+                          });
                         },
-                        child: const Icon(Icons.add),
-                      ),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     _showDateTimePicker(context, weekday);
-                      //   },
-                      //   child: Text(
-                      //     'Add Time Period',
-                      //     style: TextStyle(
-                      //       color: Colors.white,
-                      //       fontWeight: FontWeight.w500,
-                      //       fontSize: 14,
-                      //     ),
-                      //   ),
-                      //   style: ElevatedButton.styleFrom(
-                      //     elevation: 2,
-                      //     backgroundColor: GlobalVariables.primaryText,
-                      //   ),
-                      // ),
-                      const SizedBox(height: 16),
-                    ],
-                  );
-                },
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Select time periods:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: selectedTimePeriods.length,
+                      itemBuilder: (context, index) {
+                        final entry = selectedTimePeriods.entries.toList()[index];
+                        final weekday = entry.key;
+                        final timePeriods = entry.value;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              weekday,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              children: timePeriods.map((timeRange) {
+                                return Chip(
+                                  label: Text(
+                                    timeRange.formatTimeRange(),
+                                  ),
+                                  deleteIconColor: Colors.red,
+                                  onDeleted: () {
+                                    setState(() {
+                                      timePeriods.remove(timeRange);
+                                    });
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                _showDateTimePicker(context, weekday);
+                              },
+                              child: Text(
+                                'Add Time Period',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 2,
+                                backgroundColor: GlobalVariables.primaryText,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }
@@ -234,14 +229,19 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
             pickedEndTime.minute,
           );
           final timeRange = TimeRange(
-              context: context, start: startDateTime, end: endDateTime);
+            context: context,
+            start: startDateTime,
+            end: endDateTime,
+          );
           setState(() {
             selectedTimePeriods[weekday]?.add(timeRange);
           });
 
           // Call the service method to create the schedule
           SetTimeScheduleService.createSchedule(
-              timeRange.toSchedule(), context);
+            timeRange.toSchedule(),
+            context,
+          );
         }
       }
     }
