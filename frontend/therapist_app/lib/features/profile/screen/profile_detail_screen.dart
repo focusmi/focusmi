@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist_app/constants/global_variables.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
 import '../../../constants/util.dart';
 import '../../../provider/user_provider.dart';
@@ -12,6 +13,7 @@ class ProfileDetailsPage extends StatelessWidget {
     final user = Provider.of<UserProvider>(context).user;
 
     return Scaffold(
+      backgroundColor: Color(0xffebecee),
       appBar: const CustomProfileAppBar(title: 'Profile Details'),
       body: SingleChildScrollView(
         child: Padding(
@@ -20,35 +22,80 @@ class ProfileDetailsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ProfileField(
+                label: 'Joined Date',
+                value: '30 Jan, 2023',
+                arrow: false,
+                onTap: () {
+                  // navigateToEditPage(context, 'Full Name', user.name);
+                },
+              ),
+              const SizedBox(height: 2.0),
+              ProfileField(
                 label: 'Full Name',
                 value: user.name,
+                arrow: true,
                 onTap: () {
                   navigateToEditPage(context, 'Full Name', user.name);
                 },
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Email',
                 value: user.email,
+                arrow: true,
                 onTap: () {
                   navigateToEditPage(context, 'Email', user.email);
                 },
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 2.0),
+              ProfileField(
+                label: 'Mobile Number',
+                value: '077 379 4567',
+                arrow: true,
+                onTap: () {
+                  // navigateToEditPage(context, 'Email', user.email);
+                },
+              ),
+              const SizedBox(height: 2.0),
+              ProfileField(
+                label: 'Years of experience',
+                value: '10',
+                arrow: true,
+                onTap: () {
+                  // navigateToEditPage(context, 'Address', '');
+                },
+              ),
+              const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Address',
                 value: 'address',
+                arrow: true,
                 onTap: () {
-                  navigateToEditPage(context, 'Address', '');
+                  // navigateToEditPage(context, 'Address', '');
                 },
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Password',
                 value: '********',
+                arrow: true,
                 onTap: () {
                   navigateToChangePasswordPage(context);
                 },
+              ),
+              const SizedBox(height: 2.0),
+              ProfileField(
+                label: 'Total Clients',
+                value: '',
+                arrow: false,
+                onTap: () {},
+              ),
+              const SizedBox(height: 2.0),
+              ProfileField(
+                label: 'About',
+                value: '',
+                arrow: true,
+                onTap: () {},
               ),
             ],
           ),
@@ -82,12 +129,13 @@ class ProfileField extends StatelessWidget {
   final String label;
   final String value;
   final VoidCallback onTap;
+  final bool arrow;
 
-  const ProfileField({
-    required this.label,
-    required this.value,
-    required this.onTap,
-  });
+  const ProfileField(
+      {required this.label,
+      required this.value,
+      required this.onTap,
+      required this.arrow});
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +146,14 @@ class ProfileField extends StatelessWidget {
       fieldValue = user.name;
     } else if (label == 'Email') {
       fieldValue = user.email;
-      // } else if (label == 'Address') {
-      //   fieldValue = user.address;
+    } else if (label == 'Address') {
+      fieldValue = 'No 456/1, Matara, Sri Lanka';
+    } else if (label == 'Years of experience') {
+      fieldValue = '10';
+    } else if (label == 'Mobile Number') {
+      fieldValue = '077 379 4567';
+    } else if (label == 'Joined Date') {
+      fieldValue = '30 Jan, 2023';
     } else if (label == 'Password') {
       fieldValue = '********'; // Display masked password
     } else {
@@ -109,10 +163,10 @@ class ProfileField extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(5),
         child: Container(
           padding: const EdgeInsets.all(16.0),
-          color: Colors.grey[200], // Gray background color
+          color: Colors.grey[50], // Gray background color
           child: Row(
             children: [
               Expanded(
@@ -122,7 +176,7 @@ class ProfileField extends StatelessWidget {
                     Text(
                       label,
                       style: const TextStyle(
-                        fontSize: 16.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.normal,
                         letterSpacing: 0.5,
                       ),
@@ -131,19 +185,21 @@ class ProfileField extends StatelessWidget {
                     Text(
                       fieldValue,
                       style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black, // Black value text color
-                        fontWeight: FontWeight.w300,
+                        fontSize: 16.0,
+                        color: GlobalVariables
+                            .greyTextColor, // Black value text color
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios,
-                size: 18,
-                color: Colors.grey[400], // Gray arrow icon color
-              ),
+              if (arrow)
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 18,
+                  color: Colors.grey[400], // Gray arrow icon color
+                ),
             ],
           ),
         ),
