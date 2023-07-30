@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist_app/constants/global_variables.dart';
+import 'package:therapist_app/features/auth/screens/phone_verification_screen.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
 import '../../../provider/user_provider.dart';
 import '../../../validation/form_validators.dart';
@@ -52,16 +53,20 @@ class ProfileDetailsPage extends StatelessWidget {
                 value: '077 379 4567',
                 arrow: true,
                 onTap: () {
-                  // navigateToEditPage(context, 'Email', user.email);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PhoneVerificationScreen()),
+                  );
                 },
               ),
               const SizedBox(height: 2.0),
               ProfileField(
-                label: 'Years of experience',
-                value: '10',
+                label: 'Experience',
+                value: '10 years',
                 arrow: true,
                 onTap: () {
-                  // navigateToEditPage(context, 'Address', '');
+                  navigateToEditPage(context, 'Experience', '10');
                 },
               ),
               const SizedBox(height: 2.0),
@@ -70,7 +75,8 @@ class ProfileDetailsPage extends StatelessWidget {
                 value: 'address',
                 arrow: true,
                 onTap: () {
-                  // navigateToEditPage(context, 'Address', '');
+                  navigateToEditPage(
+                      context, 'Address', 'No 456/1, Matara, Sri Lanka');
                 },
               ),
               const SizedBox(height: 2.0),
@@ -147,14 +153,18 @@ class ProfileField extends StatelessWidget {
       fieldValue = user.email;
     } else if (label == 'Address') {
       fieldValue = 'No 456/1, Matara, Sri Lanka';
-    } else if (label == 'Years of experience') {
-      fieldValue = '10';
+    } else if (label == 'Experience') {
+      fieldValue = '10 years';
     } else if (label == 'Mobile Number') {
       fieldValue = '077 379 4567';
     } else if (label == 'Joined Date') {
       fieldValue = '30 Jan, 2023';
     } else if (label == 'Password') {
-      fieldValue = '********'; // Display masked password
+      fieldValue = '●●●●●●●●●'; // Display masked password
+    } else if (label == 'Total Clients') {
+      fieldValue = '23';
+    } else if (label == 'About') {
+      fieldValue = '';
     } else {
       fieldValue = ''; // Default value if field label doesn't match
     }
@@ -244,6 +254,10 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     return FormValidators.validateFullName(value);
   }
 
+  String? _validatePassword(String value) {
+    return FormValidators.validatePassword(value);
+  }
+
   void _updateUser() {
     final updatedValue = _textEditingController.text;
     String? error;
@@ -287,11 +301,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(top:40.0),
+                padding: const EdgeInsets.only(top: 40.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text('${widget.field}',style:TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+                    Text('${widget.field}',
+                        style: TextStyle(
+                            color: Colors.grey.shade500, fontSize: 16)),
                     const SizedBox(height: 10),
                     TextField(
                       controller: _textEditingController,
@@ -315,8 +331,8 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        hintStyle:
-                            TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                        hintStyle: TextStyle(
+                            color: Colors.grey.shade500, fontSize: 16),
                         errorStyle: TextStyle(
                           color: Colors.red,
                           fontSize: 14,
@@ -371,6 +387,9 @@ class ChangePasswordPage extends StatefulWidget {
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
+  String? _errorText;
+  bool _obscureText1 = true;
+  bool _obscureText2 = true;
 
   @override
   void dispose() {
@@ -379,68 +398,174 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  void _changePassword() {
+  void _changePassword(String id) {
+    final String userid = id;
     final String oldPassword = _oldPasswordController.text;
     final String newPassword = _newPasswordController.text;
-    // final user = Provider.of<UserProvider>(context).user;
 
-    if (oldPassword.isNotEmpty && newPassword.isNotEmpty) {
-      AuthService.changePassword(
-              context: context,
-              oldPassword: oldPassword,
-              newPassword: newPassword,
-              userId: '10')
-          .then((success) {
-        if (success) {
-          // Password changed successfully
-          // You can show a success message or perform any other actions
-          print('Password changed successfully');
-          Navigator.pop(context); // Go back to the profile details page
-        } else {
-          // Error changing password
-          // You can show an error message or perform any other actions
-          print('Failed to change password');
-        }
+    // Validate the passwords.
+    String? error =
+        FormValidators.validateChangePassword(oldPassword, newPassword);
+
+    if (error != null) {
+      // Set the error text for the respective fields.
+      setState(() {
+        _errorText = error;
       });
+      return;
     }
+
+    // If both passwords are valid, proceed with changing the password.
+    AuthService.changePassword(
+      context: context,
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+      userId: userid,
+    ).then((success) {
+      if (success) {
+        // Password changed successfully
+        // You can show a success message or perform any other actions
+        print('Password changed successfully');
+        Navigator.pop(context); // Go back to the profile details page
+      } else {
+        // Error changing password
+        // You can show an error message or perform any other actions
+        print('Failed to change password');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
       appBar: const CustomProfileAppBar(title: "Change Password"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _oldPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Old Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('Old Password',
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _oldPasswordController,
+                obscureText: _obscureText1,
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  hintText: 'Old Password',
+                  filled: true,
+                  fillColor: Colors.grey.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  hintStyle:
+                      TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                  errorStyle: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText1 ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey.shade500,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText1 =
+                            !_obscureText1; // Toggle the value of _obscureText
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _newPasswordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'New Password',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+              const SizedBox(height: 16.0),
+              Text('New Password',
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _newPasswordController,
+                obscureText: _obscureText2,
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  hintText: 'New Password',
+                  filled: true,
+                  fillColor: Colors.grey.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  hintStyle:
+                      TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                  errorStyle: TextStyle(
+                    color: Colors.red,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  errorText: _errorText,
+                 suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText2 ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.grey.shade500,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText2 =
+                            !_obscureText2; // Toggle the value of _obscureText
+                      });
+                    },
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _changePassword,
-              child: const Text('Change Password'),
-            ),
-          ],
+              const SizedBox(height: 16.0),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _changePassword((user.id).toString());
+                    },
+                    child: const Text(
+                      'Change Password',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(100, 50),
+                      elevation: 2,
+                      backgroundColor: GlobalVariables.primaryText,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
     );
