@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
-import '../../../constants/util.dart';
 import '../../../provider/user_provider.dart';
 import '../../../validation/form_validators.dart';
 import '../../auth/services/auth_service.dart';
@@ -256,6 +255,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       error = _validateFullName(updatedValue);
     }
 
+    // Check if the new value is the same as the initial value.
+    if (updatedValue == widget.initialValue) {
+      error = 'The new value is the same as the current value.';
+    }
+
     if (error == null) {
       // Data is valid, proceed with the update.
       _authService.updateUser(
@@ -264,13 +268,16 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         value: updatedValue,
       );
     } else {
-      // Show an error message or take appropriate actions.
-      showSnackBar(context, error.toString());
+      setState(() {
+        _errorText = error;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double buttonWidth = screenWidth * 0.8;
     return Scaffold(
       appBar: CustomProfileAppBar(title: "Edit ${widget.field}"),
       body: Padding(
@@ -278,27 +285,77 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _textEditingController,
-              onChanged: (value) {
-                // Clear the error message when the user starts typing.
-                setState(() {
-                  _errorText = null;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Edit ${widget.field}',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top:40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text('${widget.field}',style:TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: _textEditingController,
+                      onChanged: (value) {
+                        // Clear the error message when the user starts typing.
+                        setState(() {
+                          _errorText = null;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        hintText: 'Edit ${widget.field}',
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.1),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        hintStyle:
+                            TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                        errorStyle: TextStyle(
+                          color: Colors.red,
+                          fontSize: 14,
+                          fontWeight: FontWeight
+                              .bold, // Set the font weight of the error message text
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide
+                              .none, // Set the border to none when there is an error
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        errorText: _errorText,
+                        // contentPadding: const EdgeInsets.all(0),
+                      ),
+                    ),
+                  ],
                 ),
-                errorText: _errorText, // Display the error message if present.
               ),
             ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _updateUser,
-              child: Text('Update ${widget.field}'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 70),
+              child: ElevatedButton(
+                onPressed: _updateUser,
+                child: Text(
+                  'Update ${widget.field}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(buttonWidth, 50),
+                  elevation: 2,
+                  backgroundColor: GlobalVariables.primaryText,
+                ),
+              ),
             ),
+            const SizedBox(height: 50),
           ],
         ),
       ),
