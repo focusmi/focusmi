@@ -4,10 +4,9 @@ import 'package:therapist_app/features/profile/screen/profile_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:therapist_app/features/profile/service/profile_service.dart';
 import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 
-import '../../../common/widgets/custom_app_bar.dart';
-import '../service/profile_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   static String routeName = "/profile";
@@ -62,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text(
                 "Profile",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: _showFlexibleSpaceTitle ? Colors.white : Colors.black,
                 ),
@@ -70,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           SliverPadding(
-            padding:const EdgeInsets.only(top: 10),
+            padding:const EdgeInsets.only(top: 5),
             sliver: SliverToBoxAdapter(
               child: Body(),
             ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:therapist_app/features/schedule/screen/completed_schedule_screen.dart';
-import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 import '../../../constants/global_variables.dart';
 import 'upcomming_schedule_screen.dart';
 
@@ -61,7 +60,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               title: Text(
                 "Schedule",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: _showFlexibleSpaceTitle ? Colors.white : Colors.black,
                 ),
