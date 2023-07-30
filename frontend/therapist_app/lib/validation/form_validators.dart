@@ -91,6 +91,7 @@ class FormValidators {
     }
     return null;
   }
+
   static String? validateEmptyPassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter a password';
@@ -116,5 +117,26 @@ class FormValidators {
       return 'Passwords do not match';
     }
     return null;
+  }
+
+  static String? validateChangePassword(
+      String? oldPassword, String? newPassword) {
+    if (oldPassword == null || oldPassword.isEmpty) {
+      return 'Please enter the old password';
+    }
+
+    if (newPassword == null || newPassword.isEmpty) {
+      return 'Please enter the new password';
+    }
+
+    if (oldPassword == newPassword) {
+      return 'New password should be different from the old password';
+    }
+
+    if (oldPassword != newPassword) {
+     return validatePassword(newPassword);
+    }
+
+    return null; // Return null if the passwords are valid.
   }
 }
