@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:therapist_app/common/widgets/upcoming_schedule.dart';
+import 'package:lottie/lottie.dart';
+import 'package:therapist_app/common/widgets/schedule_card.dart';
 import 'package:therapist_app/features/schedule/service/scheduleservice.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,7 @@ class UpcomingScheduleScreen extends StatefulWidget {
 
 class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
   List<dynamic> scheduleData = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -19,10 +21,12 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
     fetchScheduleData();
   }
 
-String formatAppointmentDateTime(String isoDateTime) {
-  DateTime dateTime = DateTime.parse(isoDateTime);
-  return DateFormat('yyyy-MM-dd').format(dateTime) + ', ' + DateFormat('hh:mm a').format(dateTime);
-}
+  String formatAppointmentDateTime(String isoDateTime) {
+    DateTime dateTime = DateTime.parse(isoDateTime);
+    return DateFormat('yyyy-MM-dd').format(dateTime) +
+        ', ' +
+        DateFormat('hh:mm a').format(dateTime);
+  }
 
   Future<void> fetchScheduleData() async {
     try {
@@ -32,9 +36,13 @@ String formatAppointmentDateTime(String isoDateTime) {
           await ScheduleService.getScheduleDataForUser(user.id, user.token);
       setState(() {
         scheduleData = data;
+        isLoading = false;
       });
     } catch (e) {
       print('Error fetching schedule data: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -47,13 +55,21 @@ String formatAppointmentDateTime(String isoDateTime) {
         children: [
           const SizedBox(height: 20),
           const Text(
-            "About Patient",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            "Appointments",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 15),
-          if (scheduleData.isEmpty)
+          if (isLoading)
             Center(
               child: CircularProgressIndicator(),
+            )
+          else if (scheduleData.isEmpty)
+            Center(
+              child: Container(
+                height: 200,
+                margin: const EdgeInsets.only(top: 100),
+                child: Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
+              ),
             )
           else
             Column(
