@@ -1,8 +1,8 @@
-import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:therapist_app/features/schedule/screen/upcomming_schedule_screen.dart';
-
+import 'package:therapist_app/features/schedule/screen/completed_schedule_screen.dart';
+import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 import '../../../constants/global_variables.dart';
+import 'upcomming_schedule_screen.dart';
 
 class ScheduleScreen extends StatefulWidget {
   static String routeName = "/schedule";
@@ -40,16 +40,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   final _scheduleWidgets = [
     UpcomingScheduleScreen(),
-    UpcomingScheduleScreen(),
-    Container(),
-    // Container(),
+    CompletedScheduleScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        controller: _scrollController, // Add the scroll controller here
+        controller: _scrollController,
         slivers: [
           SliverAppBar(
             pinned: true,
@@ -69,20 +67,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ),
               ),
             ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.more_vert),
-                onPressed: () {
-                  // Handle more options button press
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SetTimeScheduleScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: Icon(Icons.more_vert),
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => SetTimeScheduleScreen(),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ],
           ),
           SliverPadding(
             padding: const EdgeInsets.only(top: 10),
@@ -90,79 +87,90 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF4F6FA),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _buttonIndex = 0;
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Container(
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.symmetric(horizontal: 25),
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(90, 199, 233, 201),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _buttonIndex = 0;
+                                });
+                              },
+                              child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 25),
+                                  vertical: 12,
+                                  horizontal: 25,
+                                ),
                                 decoration: BoxDecoration(
                                   color: _buttonIndex == 0
                                       ? const Color(0xff83de70)
                                       : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(50),
                                 ),
-                                child: Text(
-                                  "Upcoming",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: _buttonIndex == 0
-                                        ? Colors.white
-                                        : Colors.black38,
+                                child: Center(
+                                  child: Text(
+                                    "Upcoming",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: _buttonIndex == 0
+                                          ? Colors.white
+                                          : Colors.black38,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              _buttonIndex = 1;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 12, horizontal: 25),
-                            decoration: BoxDecoration(
-                              color: _buttonIndex == 1
-                                  ? const Color(0xff83de70)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(
-                              "Completed",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: _buttonIndex == 1
-                                    ? Colors.white
-                                    : Colors.black38,
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _buttonIndex = 1;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 25,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _buttonIndex == 1
+                                      ? const Color(0xff83de70)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Completed",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: _buttonIndex == 1
+                                          ? Colors.white
+                                          : Colors.black38,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Widgets According to buttons
+                  // Display the selected widget based on the _buttonIndex
                   _scheduleWidgets[_buttonIndex],
                 ],
               ),
