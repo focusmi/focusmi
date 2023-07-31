@@ -30,7 +30,8 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
 
   Future<List<Schedule>> _fetchSchedules() async {
     try {
-      List<Schedule> schedules = await SetTimeScheduleService.fetchSchedules(context);
+      List<Schedule> schedules =
+          await SetTimeScheduleService.fetchSchedules(context);
       // Clear the existing selectedTimePeriods map
       selectedTimePeriods.clear();
 
@@ -44,6 +45,8 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
           context: context,
           start: schedule.start,
           end: schedule.end,
+          selectedDate: DateFormat('yyyy-MM-dd').format(
+              schedule.start), // Get the selected date in 'yyyy-MM-dd' format
         ));
       }
 
@@ -93,7 +96,8 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                     Wrap(
                       spacing: 8,
                       children: weekdays.map((weekday) {
-                        final isSelected = selectedTimePeriods.containsKey(weekday);
+                        final isSelected =
+                            selectedTimePeriods.containsKey(weekday);
                         return FilterChip(
                           label: Text(weekday),
                           selected: isSelected,
@@ -127,7 +131,8 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                         shrinkWrap: true,
                         itemCount: selectedTimePeriods.length,
                         itemBuilder: (context, index) {
-                          final entry = selectedTimePeriods.entries.toList()[index];
+                          final entry =
+                              selectedTimePeriods.entries.toList()[index];
                           final weekday = entry.key;
                           final timePeriods = entry.value;
                           return Column(
@@ -146,10 +151,11 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                                 children: timePeriods.map((timeRange) {
                                   return Chip(
                                     label: Text(
-                                      timeRange.formatTimeRange(),
+                                      '${timeRange.selectedDate} ${timeRange.formatTimeRange()}', //.getFormattedMonthDay() MM-DD
                                     ),
                                     deleteIconColor: Colors.red,
                                     onDeleted: () {
+                                      print("delete");
                                       setState(() {
                                         timePeriods.remove(timeRange);
                                       });
@@ -201,7 +207,8 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime.now().add(Duration(days: 7)), // Adjust as needed
+      lastDate:
+          DateTime.now().add(Duration(days: 14)), // Limit to the next 2 weeks
     );
 
     if (pickedDate != null) {
@@ -231,20 +238,31 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
             pickedEndTime.hour,
             pickedEndTime.minute,
           );
-          final timeRange = TimeRange(
-            context: context,
-            start: startDateTime,
-            end: endDateTime,
-          );
-          setState(() {
-            selectedTimePeriods[weekday]?.add(timeRange);
-          });
 
-          // Call the service method to create the schedule
-          SetTimeScheduleService.createSchedule(
-            timeRange.toSchedule(),
-            context,
-          );
+          final DateTime twoWeeksFromNow =
+              DateTime.now().add(Duration(days: 14));
+          if (startDateTime.isBefore(twoWeeksFromNow) &&
+              endDateTime.isBefore(twoWeeksFromNow)) {
+            final timeRange = TimeRange(
+              context: context,
+              start: startDateTime,
+              end: endDateTime,
+              selectedDate: DateFormat('yyyy-MM-dd').format(
+                  pickedDate), // Get the selected date in 'yyyy-MM-dd' format
+            );
+            setState(() {
+              selectedTimePeriods[weekday]?.add(timeRange);
+            });
+
+            // Call the service method to create the schedule
+            SetTimeScheduleService.createSchedule(
+              timeRange.toSchedule(),
+              context,
+            );
+          } else {
+            // Handle the case where the selected time is not within the next two weeks
+            // You can show an error message or take other appropriate actions here
+          }
         }
       }
     }
