@@ -161,7 +161,7 @@ class ProfileMenu extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
-          foregroundColor: GlobalVariables.greyTextColor,
+          foregroundColor: Color.fromARGB(172, 0, 0, 0),
           padding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
@@ -177,7 +177,7 @@ class ProfileMenu extends StatelessWidget {
             ),
             const SizedBox(width: 20),
             Expanded(child: Text(text)),
-            const Icon(Icons.arrow_forward_ios),
+            const Icon(Icons.arrow_forward_ios, color: GlobalVariables.primaryText,),
           ],
         ),
       ),
@@ -204,12 +204,13 @@ class _ProfilePicState extends State<ProfilePic> {
           top: Radius.circular(25.0),
         ),
       ),
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Color.fromARGB(255, 255, 255, 255),
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.28,
         maxChildSize: 0.4,
         minChildSize: 0.28,
         expand: false,
+        
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
@@ -298,33 +299,36 @@ class SelectPhotoOptionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const Center(
-            child: Text(
-              'Edit Profile Picture',
-              style: TextStyle(fontSize: 20,
-              fontWeight: FontWeight.w800,
-              color: GlobalVariables.primaryText,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal:30.0),
+        child: Column(
+          children: [
+            const Center(
+              child: Text(
+                'Edit Profile Picture',
+                style: TextStyle(fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: GlobalVariables.primaryText,
+                ),
+      
               ),
-
             ),
-          ),
-          const SizedBox(height: 10),
-          SelectPhoto(
-            onTap: () => _pickImage(ImageSource.gallery),
-            icon: Icons.image,
-            textLabel: 'Browse Gallery',
-            
-          ),
-          const SizedBox(height: 10),
-          const SizedBox(height: 10),
-          SelectPhoto(
-            onTap: () => _pickImage(ImageSource.camera),
-            icon: Icons.camera,
-            textLabel: 'Use a Camera',
-          ),
-        ],
+            const SizedBox(height: 10),
+            SelectPhoto(
+              onTap: () => _pickImage(ImageSource.gallery),
+              icon: Icons.image,
+              textLabel: 'Browse Gallery',
+              
+            ),
+            const SizedBox(height: 10),
+            const SizedBox(height: 10),
+            SelectPhoto(
+              onTap: () => _pickImage(ImageSource.camera),
+              icon: Icons.camera,
+              textLabel: 'Use a Camera',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -370,7 +374,7 @@ class SelectPhoto extends StatelessWidget {
             Text(
               textLabel,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w600,
                 color: Color.fromARGB(255, 255, 255, 255),
               ),
