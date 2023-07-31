@@ -204,6 +204,7 @@ class _ProfilePicState extends State<ProfilePic> {
           top: Radius.circular(25.0),
         ),
       ),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       builder: (context) => DraggableScrollableSheet(
         initialChildSize: 0.28,
         maxChildSize: 0.4,
@@ -299,22 +300,28 @@ class SelectPhotoOptionsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          SelectPhoto(
-            onTap: () => _pickImage(ImageSource.gallery),
-            icon: Icons.image,
-            textLabel: 'Browse Gallery',
-          ),
-          const SizedBox(height: 10),
           const Center(
             child: Text(
-              'OR',
-              style: TextStyle(fontSize: 18),
+              'Edit Profile Picture',
+              style: TextStyle(fontSize: 20,
+              fontWeight: FontWeight.w800,
+              color: GlobalVariables.primaryText,
+              ),
+
             ),
           ),
           const SizedBox(height: 10),
           SelectPhoto(
+            onTap: () => _pickImage(ImageSource.gallery),
+            icon: Icons.image,
+            textLabel: 'Browse Gallery',
+            
+          ),
+          const SizedBox(height: 10),
+          const SizedBox(height: 10),
+          SelectPhoto(
             onTap: () => _pickImage(ImageSource.camera),
-            icon: Icons.camera_alt_outlined,
+            icon: Icons.camera,
             textLabel: 'Use a Camera',
           ),
         ],
@@ -341,9 +348,9 @@ class SelectPhoto extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        elevation: 10,
-        primary: Colors.grey.shade200,
+        elevation:5,
         shape: const StadiumBorder(),
+        backgroundColor: GlobalVariables.primaryText,
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -355,16 +362,17 @@ class SelectPhoto extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: Colors.black,
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
             const SizedBox(
-              width: 14,
+              width: 16,
             ),
             Text(
               textLabel,
               style: const TextStyle(
                 fontSize: 18,
-                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                color: Color.fromARGB(255, 255, 255, 255),
               ),
             )
           ],
