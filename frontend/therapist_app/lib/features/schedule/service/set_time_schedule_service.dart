@@ -12,15 +12,21 @@ class TimeRange {
   final DateTime end;
   final String selectedDate; // New variable to hold the selected date
 
-  TimeRange({required this.context, required this.start, required this.end, required this.selectedDate});
+  TimeRange({
+    required this.context,
+    required this.start,
+    required this.end,
+    required this.selectedDate,
+  });
 
   String formatTimeRange() {
     return '${TimeOfDay.fromDateTime(start).format(context)} - ${TimeOfDay.fromDateTime(end).format(context)}';
   }
-  
+
   String getFormattedMonthDay() {
     return DateFormat('M-d').format(DateTime.parse(selectedDate));
   }
+
   Schedule toSchedule() {
     return Schedule(
       start: start,
@@ -64,10 +70,41 @@ class SetTimeScheduleService {
   }
 
   static Future<void> createSchedule(
-      Schedule schedule, BuildContext context) async {
+    Schedule schedule,
+    BuildContext context,
+  ) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.user;
 
+    // Fetch existing schedules only if there are schedules in the database
+    List<Schedule> existingSchedules = [];
+    try {
+      existingSchedules = await fetchSchedules(context);
+    } catch (e) {
+      // Handle the error if needed (e.g., show an error message or take appropriate actions)
+      print('Error fetching schedules: $e');
+    }
+
+    // Convert the new schedule to TimeRange for easier comparison
+    final newTimeRange = TimeRange(
+      context: context,
+      start: schedule.start,
+      end: schedule.end,
+      selectedDate: DateFormat('yyyy-MM-dd').format(schedule.start),
+    );
+
+    // Convert existing schedules to TimeRange
+    final existingTimeRanges = existingSchedules
+        .map((schedule) => schedule.toTimeRange(context))
+        .toList();
+
+    // Check for overlapping time periods
+    if (isTimeOverlap(newTimeRange, existingTimeRanges)) {
+      throw Exception(
+          'The selected time period overlaps with existing schedules.');
+    }
+
+    // If there are no overlaps or there was an error fetching schedules, proceed to create the schedule
     final body = jsonEncode(schedule.toJson());
 
     final response = await http.post(
@@ -79,8 +116,21 @@ class SetTimeScheduleService {
       },
     );
     if (response.statusCode != 201) {
-      throw Exception('Failed to create schedule');
+      // throw Exception('Failed to create schedule');
     }
+  }
+
+  static bool isTimeOverlap(
+    TimeRange newTimeRange,
+    List<TimeRange> existingTimeRanges,
+  ) {
+    for (TimeRange existingTimeRange in existingTimeRanges) {
+      if (newTimeRange.start.isBefore(existingTimeRange.end) &&
+          newTimeRange.end.isAfter(existingTimeRange.start)) {
+        return true; // Overlapping time periods
+      }
+    }
+    return false; // No overlapping time periods
   }
 }
 
@@ -111,6 +161,15 @@ class Schedule {
     return Schedule(
       start: DateTime.parse(json['session_time']).toLocal(),
       end: DateTime.parse(json['session_end_time']).toLocal(),
+    );
+  }
+
+  TimeRange toTimeRange(BuildContext context) {
+    return TimeRange(
+      context: context,
+      start: start,
+      end: end,
+      selectedDate: DateFormat('yyyy-MM-dd').format(start),
     );
   }
 }

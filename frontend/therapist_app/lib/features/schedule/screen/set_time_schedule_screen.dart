@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:therapist_app/common/widgets/custom_profile_app_bar.dart';
 import 'package:therapist_app/constants/global_variables.dart';
+import 'package:therapist_app/constants/util.dart';
 
 import '../service/set_time_schedule_service.dart';
 
@@ -250,15 +251,20 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
               selectedDate: DateFormat('yyyy-MM-dd').format(
                   pickedDate), // Get the selected date in 'yyyy-MM-dd' format
             );
-            setState(() {
-              selectedTimePeriods[weekday]?.add(timeRange);
-            });
+            try {
+              // Call the service method to create the schedule
+              final response = await SetTimeScheduleService.createSchedule(
+                  timeRange.toSchedule(), context);
 
-            // Call the service method to create the schedule
-            SetTimeScheduleService.createSchedule(
-              timeRange.toSchedule(),
-              context,
-            );
+              showSnackBar(context, 'Time period added successfully!');
+              setState(() {
+                selectedTimePeriods[weekday]?.add(timeRange);
+              });
+            } catch (error) {
+              // If the createSchedule method throws an exception, it means the time period overlaps with existing schedules
+              // Show an error message to the user
+              showSnackBar(context,error.toString());
+            }
           } else {
             // Handle the case where the selected time is not within the next two weeks
             // You can show an error message or take other appropriate actions here
