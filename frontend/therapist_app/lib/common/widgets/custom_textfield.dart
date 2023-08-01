@@ -5,6 +5,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final bool obscureText;
   final String? Function(String?)? validator; // Add the validator parameter
+  final bool trimEnabled; // Add the trimEnabled parameter
 
   const CustomTextField({
     Key? key,
@@ -12,6 +13,7 @@ class CustomTextField extends StatefulWidget {
     required this.hintText,
     this.obscureText = false,
     this.validator, // Provide a default value of null for the validator
+    this.trimEnabled = true, // Provide a default value of true for trimEnabled
   }) : super(key: key);
 
   @override
@@ -66,7 +68,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 ),
                 // contentPadding: const EdgeInsets.all(0),
               ),
-              validator: widget.validator, // Use the provided validator
+              validator: (value) {
+                // Trim the value before validating if trimEnabled is true and the value is not null
+                if (widget.trimEnabled && value != null) {
+                  value = value.trim();
+                }
+                return widget.validator
+                    ?.call(value); // Use the provided validator
+              },
             ),
           ),
           if (widget.obscureText) // Only show the icon if it's a password field
