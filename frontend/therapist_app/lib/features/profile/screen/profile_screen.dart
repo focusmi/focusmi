@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:therapist_app/features/profile/service/profile_service.dart';
 import 'package:therapist_app/features/schedule/screen/set_time_schedule_screen.dart';
 
-
 class ProfileScreen extends StatefulWidget {
   static String routeName = "/profile";
 
@@ -69,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           SliverPadding(
-            padding:const EdgeInsets.only(top: 5),
+            padding: const EdgeInsets.only(top: 5),
             sliver: SliverToBoxAdapter(
               child: Body(),
             ),
@@ -177,7 +176,10 @@ class ProfileMenu extends StatelessWidget {
             ),
             const SizedBox(width: 20),
             Expanded(child: Text(text)),
-            const Icon(Icons.arrow_forward_ios, color: GlobalVariables.primaryText,),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: GlobalVariables.primaryText,
+            ),
           ],
         ),
       ),
@@ -206,11 +208,10 @@ class _ProfilePicState extends State<ProfilePic> {
       ),
       backgroundColor: Color.fromARGB(255, 255, 255, 255),
       builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.28,
-        maxChildSize: 0.4,
-        minChildSize: 0.28,
+        initialChildSize: 0.2,
+        maxChildSize: 0.2,
+        minChildSize: 0.1,
         expand: false,
-        
         builder: (context, scrollController) {
           return SingleChildScrollView(
             controller: scrollController,
@@ -269,7 +270,8 @@ class _ProfilePicState extends State<ProfilePic> {
                 onPressed: () {
                   _showSelectPhotoOptions(context);
                 },
-                child: const Icon(Icons.edit,color:GlobalVariables.greyTextColor),
+                child: const Icon(Icons.edit,
+                    color: GlobalVariables.greyTextColor),
               ),
             ),
           ),
@@ -299,36 +301,39 @@ class SelectPhotoOptionsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal:30.0),
-        child: Column(
-          children: [
-            const Center(
-              child: Text(
-                'Edit Profile Picture',
-                style: TextStyle(fontSize: 20,
+      child: Column(
+        children: [
+          const Center(
+            child: Text(
+              'Edit Profile Picture',
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.w800,
                 color: GlobalVariables.primaryText,
-                ),
-      
               ),
             ),
-            const SizedBox(height: 10),
-            SelectPhoto(
-              onTap: () => _pickImage(ImageSource.gallery),
-              icon: Icons.image,
-              textLabel: 'Browse Gallery',
-              
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                SelectPhoto(
+                  onTap: () => _pickImage(ImageSource.gallery),
+                  icon: Icons.image,
+                  textLabel: 'Gallery',
+                ),
+                // const SizedBox(height: 10),
+                const SizedBox(width: 10),
+                SelectPhoto(
+                  onTap: () => _pickImage(ImageSource.camera),
+                  icon: Icons.camera,
+                  textLabel: 'Camera',
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            const SizedBox(height: 10),
-            SelectPhoto(
-              onTap: () => _pickImage(ImageSource.camera),
-              icon: Icons.camera,
-              textLabel: 'Use a Camera',
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -352,7 +357,7 @@ class SelectPhoto extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        elevation:5,
+        elevation: 5,
         shape: const StadiumBorder(),
         backgroundColor: GlobalVariables.primaryText,
       ),
