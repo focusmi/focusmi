@@ -1,12 +1,12 @@
 class FormValidators {
-  static String? validateEmail(String value) {
-    // Remove leading and trailing whitespace from the email address.
-    value = value.trim();
-
-    // Check if the email address is not empty.
-    if (value.isEmpty) {
+  static String? validateEmail(String? value) {
+    // Check if the value is null or empty before proceeding with validation.
+    if (value == null || value.isEmpty) {
       return 'Please enter an email address';
     }
+
+    // Remove leading and trailing whitespace from the email address.
+    value = value.trim();
 
     // Check for the presence of "@" symbol.
     if (!value.contains('@')) {
@@ -44,8 +44,8 @@ class FormValidators {
     return null; // Return null if the email address is valid.
   }
 
-  static String? validateFullName(String value) {
-    if (value.isEmpty) {
+  static String? validateFullName(String? value) {
+    if (value == null || value.isEmpty) {
       return 'Please enter your full name';
     }
 
@@ -134,7 +134,7 @@ class FormValidators {
     }
 
     if (oldPassword != newPassword) {
-     return validatePassword(newPassword);
+      return validatePassword(newPassword);
     }
 
     return null; // Return null if the passwords are valid.
