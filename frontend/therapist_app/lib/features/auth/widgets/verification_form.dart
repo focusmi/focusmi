@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:lottie/lottie.dart';
-import 'package:therapist_app/features/auth/screens/mobile_number_screen.dart';
 
 class VerificationForm extends StatefulWidget {
   final VerificationType verificationType;
@@ -19,6 +18,7 @@ class VerificationForm extends StatefulWidget {
 
 class _VerificationFormState extends State<VerificationForm> {
   List<String> _verificationCodes = ['', '', '', ''];
+  String _errorMessage = ''; // Define the error message variable here
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +80,11 @@ class _VerificationFormState extends State<VerificationForm> {
                             FocusScope.of(context).nextFocus();
                           } else {
                             FocusScope.of(context).unfocus();
-                            widget.onSubmit(_verificationCodes.join());
                           }
                         }
                         setState(() {
                           _verificationCodes[i] = value;
+                          _errorMessage = ''; // Clear the error message on any input change
                         });
                       },
                       decoration: InputDecoration(
@@ -110,21 +110,34 @@ class _VerificationFormState extends State<VerificationForm> {
             ),
             const SizedBox(height: 30),
             CustomButton(
-              text: (widget.verificationType == VerificationType.Email) ? "Verify Email" : "Verify Phone Number",
+              text: (widget.verificationType == VerificationType.Email)
+                  ? "Verify Email"
+                  : "Verify Phone Number",
               onTap: () {
-                if (widget.verificationType == VerificationType.Email) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PhoneNumberInputPage(),
-                    ),
-                  );
+                if (_verificationCodes.any((code) => code.isEmpty)) {
+                  setState(() {
+                    _errorMessage =
+                        "Please enter all the verification code digits.";
+                  });
                 } else {
-                  // Add the logic to proceed with phone verification
+                  setState(() {
+                    _errorMessage = ''; // Clear the error message if the code is valid.
+                  });
+
+                  if (widget.verificationType == VerificationType.Email) {
+                    widget.onSubmit(_verificationCodes.join());
+                  } else {
+                    // Add the logic to proceed with phone verification
+                  }
                 }
               },
             ),
             const SizedBox(height: 16),
+            if (_errorMessage.isNotEmpty) // Show the error message if it's not empty
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
           ],
         ),
       ),
