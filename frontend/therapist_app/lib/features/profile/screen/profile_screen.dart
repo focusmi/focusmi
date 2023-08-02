@@ -265,7 +265,7 @@ class _ProfilePicState extends State<ProfilePic> {
                     borderRadius: BorderRadius.circular(50),
                     side: const BorderSide(color: Colors.white),
                   ),
-                  backgroundColor: GlobalVariables.greyBackgroundCOlor,
+                  backgroundColor: GlobalVariables.greyBackgroundColor,
                 ),
                 onPressed: () {
                   _showSelectPhotoOptions(context);
