@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist_app/constants/global_variables.dart';
+import 'package:therapist_app/features/auth/screens/email_verification_screen.dart';
 import 'package:therapist_app/features/auth/screens/phone_verification_screen.dart';
+import 'package:therapist_app/features/auth/services/email_sender.dart';
 import '../../../common/widgets/custom_profile_app_bar.dart';
 import '../../../provider/user_provider.dart';
 import '../../../validation/form_validators.dart';
@@ -245,6 +249,14 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
     super.dispose();
   }
 
+  void sendEmail(verificationCode, updatedValue) async {
+    await EmailSender.sendEmail(
+      recipientEmail: updatedValue.trim(),
+      subject: 'Email Verification Code',
+      body: 'Your verification code is: $verificationCode',
+    );
+  }
+
   // Validation functions for email and full name.
   String? _validateEmail(String value) {
     return FormValidators.validateEmail(value);
@@ -276,11 +288,32 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
 
     if (error == null) {
       // Data is valid, proceed with the update.
-      _authService.updateUser(
-        context: context,
-        field: widget.field,
-        value: updatedValue,
-      );
+      if (widget.field == 'Email') {
+        final random = Random();
+        final verificationCode = random.nextInt(9000) + 1000;
+        sendEmail(verificationCode, updatedValue);
+
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => EmailUpdateVerificationScreen(
+              verificationCode: verificationCode,
+              context: context,
+              field: widget.field,
+              value: updatedValue,
+            ),
+          ),
+        );
+      }
+
+      if (widget.field != 'Email' ) {
+        _authService.updateUser(
+          context: context,
+          field: widget.field,
+          value: updatedValue,
+        );
+        Navigator.pop(context, true);
+      }
+
     } else {
       setState(() {
         _errorText = error;
@@ -525,7 +558,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   errorText: _errorText,
-                 suffixIcon: IconButton(
+                  suffixIcon: IconButton(
                     icon: Icon(
                       _obscureText2 ? Icons.visibility_off : Icons.visibility,
                       color: Colors.grey.shade500,
