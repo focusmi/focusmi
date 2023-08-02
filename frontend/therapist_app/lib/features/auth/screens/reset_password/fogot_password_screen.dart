@@ -3,6 +3,7 @@ import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:lottie/lottie.dart';
 import 'package:therapist_app/features/auth/screens/reset_password/email_verification_screen.dart';
+import 'package:therapist_app/validation/form_validators.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   @override
@@ -63,12 +64,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           _email = value;
                         });
                       },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
+                      validator: FormValidators.validateEmail,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 20),
