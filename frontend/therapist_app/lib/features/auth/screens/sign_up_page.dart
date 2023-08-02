@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:therapist_app/features/auth/screens/email_verification_screen.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
@@ -23,6 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final AuthService authService = AuthService();
+  bool isSendingEmail = false;
 
   @override
   void dispose() {
@@ -34,20 +34,20 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void signUpUser() async {
     if (_signUpFormKey.currentState!.validate()) {
-      // Perform user registration using authService
-      // Send an email to the user
+      setState(() {
+        isSendingEmail = true;
+      });
+
       try {
-        // Generate a random 4-digit verification code
         final random = Random();
         final verificationCode = random.nextInt(9000) + 1000;
 
-        // Send the email with the verification code
         await EmailSender.sendEmail(
           recipientEmail: _emailController.text.trim(),
           subject: 'Email Verification Code',
           body: 'Your verification code is: $verificationCode',
         );
-        // Now you can use the verificationCode for further verification, such as comparing it with the user's input.
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => EmailVerificationScreen(
@@ -60,44 +60,40 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         );
       } catch (e) {
-        // Handle any errors that occurred during sending the email
         print('Error sending email: $e');
+      } finally {
+        setState(() {
+          isSendingEmail = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get the device's screen size
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(
-              screenSize.width * 0.05), // Adjust padding based on screen width
+          padding: EdgeInsets.all(screenSize.width * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                  height: screenSize.height *
-                      0.04), // Adjust spacing based on screen height
+              SizedBox(height: screenSize.height * 0.04),
               Text(
                 'Create your account',
                 style: TextStyle(
                   color: GlobalVariables.greyTextColor,
-                  fontSize: screenSize.width *
-                      0.05, // Adjust font size based on screen width
+                  fontSize: screenSize.width * 0.05,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              SizedBox(
-                  height: screenSize.height *
-                      0.03), // Adjust spacing based on screen height
+              SizedBox(height: screenSize.height * 0.03),
               Form(
                 key: _signUpFormKey,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min, // Set mainAxisSize to min
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     CustomTextField(
                       controller: _emailController,
@@ -105,18 +101,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       validator: FormValidators.validateEmail,
                       trimEnabled: true,
                     ),
-                    SizedBox(
-                        height: screenSize.height *
-                            0.02), // Adjust spacing based on screen height
+                    SizedBox(height: screenSize.height * 0.02),
                     CustomTextField(
                       controller: _nameController,
                       hintText: 'Full Name',
                       validator: FormValidators.validateFullName,
                       trimEnabled: false,
                     ),
-                    SizedBox(
-                        height: screenSize.height *
-                            0.02), // Adjust spacing based on screen height
+                    SizedBox(height: screenSize.height * 0.02),
                     CustomTextField(
                       controller: _passwordController,
                       hintText: 'Password',
@@ -124,17 +116,18 @@ class _SignUpPageState extends State<SignUpPage> {
                       validator: FormValidators.validatePassword,
                       trimEnabled: true,
                     ),
-                    SizedBox(
-                        height: screenSize.height *
-                            0.02), // Adjust spacing based on screen height
-                    CustomButton(
-                      text: 'Proceed',
-                      onTap: () {
-                        if (_signUpFormKey.currentState!.validate()) {
-                          signUpUser();
-                        }
-                      },
-                    ),
+                    SizedBox(height: screenSize.height * 0.02),
+                    isSendingEmail
+                        ? CircularProgressIndicator() // Show loading indicator
+                        : CustomButton(
+                            text: 'Proceed',
+                            onTap: () {
+                              if (!isSendingEmail &&
+                                  _signUpFormKey.currentState!.validate()) {
+                                signUpUser();
+                              }
+                            },
+                          ),
                   ],
                 ),
               ),
