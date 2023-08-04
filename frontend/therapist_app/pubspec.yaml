@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.1.0
+  http: ^0.13.4
   provider: ^6.0.5
   shared_preferences: ^2.2.0
   image_picker: ^0.8.4
@@ -43,6 +43,7 @@ dependencies:
   flutter_native_splash: ^2.3.1
   flutter_dotenv: ^5.1.0
   mailer: ^6.0.1
+  zego_uikit_prebuilt_video_conference: ^2.3.2
 
 dev_dependencies:
   flutter_test:
