@@ -80,7 +80,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
             // If the data was fetched successfully, build the rest of the screen
             // using the fetched data.
             return Container(
-              color: Color.fromARGB(255, 246, 246, 246),
+              color: Color.fromARGB(255, 255, 255, 255),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -100,12 +100,13 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                         final isSelected =
                             selectedTimePeriods.containsKey(weekday);
                         return FilterChip(
-                          label: Text(weekday),
+                          label: Text(weekday, style:TextStyle(color: isSelected ? Colors.white : Colors.black),),
                           selected: isSelected,
                           selectedColor: GlobalVariables.primaryText,
                           checkmarkColor: Colors.white,
-                          backgroundColor: Colors.black,
+                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                           labelStyle: const TextStyle(color: Colors.white),
+                          elevation: 2,
                           onSelected: (value) {
                             setState(() {
                               if (value) {
@@ -154,7 +155,10 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                                     label: Text(
                                       '${timeRange.selectedDate} ${timeRange.formatTimeRange()}', //.getFormattedMonthDay() MM-DD
                                     ),
+                                    elevation: 2,
+                                    backgroundColor: Colors.white,
                                     deleteIconColor: Colors.red,
+                                    
                                     onDeleted: () {
                                       print("delete");
                                       setState(() {
