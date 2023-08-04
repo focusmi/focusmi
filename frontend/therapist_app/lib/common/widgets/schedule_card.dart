@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:therapist_app/features/conference/conference.dart';
+import 'package:therapist_app/provider/user_provider.dart';
 
 class ScheduleCard extends StatelessWidget {
   final String patientName;
@@ -27,6 +30,7 @@ class ScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
       child: Card(
@@ -94,6 +98,12 @@ class ScheduleCard extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         // Handle reschedule appointment
+                        jumpToMeetingPage(
+                          context,
+                          conferenceId: '1000000000',
+                          userName: user.name,
+                          userId: '${user.id}',
+                        );
                       },
                       child: Container(
                         width: 120,
@@ -121,6 +131,21 @@ class ScheduleCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void jumpToMeetingPage(BuildContext context,
+      {required String conferenceId,
+      required String userName,
+      required String userId}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => VideoConferencePage(
+                conferenceID: conferenceId,
+                userName: userName,
+                userId: userId,
+              )),
     );
   }
 }
