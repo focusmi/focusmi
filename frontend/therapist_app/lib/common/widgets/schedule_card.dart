@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/features/conference/conference.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 
@@ -72,38 +73,43 @@ class ScheduleCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    InkWell(
-                      onTap: () {
-                        // Handle cancel appointment
-                      },
-                      child: Container(
-                        width: 120,
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 217, 219, 222),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Message",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black54,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     // Handle cancel appointment
+                    //   },
+                    //   child: Container(
+                    //     width: 120,
+                    //     padding: EdgeInsets.symmetric(vertical: 12),
+                    //     decoration: BoxDecoration(
+                    //       color: Color.fromARGB(255, 217, 219, 222),
+                    //       borderRadius: BorderRadius.circular(50),
+                    //     ),
+                    //     child: Center(
+                    //       child: Text(
+                    //         "Message",
+                    //         style: TextStyle(
+                    //           fontSize: 16,
+                    //           fontWeight: FontWeight.w500,
+                    //           color: Colors.black54,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                     InkWell(
                       onTap: () {
                         // Handle reschedule appointment
-                        jumpToMeetingPage(
-                          context,
-                          conferenceId: '1000000000',
-                          userName: user.name,
-                          userId: '${user.id}',
-                        );
+                        if (compareWithCurrentTime(appointmentDate) !=
+                            'Waiting') {
+                          jumpToMeetingPage(
+                            context,
+                            conferenceId: '1000000000',
+                            userName: user.name,
+                            userId: '${user.id}',
+                          );
+                        } else {
+                          showSnackBar(context, 'Please Waiting');
+                        }
                       },
                       child: Container(
                         width: 120,
