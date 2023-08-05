@@ -103,6 +103,29 @@ class SetTimeScheduleService {
       throw Exception(
           'The selected time period overlaps with existing schedules.');
     }
+    // Check if start time is before end time
+    if (schedule.start.isAfter(schedule.end)) {
+      throw Exception('Start time must be before end time.');
+    }
+    // Check for minimum duration of the schedule 
+    final Duration minDuration = Duration(minutes: 15);
+
+    if (schedule.end.difference(schedule.start) < minDuration) {
+      throw Exception('Schedule must be at least 15 minutes long.');
+    }
+    // Check maximum schedules per day
+    final int maxSchedulesPerDay = 3;
+
+    final existingSchedulesOnSelectedDate = existingSchedules.where((existingSchedule) =>
+        existingSchedule.start.year == schedule.start.year &&
+        existingSchedule.start.month == schedule.start.month &&
+        existingSchedule.start.day == schedule.start.day
+    );
+
+    if (existingSchedulesOnSelectedDate.length >= maxSchedulesPerDay) {
+      throw Exception('Maximum schedules for the day reached.');
+    }
+
 
     // If there are no overlaps or there was an error fetching schedules, proceed to create the schedule
     final body = jsonEncode(schedule.toJson());
