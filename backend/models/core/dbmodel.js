@@ -1,7 +1,7 @@
 const { Pool } = require("pg");
+const {sequelize} = require('../../sequelize/models');
 const dotenv = require("dotenv");
 dotenv.config();
- 
 class DbModel{
     constructor(pool=null){
         this.pool=pool;
@@ -23,6 +23,7 @@ class DbModel{
             return null;
         }
     }
+   
     cQuery = async (query) => {
         let result = await this.pool.query(query);
         if(result.rowCount!=0) return (result.rows);

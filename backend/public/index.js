@@ -12,6 +12,9 @@ let  {verify} = require('jsonwebtoken');
 const dbmodel = require("../models/core/dbmodel");
 const authRoutes = require("../routes/user_auth");
 const pool = require("../database/dbconnection");
+const gTaskRoutes = require("../routes/group_task_planner");
+const {task_group} = require("../sequelize/models");
+const assetRouter = require("../routes/asset_routes");
 
 
 dotenv.config()
@@ -20,9 +23,7 @@ dotenv.config()
 /**middleware********* */
 //cookie handlding
 app.use(cookieParser());
-app.use(cors({
-    origin :'http//localhost:3001',
-}))
+
 
 app.use(cors())
 app.use(express.json())
@@ -31,7 +32,9 @@ app.use(bodyParser.json())
 app.use(express.static('public'))
 
 //all routes
+app.use(assetRouter)
 app.use(authRoutes)
+app.use(gTaskRoutes)
 
 
 

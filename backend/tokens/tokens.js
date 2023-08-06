@@ -1,11 +1,12 @@
 const { sign, verify } = require('jsonwebtoken')
 let dotenv = require("dotenv");
+const { json } = require('body-parser');
 
 dotenv.config()
 
 const createAccessToken = userID =>{  
     return sign({userID}, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '15m',
+        expiresIn: '420m',
     })
 };
 
@@ -15,12 +16,11 @@ const createRefreshToken = userID =>{
     })
 }
 
-const sendAccessToken = (res, req, accesstoken) => {
-    res.status(200).send({
-        'msg':"Success",
-        'accesstoken':accesstoken,
-        'email': req.body.email,
-    })
+const sendAccessToken = (res, req, accesstoken,user) => {
+    user[0]['token']=accesstoken
+    user[0]['msg']="Success"
+    console.log(user);
+    res.status(200).json(user)
 }
 
 const sendRefreshToken = (res, refreshtoken) => {
@@ -32,16 +32,28 @@ const sendRefreshToken = (res, refreshtoken) => {
 
 const isAuth = (req,res) => {
     const authorization = req.headers['authorization'];
-    if(!authorization) res.status(400).send("You need to login");
+    if(!authorization){
+        return false;
+    }
     const token = authorization.split(' ')[1];
     try{
         const {userID} = verify(token, process.env.ACCESS_TOKEN_SECRET);
-        return userID;
+        userID['token']='';
+        var id = userID[0].user_id;
+        if(userID!=0){
+            return userID;
+        }
+        else{
+            return false;
+        }
     }
-    catch{
-        return 0;
+    catch(e){
+        console.log(e);
+        return false;
+        
     }
 }
+
 
 module.exports ={
     createAccessToken,

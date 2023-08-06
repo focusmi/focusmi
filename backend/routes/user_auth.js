@@ -3,16 +3,16 @@ const AuthUser = require('../models/authuser')
 let authRoutes = express.Router()
 const {createAccessToken ,createRefreshToken, sendRefreshToken, sendAccessToken, isAuth}= require('../tokens/tokens')
 const { verify } = require('jsonwebtoken')
+const {administrative_user} = require('../sequelize/models')
 
 //signup routes
 authRoutes.post('/api/signup', async (req,res,next)=>{
     const {username, email, password} = req.body;
-    console.log(req.body)
     let User = new AuthUser(email, password, username);
     var result = await User.createUser();
     if(result=='exists'){
         res.status(400);
-        res.send("User exists");
+        res.send({msg:`User ${email} exists`});
     }
     else if(result==false){
         res.status(400);
@@ -26,30 +26,53 @@ authRoutes.post('/api/signup', async (req,res,next)=>{
 })
 
 
-
-authRoutes.post('/api/signin', async (req,res,next) => {
-    const {email,password} = req.body;
-    console.log(req.body);
+authRoutes.post('/api/admin-signin',async(req,res,next)=>{
+  
+     const {email,password} = req.body.user;
+     console.log("Reached")
     let User = new AuthUser(email, password, '');
-    var result = await User.checkUser();
+    var result = await User.checkAdminUser();
     if(result=='nouser'){
+        console.log("exist")
         res.status(400);
-        res.send({msg:"User does not exists"});
+        res.send({msg:"User does not exists",type:1});
     }
     else if(result=='password'){
-        res.status(400).send({msg:"Wrong password"})
+        console.log("pass")
+        res.status(400).send({msg:"Wrong password",type:2})
     }
     else{
-        console.log("success")
+        result=[result.dataValues]
         //create refresh and access token
         const accessToken = createAccessToken(result)
         const refreshToken = createRefreshToken(result)
         User.id =  result
         User.token = refreshToken
-        //save token in the database
-        User.createToken();
-        sendRefreshToken(res, refreshToken);
-        sendAccessToken(res, req, accessToken);
+        sendAccessToken(res, req, accessToken,result);
+       
+
+    }
+    next(); 
+})
+
+authRoutes.post('/api/signin', async (req,res,next) => {
+    const {email,password} = req.body;
+    let User = new AuthUser(email, password, '');
+    var result = await User.checkUser();
+    if(result=='nouser'){
+        res.status(400);
+        res.send({msg:"User does not exists",type:1});
+    }
+    else if(result=='password'){
+        res.status(400).send({msg:"Wrong password",type:2})
+    }
+    else{
+        //create refresh and access token
+        const accessToken = createAccessToken(result)
+        const refreshToken = createRefreshToken(result)
+        User.id =  result
+        User.token = refreshToken
+        sendAccessToken(res, req, accessToken,result);
        
 
     }
@@ -65,6 +88,24 @@ authRoutes.get('/api/testuser',async(req,res,next) => {
     next();
 })
 
+authRoutes.get("/api/is-token-valid",async(req, res, next)=>{
+    try{
+        const userID= isAuth(req, res);
+   
+        if(userID == false){
+            res.status(400)
+            res.json("");
+        }
+        else{
+            res.status(200)
+            res.json(userID);
+        }
+    }
+    catch{
+        res.json(false);
+    }
+    next();
+})
 
 authRoutes.get('/refresh-token', (req,res) =>{
     const token =req.cookies.refreshToken;
@@ -85,7 +126,7 @@ authRoutes.get('/refresh-token', (req,res) =>{
     if(result.token !== token ) res.send({accessToken:''})
     const accessToken = createAccessToken(result.id)
     const refreshToken =createRefreshToken(result.id)
-    user.id = result.user_ID;
+    user.id = result.user_id;
     user.token = result.refreshToken;
     user.createTokenByID(payload.userId)
     sendRefreshToken(res, refreshToken)

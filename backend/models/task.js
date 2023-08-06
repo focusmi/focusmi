@@ -3,10 +3,10 @@ const pool =  require("../databse/dbconnection");
 
 class Task{
     
-    constructor(task_ID, plan_ID, timer_ID, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description){
-        this.task_ID = task_ID;
-        this.plan_ID = plan_ID;
-        this.timer_ID =  timer_ID;
+    constructor(task_id, plan_id, timer_id, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description){
+        this.task_id = task_id;
+        this.plan_id = plan_id;
+        this.timer_id =  timer_id;
         this.duration = duration;
         this.task_status = task_status;
         this.priority = priority;

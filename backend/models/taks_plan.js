@@ -1,8 +1,10 @@
+const pool = require("../database/dbconnection");
+
 class TaskPlan{
 
-    constructor(plan_ID, group_ID, plan_names, location, schedule_type, schedule_date, time, reminder_status, created_date){
-        this.plan_ID = plan_ID;
-        this.group_ID = group_ID;
+    constructor(plan_id, group_id, plan_names, location, schedule_type, schedule_date, time, reminder_status, created_date){
+        this.plan_id = plan_id;
+        this.group_id = group_id;
         this.plan_names = plan_names;
         this.location = location;
         this.schedule_type = schedule_type;
@@ -10,6 +12,11 @@ class TaskPlan{
         this.time = time;
         this.reminder_status = reminder_status;
         this.created_date = created_date;
+    }
+
+    async getTaksPlans(user_id){
+        var res=await pool.cQuery(`SELECT * FROM TASK_PLAN WHERE 'user_id'=${user_id}`);
+        return res;
     }
     
 }
