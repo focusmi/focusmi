@@ -3,22 +3,36 @@ const pool =  require("../database/dbconnection");
 const { joinJson } = require("../JSON/JSON");
 const {task_group} = require("../sequelize/models");
 const {group_user} = require("../sequelize/models");
+const { json } = require("sequelize");
 
 class TaskGroup{
     
-    constructor(group_id, group_name, created_date, status,creator_id){
+    constructor(group_id, group_name,status,creator_id,member_count){
         this.group_id = group_id;
         this.group_name =  group_name;
-        this.created_date =  created_date;
         this.status = status;
-        this.creator_id = creator_id;   
+        this.creator_id = creator_id;
+        this.member_count = member_count
+
     }
 
-    async createGroup(){
-        try{
-            
-            var res = pool.cQuery(`Insert into task_group (group_name,status,"creator_id") values('${this.group_name}','${this.status}',${this.creator_id}) RETURNING group_id`);
-            var res = pool.cQuery(`Insert into group_user ("group_id","user_id",member_status) values('${res}','${this.creator_id}','administrator')`);
+    async createGroup(result){
+        try{ 
+            var result = JSON.parse(result)
+            // var res = pool.cQuery(`Insert into task_group (group_name,status,"creator_id") values('${this.group_name}','${this.status}',${this.creator_id}) RETURNING group_id`);
+            // var res = pool.cQuery(`Insert into group_user ("group_id","user_id",member_status) values('${res}','${this.creator_id}','administrator')`);
+            var group = task_group.create({
+                creator_id:result.creator_id,
+                group_name:result.group_name,
+                statu:"Active",
+            });
+            (result.members).forEach(element => {
+                group_user.create({
+                    group_id:element.group_id,
+                    user_id:element.user_id,
+                    previlage:element.previage
+                })
+            });
             return true;
         }
         catch {
@@ -103,7 +117,8 @@ class TaskGroup{
 
         }
     }
-    
+
+
 }
 
 module.exports = TaskGroup;

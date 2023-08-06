@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     timer_id: DataTypes.INTEGER,
     duration: DataTypes.INTEGER,
     task_status: DataTypes.TEXT,
-    priority: DataTypes.INTEGER
+    priority: DataTypes.INTEGER,
+    created_at:DataTypes.DATE
   }, {
     sequelize,
     modelName: 'task',

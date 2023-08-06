@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:focusmi/models/groupmembers.dart';
 import 'package:focusmi/models/taskgroup.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
@@ -13,16 +14,19 @@ import 'package:focusmi/constants/utils.dart';
 
 class GroupService{
 
-  void createGroup({
+  static void createGroup({
     required BuildContext context,
     required String group_name,
     required String status,
-    required String member_count,
-    required int group_id
+    required int member_count,
+    required int group_id,
+    required List<GroupMember> members
 
   })async{
-      TaskGroup group = TaskGroup(group_id: group_id,group_name: group_name, status: status, member_count:member_count,created_at: '');
-      http.Response res = await http.post(Uri.parse('$uri/api/create-group'), body: group.toJson(), headers:<String, String>{
+    
+      TaskGroup group = TaskGroup(group_id: group_id,group_name: group_name, status: status, member_count:member_count.toString(),created_at: '',creator_id: Provider.of<UserProvider>(context,listen: false).user.user_id
+       );
+      http.Response res = await http.post(Uri.parse('$uri/api/create-group'), body:{group.toJson(),}, headers:<String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       });
       httpErrorHandle(response: res, context: context, onSuccess: ()async{

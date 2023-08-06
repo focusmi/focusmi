@@ -52,7 +52,7 @@ class _SignScreenState extends State<SignScreen> {
                         ),
                        
                         Image.asset(
-                      'assets/images/choose-task.gif',
+                      'assets/images/success.gif',
                       height: 350,
                       width: 400,
                     ),

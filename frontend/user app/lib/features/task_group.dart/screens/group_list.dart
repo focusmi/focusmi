@@ -30,6 +30,7 @@ class _GroupListState extends State<GroupList> {
         }
         catch(e){
           print("-----------");
+          print(e);
           print(response.body);
           characterList = List.empty();
         }

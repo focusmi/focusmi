@@ -42,7 +42,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
         TaskPlan(plan_id: taskid, group_id: groupid, plan_name: name, location: '', schedule_date: '', schedule_type: '', time: '', reminder_status: '', created_date: '',is_edit: false)
       );
     });
-    taskMap[taskid]=List<Task>.empty(growable: true);
+     taskMap[taskid]=List<Task>.empty(growable: true);
+    print(taskMap);
   }
 
   void addTask(){
@@ -51,6 +52,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       taskMap[entryTask.plan_id].add(
         Task(task_id: taskid, plan_id:entryTask.plan_id, timer_id: 0, duration: 0, task_status: 'pending' , priority:0, created_date: '', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: false,task_name:taskCreate.text )
       );
+      entryTask.plan_id=0;
     });
 
   }
@@ -63,6 +65,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
           (val!=-1)?value.removeAt(val):val=0;
         }
       );
+        taskCreate.text='';
         taskMap[plan_id].add(entryTask);
         entryTask.plan_id = plan_id;
       });
@@ -97,7 +100,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   Widget build(BuildContext context) {
     return TaskPlannerLayout.mainBoard(
       Container(
-      height: 200,
+    
       child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: taskPlans.length,
@@ -129,20 +132,47 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                 ],
                               ),
                             ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: taskMap[index].length,
-                              itemBuilder: (context, subindex){
-                                return Container(
-                                  child:Text(
-                                    taskMap[subindex].task_name
-                                  )
-                                );
-                              }
+                            SizedBox(
+                          
+                              width: 200,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: taskMap[taskPlans[index].plan_id].length,
+                                itemBuilder: (context, subindex){
+                                  return Container(
+                                    
+                                    child:Text(
+                                     ((taskMap[taskPlans[index].plan_id])[subindex].task_name)
+                                    )
+                                  );
+                                }
+                              ),
                             ),
                             (entryTask.plan_id != taskPlans[index].plan_id)?
-                            ElevatedButton(onPressed: (){}, child: Text("Create Task")):
-                            TextField(controller: taskCreate,)
+                            ElevatedButton(
+                              onPressed: (){
+                              createTask(taskPlans[index].plan_id);
+                              }, 
+                               child: Text("Create Task")
+                             ):
+                            Container(
+                              width: 100,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 200,
+                                    child: TextField(
+                                      controller: taskCreate,
+                                  
+                                      ),
+                                  ),
+                                    ElevatedButton(
+                                      onPressed: (){addTask();}, 
+                                      child: Icon(Icons.add)
+                                      )
+                                ],
+                              )
+                            )
 
                           ],
                         );

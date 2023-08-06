@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     } ,
     creator_id:DataTypes.INTEGER,
     group_name: DataTypes.TEXT,
+    created_at:DataTypes.DATE,
     status:DataTypes.STRING
   }, {
     sequelize,

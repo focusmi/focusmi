@@ -136,7 +136,7 @@ class LayOut{
       );
 }
 
- Widget createGruopLayout(context,Widget widget,appbarname){
+ Widget createGruopLayout(context,Widget widget,appbarname,void function){
     var user = Provider.of<UserProvider>(context,listen: false).user;
     return Scaffold(
         appBar: AppBar(
@@ -248,7 +248,9 @@ class LayOut{
                   color: Colors.white
                 ),
               ),
-              onPressed:()=>Navigator.pushNamed(context,CreateGroup.routeName) ,
+              onPressed:(){
+                function;
+              } ,
             )
           )
       

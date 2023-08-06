@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:focusmi/features/task_group.dart/services/user_services.dart';
 import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/models/groupmembers.dart';
@@ -18,6 +19,7 @@ class _CreateGroupState extends State<CreateGroup> {
     List<GroupMember> searchMemberList = List<GroupMember>.empty();
     List<GroupMember> selectedMemberList = List<GroupMember>.empty(growable: true);
     late final TextEditingController _searchvalue;
+    late final TextEditingController _groupName;
     
 
     Future searchMemberApi()async{
@@ -35,11 +37,17 @@ class _CreateGroupState extends State<CreateGroup> {
 
   }
 
+  void creaetGroupApi()async{
+    print("working");
+    GroupService.createGroup(context: context, group_name: _groupName.text, status: 'Active', member_count: 1+selectedMemberList.length, group_id: 0, members: selectedMemberList);
+  }
+
   var layout = LayOut();
 
   @override
   void initState() {
     super.initState();
+    _groupName = TextEditingController();
     _searchvalue = TextEditingController();
   }
 
@@ -50,6 +58,14 @@ class _CreateGroupState extends State<CreateGroup> {
         child: Container(
           child: Column(
             children: [
+           SizedBox(
+                child: TextField(
+                  controller: _groupName,
+                  decoration: const InputDecoration(
+                    hintText: "Enter Group Name"
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal:50.0),
                 child: Container(
@@ -61,7 +77,7 @@ class _CreateGroupState extends State<CreateGroup> {
                         itemBuilder: (context, index){
                           return Container(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(),
+                              padding: const EdgeInsets.symmetric(),
                               child: Row(
                                 children: [
                                   Container(
@@ -182,6 +198,6 @@ class _CreateGroupState extends State<CreateGroup> {
           ),
         ),
       )
-    ,"Create Task Group");
+    ,"Create Task Group",creaetGroupApi);
   }
 }

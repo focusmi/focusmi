@@ -69,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         style: TextStyle(fontSize: 15),
                       ),
                       Image.asset(
-                    'assets/images/success.gif',
+                    'assets/images/choose-task.gif',
                     height: 350,
                     width: 400,
                   ),
@@ -82,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 textField.createFormField(_email, "Enter Your Email", false, 'Email',r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",'Please enter a correct Email'),
                 const SizedBox(height: 10),
                 textField.createFormField(_password, "Enter Your Password", true,'Password',r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$','''Password must contain 
-    1.Minimum 1 Upper case
+    1.inimum 1 Upper case
     2.Minimum 1 lowercase
     3.Minimum 1 Numeric Number
     4.Minimum 1 Special Character

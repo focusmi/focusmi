@@ -4,6 +4,7 @@ const { isAuth } = require('../tokens/tokens');
 const auth = require('../tokens/auth');
 const { json } = require('body-parser');
 const ApplicationUser = require('../models/application_user');
+const { request } = require('http');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -29,15 +30,10 @@ gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    next();
 })
 
-gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
+gTaskRoutes.post('/api/create-group',auth,async(req,res,next)=>{
    try{
-       const userID = isAuth(req, res);
-       var Group =new TaskGroup();
-       var reqBody = req.body;
-       Group.group_name = reqBody.group_name;
-       Group.status = reqBody.status;
-       Group.creator_id=userID;
-       var result = await Group.createGroup();
+       console.log("reached")
+       console.log(request.body)
        
 
    }
