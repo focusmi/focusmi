@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:therapist_app/common/widgets/custom_profile_app_bar.dart';
@@ -100,11 +102,18 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                         final isSelected =
                             selectedTimePeriods.containsKey(weekday);
                         return FilterChip(
-                          label: Text(weekday, style:TextStyle(color: isSelected ? Colors.white : Colors.black),),
+                          label: Text(
+                            weekday,
+                            style: TextStyle(
+                                fontSize: 16,
+                                color:
+                                    isSelected ? Colors.white : Colors.black),
+                          ),
                           selected: isSelected,
                           selectedColor: GlobalVariables.primaryText,
                           checkmarkColor: Colors.white,
-                          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+                          side: BorderSide.none,
+                          backgroundColor: Color.fromARGB(69, 202, 242, 207),
                           labelStyle: const TextStyle(color: Colors.white),
                           elevation: 2,
                           onSelected: (value) {
@@ -143,7 +152,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                               Text(
                                 weekday,
                                 style: const TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -153,12 +162,15 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                                 children: timePeriods.map((timeRange) {
                                   return Chip(
                                     label: Text(
-                                      '${timeRange.selectedDate} ${timeRange.formatTimeRange()}', //.getFormattedMonthDay() MM-DD
+                                      'Date ${timeRange.selectedDate} Time ${timeRange.formatTimeRange()}',
+                                      style: TextStyle(fontSize: 15),
+                                      //.getFormattedMonthDay() MM-DD
                                     ),
                                     elevation: 2,
-                                    backgroundColor: Colors.white,
+                                    backgroundColor:
+                                        GlobalVariables.greyBackgroundColor,
                                     deleteIconColor: Colors.red,
-                                    
+                                    side: BorderSide.none,
                                     onDeleted: () {
                                       print("delete");
                                       setState(() {
@@ -169,23 +181,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                                 }).toList(),
                               ),
                               const SizedBox(height: 8),
-                              ElevatedButton(
-                                onPressed: () {
-                                  _showDateTimePicker(context, weekday);
-                                },
-                                child: Text(
-                                  'Add Time Period',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 2,
-                                  backgroundColor: GlobalVariables.primaryText,
-                                ),
-                              ),
+                              IconButton.filled(onPressed: (){ _showDateTimePicker(context, weekday);}, icon:const Icon(Icons.add)),
                               const SizedBox(height: 16),
                             ],
                           );
@@ -267,7 +263,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
             } catch (error) {
               // If the createSchedule method throws an exception, it means the time period overlaps with existing schedules
               // Show an error message to the user
-              showSnackBar(context,error.toString());
+              showSnackBar(context, error.toString());
             }
           } else {
             // Handle the case where the selected time is not within the next two weeks
