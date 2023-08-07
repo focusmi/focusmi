@@ -113,7 +113,7 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                           selectedColor: GlobalVariables.primaryText,
                           checkmarkColor: Colors.white,
                           side: BorderSide.none,
-                          backgroundColor: Color.fromARGB(69, 202, 242, 207),
+                          backgroundColor:GlobalVariables.greyBackgroundColor,
                           labelStyle: const TextStyle(color: Colors.white),
                           elevation: 2,
                           onSelected: (value) {
