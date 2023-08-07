@@ -196,6 +196,35 @@ class ProfilePic extends StatefulWidget {
 
 class _ProfilePicState extends State<ProfilePic> {
   File? _selectedImage;
+  String? _profilePictureUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfilePicture();
+  }
+
+  Future<void> _loadProfilePicture() async {
+    final profilePictureUrl =
+        await ProfileService.loadProfilePictureUrl(context);
+    if (profilePictureUrl != null) {
+      setState(() {
+        _profilePictureUrl = profilePictureUrl;
+      });
+    }
+  }
+
+  Future<void> _uploadProfilePicture(File imageFile) async {
+    bool uploadSuccess =
+        await ProfileService.uploadProfilePicture(context, imageFile);
+    if (uploadSuccess) {
+      // Reload the profile picture after a successful upload
+      _loadProfilePicture();
+      print('Profile picture uploaded successfully');
+    } else {
+      print('Failed to upload profile picture');
+    }
+  }
 
   void _showSelectPhotoOptions(BuildContext context) {
     showModalBottomSheet(
@@ -229,15 +258,6 @@ class _ProfilePicState extends State<ProfilePic> {
     );
   }
 
-  Future<void> _uploadProfilePicture(File imageFile) async {
-    bool uploadSuccess = await ProfileService.uploadProfilePicture(imageFile);
-    if (uploadSuccess) {
-      print('Profile picture uploaded successfully');
-    } else {
-      print('Failed to upload profile picture');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -249,8 +269,11 @@ class _ProfilePicState extends State<ProfilePic> {
         children: [
           CircleAvatar(
             backgroundImage: _selectedImage != null
-                ? FileImage(_selectedImage!) as ImageProvider<Object>
-                : AssetImage("assets/images/doctor1.jpg"),
+                ? FileImage(_selectedImage!)
+                : (_profilePictureUrl != null
+                    ? NetworkImage(_profilePictureUrl!)
+                    : const AssetImage("assets/images/doctor1.jpg")
+                        as ImageProvider<Object>),
           ),
           Positioned(
             right: -16,
