@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 const validation = require('../validation/validation');
 const jwt = require('jsonwebtoken');
 const auth = require('../middleware/auth');
+const multer = require('multer'); // Add this line to import multer for handling file uploads
+const path = require('path');
 
 
 authRouterTherapist.post('/apis/signup', validation.validateInput, validation.validate, async (req, res) => {
@@ -119,5 +121,59 @@ authRouterTherapist.get('/', auth, async(req,res)=>{
   const user = await User.findOneById(req.user);
   res.json({...user, token: req.token})
 })
+
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/assets'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+
+authRouterTherapist.post('/apis/upload-profile-pic/:id', auth, upload.single('profile_picture'), async (req, res) => {
+  try {
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
+    }
+
+    const profilePicPath = req.file.path; 
+    console.log(profilePicPath);
+
+    res.json({ success: true, msg: 'Profile picture uploaded successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+authRouterTherapist.get('/apis/user/:id/profile-picture', auth, async (req, res) => {
+  try {
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
+    }
+
+    const profilePictureUrl = user.profile_picture; // Change this to the actual field name in your User model
+    print(profilePictureUrl);
+
+    if (!profilePictureUrl) {
+      return res.status(404).json({ msg: 'Profile picture not found for this user!' });
+    }
+
+    res.json({ success: true, profilePictureUrl });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 module.exports = authRouterTherapist;
