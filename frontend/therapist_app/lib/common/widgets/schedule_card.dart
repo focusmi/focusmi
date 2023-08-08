@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleCard extends StatelessWidget {
@@ -34,6 +35,7 @@ class ScheduleCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 4,
+        color: compareWithCurrentTime(appointmentDate) == 'Waiting' ? Color.fromARGB(255, 190, 243, 192) : compareWithCurrentTime(appointmentDate) == 'Join' ? Color.fromARGB(255, 252, 246, 188) : Color.fromARGB(255, 243, 247, 248),
         child: Theme(
           data: Theme.of(context).copyWith(
             dividerColor: Colors.transparent, // Remove the divider line
@@ -43,7 +45,7 @@ class ScheduleCard extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            // backgroundColor: Colors.white,
+            backgroundColor: compareWithCurrentTime(appointmentDate) == 'Waiting' ? Color.fromARGB(255, 190, 243, 192) : compareWithCurrentTime(appointmentDate) == 'Join' ? Color.fromARGB(255, 252, 246, 188) : Color.fromARGB(255, 243, 247, 248),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,9 +58,7 @@ class ScheduleCard extends StatelessWidget {
                 const SizedBox(height: 5),
                 Text(
                   appointmentDate,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                  ),
+                 style: GoogleFonts.abel()
                 ),
               ],
             ),

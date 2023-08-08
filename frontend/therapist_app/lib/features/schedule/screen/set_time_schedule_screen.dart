@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:therapist_app/common/widgets/custom_profile_app_bar.dart';
 import 'package:therapist_app/constants/global_variables.dart';
@@ -162,8 +161,11 @@ class _SetTimeScheduleScreenState extends State<SetTimeScheduleScreen> {
                                 children: timePeriods.map((timeRange) {
                                   return Chip(
                                     label: Text(
-                                      'Date ${timeRange.selectedDate} Time ${timeRange.formatTimeRange()}',
-                                      style: TextStyle(fontSize: 15),
+                                      'Date\t${timeRange.selectedDate}\t\t\tTime\t${timeRange.formatTimeRange()}',
+                                       style: GoogleFonts.abel(
+                                        textStyle:  TextStyle(fontSize: 15, fontWeight:FontWeight.w600)
+                                       ),
+                                      // style: TextStyle(fontSize: 15),
                                       //.getFormattedMonthDay() MM-DD
                                     ),
                                     elevation: 2,
