@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:therapist_app/common/widgets/schedule_card.dart';
+import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/schedule/service/scheduleservice.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../provider/user_provider.dart';
+
+enum ScheduleFilter {All, Today, Past, Next } // Added 'Next'
 
 class UpcomingScheduleScreen extends StatefulWidget {
   @override
@@ -14,6 +17,7 @@ class UpcomingScheduleScreen extends StatefulWidget {
 class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
   List<dynamic> scheduleData = [];
   bool isLoading = true;
+  ScheduleFilter selectedFilter = ScheduleFilter.All;
 
   @override
   void initState() {
@@ -59,6 +63,107 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilterChip(
+                label: Text(
+                  "\t\tAll\t\t",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: selectedFilter == ScheduleFilter.All
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                selected: selectedFilter == ScheduleFilter.All,
+                showCheckmark: false,
+                selectedColor: GlobalVariables.primaryText,
+                checkmarkColor: Colors.white,
+                side: BorderSide.none,
+                backgroundColor: GlobalVariables.greyBackgroundColor,
+                labelStyle: const TextStyle(color: Colors.white),
+                elevation: 2,
+                onSelected: (_) {
+                  setState(() {
+                    selectedFilter = ScheduleFilter.All;
+                  });
+                },
+              ),
+              SizedBox(width: 15),
+              FilterChip(
+                label: Text(
+                  "Today",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: selectedFilter == ScheduleFilter.Today
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                selected: selectedFilter == ScheduleFilter.Today,
+                selectedColor: GlobalVariables.primaryText,
+                checkmarkColor: Colors.white,
+                side: BorderSide.none,
+                backgroundColor: GlobalVariables.greyBackgroundColor,
+                labelStyle: const TextStyle(color: Colors.white),
+                elevation: 2,
+                showCheckmark: false,
+                onSelected: (_) {
+                  setState(() {
+                    selectedFilter = ScheduleFilter.Today;
+                  });
+                },
+              ),
+              SizedBox(width: 15),
+              FilterChip(
+                label: Text(
+                  "Next",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: selectedFilter == ScheduleFilter.Next
+                          ? Colors.white
+                          : Colors.black),
+                ), // Added 'Next'
+                selected: selectedFilter == ScheduleFilter.Next,
+                selectedColor: GlobalVariables.primaryText,
+                checkmarkColor: Colors.white,
+                side: BorderSide.none,
+                backgroundColor: GlobalVariables.greyBackgroundColor,
+                labelStyle: const TextStyle(color: Colors.white),
+                elevation: 2,
+                showCheckmark: false,
+                onSelected: (_) {
+                  setState(() {
+                    selectedFilter = ScheduleFilter.Next;
+                  });
+                },
+              ),
+              SizedBox(width: 15),
+              FilterChip(
+                label: Text(
+                  "Past",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: selectedFilter == ScheduleFilter.Past
+                          ? Colors.white
+                          : Colors.black),
+                ),
+                selected: selectedFilter == ScheduleFilter.Past,
+                selectedColor: GlobalVariables.primaryText,
+                checkmarkColor: Colors.white,
+                side: BorderSide.none,
+                backgroundColor: GlobalVariables.greyBackgroundColor,
+                labelStyle: const TextStyle(color: Colors.white),
+                elevation: 2,
+                showCheckmark: false,
+                onSelected: (_) {
+                  setState(() {
+                    selectedFilter = ScheduleFilter.Past;
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
           if (isLoading)
             Center(
               child: CircularProgressIndicator(),
@@ -68,20 +173,70 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
               child: Container(
                 height: 200,
                 margin: const EdgeInsets.only(top: 100),
-                child: Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
+                child:
+                    Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
               ),
             )
           else
-            Column(
-              children: scheduleData.map((schedule) {
-                return ScheduleCard(
-                  patientName: schedule['patient_name'],
-                  appointmentDate: formatAppointmentDateTime(schedule['appointment_datetime']),
-                  // appointmentTime: schedule['appointment_time'],
-                  // status: schedule['status'],
-                );
-              }).toList(),
-            ),
+            scheduleData
+                  .where((schedule) {
+                    if (selectedFilter == ScheduleFilter.Today) {
+                      final now = DateTime.now();
+                      final appointmentDateTime =
+                          DateTime.parse(schedule['appointment_datetime']);
+                      return appointmentDateTime.day == now.day &&
+                          appointmentDateTime.month == now.month &&
+                          appointmentDateTime.year == now.year;
+                    } else if (selectedFilter == ScheduleFilter.Past) {
+                      return DateTime.parse(schedule['appointment_datetime'])
+                          .isBefore(DateTime.now());
+                    } else if (selectedFilter == ScheduleFilter.Next) {
+                      // Added 'Next'
+                      return DateTime.parse(schedule['appointment_datetime'])
+                          .isAfter(DateTime.now());
+                    }
+                    return true; // Show all by default
+                  })
+                  .isEmpty // Check if the filtered list is empty
+              ? Center(
+              child: Container(
+                height: 200,
+                margin: const EdgeInsets.only(top: 100),
+                child:
+                    Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
+              ),
+            )
+              : Column(
+                  children: scheduleData
+                      .where((schedule) {
+                        if (selectedFilter == ScheduleFilter.Today) {
+                          final now = DateTime.now();
+                          final appointmentDateTime =
+                              DateTime.parse(schedule['appointment_datetime']);
+                          return appointmentDateTime.day == now.day &&
+                              appointmentDateTime.month == now.month &&
+                              appointmentDateTime.year == now.year;
+                        } else if (selectedFilter == ScheduleFilter.Past) {
+                          return DateTime.parse(schedule['appointment_datetime'])
+                              .isBefore(DateTime.now());
+                        } else if (selectedFilter == ScheduleFilter.Next) {
+                          // Added 'Next'
+                          return DateTime.parse(schedule['appointment_datetime'])
+                              .isAfter(DateTime.now());
+                        }
+                        return true; // Show all by default
+                      })
+                      .map((schedule) {
+                        return ScheduleCard(
+                          patientName: schedule['patient_name'],
+                          appointmentDate: formatAppointmentDateTime(
+                              schedule['appointment_datetime']),
+                          // appointmentTime: schedule['appointment_time'],
+                          // status: schedule['status'],
+                        );
+                      })
+                      .toList(),
+                ),
         ],
       ),
     );
