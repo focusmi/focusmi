@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
@@ -18,7 +19,7 @@ class GroupList extends StatefulWidget {
 
 class _GroupListState extends State<GroupList> {
   List<TaskGroup> characterList =  List<TaskGroup>.empty();
-
+  Random random = Random();
   void getGroupsfromApi() async {
     GroupService.getGroups().then((response) {
       setState(() {
@@ -29,9 +30,6 @@ class _GroupListState extends State<GroupList> {
 
         }
         catch(e){
-          print("-----------");
-          print(e);
-          print(response.body);
           characterList = List.empty();
         }
 
@@ -39,6 +37,7 @@ class _GroupListState extends State<GroupList> {
       });
     });
   }
+  
 
   void initState() {
     super.initState();
@@ -50,96 +49,83 @@ class _GroupListState extends State<GroupList> {
     LayOut layout =LayOut();
     return layout.mainListView(
        Padding(
-         padding: const EdgeInsets.symmetric(vertical:8),
+         padding: const EdgeInsets.symmetric(vertical:18),
          child: ListView.builder(
+
           itemCount: characterList.length,
           itemBuilder: (context, index){
-            return ElevatedButton(
-              style:ElevatedButton.styleFrom(
-                backgroundColor:const Color.fromARGB(255, 255, 255, 255) ,
-                foregroundColor: Colors.white
-              ),
-              onPressed:(){
-                Navigator.pushNamed(
-                  context, 
-                  GroupTaskPlanner.routeName,
-                  arguments: (
-                    characterList[index]
-                  )
-                );
-              } ,
-              child: Column(
-                children: [
-                  Container(
-                    width:(MediaQuery.of(context).size.width), 
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [ 
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Group Name : ${characterList[index].group_name}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                              Text("Member Count : ${characterList[index].member_count}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                              Text("Created At : ${((characterList[index].created_at).split("T"))[0]}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                              ElevatedButton(
-                                onPressed: (){
-                                    Navigator.pushNamed(
-                                    context,
-                                    EditTaskGroup.routeName,
-                                    arguments: (
-                                      characterList[index]
-                                    ),
-                                  );
-                                }, 
-                                child: Text("Edit")
-                                )
-                            ],
-                          ),
-                              const SizedBox(width: 100),
-                              Row(
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical:8.0),
+              child: Container(
+                child: GestureDetector(
+                    onTap:(){
+                      Navigator.pushNamed(
+                        context, 
+                        GroupTaskPlanner.routeName,
+                        arguments: (
+                          characterList[index]
+                        )
+                      );
+                    } ,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical:3.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: GlobalVariables.textFieldBgColor)
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width:(MediaQuery.of(context).size.width), 
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 5, 12, 0),
+                              child: Column(
                                 children: [
-                                  Text("${(characterList[index].status)[0].toUpperCase()}${(characterList[index].status).substring(1)}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                                  const SizedBox(width: 5),
-                                  characterList[index].status=='active'?
-                                  const AvatarGlow(
-                                    glowColor: Color(0xff39FF14),    //Neon Color
-                                    endRadius: 8.0,
-
-                                    duration: Duration(milliseconds: 3000),
-                                    repeat: true,
-                                    showTwoGlows: true,
-                                    repeatPauseDuration: Duration(milliseconds: 100),
-
-                                    child: CircleAvatar(
-                                      radius: 10,
-                                      backgroundColor: Color.fromARGB(255, 26, 240, 62),
-                                      
-                                    ),
-                                  ):
-                                  const AvatarGlow(
-                                    glowColor: Color(0xff39FF14),    //Neon Color
-                                    endRadius: 8.0,
-
-                                    duration: Duration(milliseconds: 3000),
-                                    repeat: true,
-                                    showTwoGlows: true,
-                                    repeatPauseDuration: Duration(milliseconds: 100),
-
-                                    child: CircleAvatar(
-                                      radius: 10,
-                                      backgroundColor: Color.fromARGB(255, 236, 29, 15),
-                                      
-                                    ),
-                                  )
-                                  ,
+                                  Row(
+                                    children: [ 
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Group Name : ${characterList[index].group_name}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                          Text("Member Count : ${characterList[index].member_count}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                          Text("Created On : ${((characterList[index].created_at).split("T"))[0]}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                          
+                                        ],
+                                      ),
+                                          const SizedBox(width: 130),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: GlobalVariables.primaryColor
+                                            )
+                                            ,
+                                            onPressed: (){
+                                                Navigator.pushNamed(
+                                                context,
+                                                EditTaskGroup.routeName,
+                                                arguments: (
+                                                  characterList[index]
+                                                ),
+                                              );
+                                            }, 
+                                            child:const Icon(Icons.edit,color: Colors.white,)
+                                            )
+                                         
+                                    ],
+                                  ),
+                                      LinearProgressIndicator(
+                                
+                                        value: random.nextInt(10)/10,
+                                        color:GlobalVariables.primaryColor,
+                                        ),
                                 ],
                               ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
             );
           }

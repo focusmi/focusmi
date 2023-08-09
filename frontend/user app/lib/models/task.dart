@@ -9,7 +9,7 @@ class Task {
   final int duration;
   final String task_status;
   final int priority;
-  final String created_date;
+  final String created_at;
   final String created_time;
   final String completed_date;
   final String completed_time;
@@ -25,7 +25,7 @@ class Task {
     required this.duration,
     required this.task_status,
     required this.priority,
-    required this.created_date,
+    required this.created_at,
     required this.created_time,
     required this.completed_date,
     required this.completed_time,
@@ -47,7 +47,7 @@ class Task {
       'duration': duration,
       'task_status': task_status,
       'priority': priority,
-      'created_date': created_date,
+      'created_at': created_at,
       'created_time': created_time,
       'completed_date': completed_date,
       'completed_time': completed_time,
@@ -66,7 +66,7 @@ class Task {
       duration: map['duration'] as int,
       task_status: map['task_status'] as String,
       priority: map['priority'] as int,
-      created_date: map['created_date'] as String,
+      created_at: map['created_at'] as String,
       created_time: map['created_time'] as String,
       completed_date: map['completed_date'] as String,
       completed_time: map['completed_time'] as String,

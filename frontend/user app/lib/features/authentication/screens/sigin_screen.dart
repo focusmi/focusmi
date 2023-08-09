@@ -14,6 +14,7 @@ class SignScreen extends StatefulWidget {
 class _SignScreenState extends State<SignScreen> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  final _form_key = GlobalKey<FormState>();
   final AuthService authService = AuthService();
   final FormTextField txtField = FormTextField();
   
@@ -59,24 +60,33 @@ class _SignScreenState extends State<SignScreen> {
                       ],
                     )
               ),
-              txtField.createFormField(_email,"Enter the Email",false,'email','',''),
-              const SizedBox(height: 10),
-              txtField.createFormField(_password,"Enter the Password",true,'password','',''),
-              const SizedBox(height: 25),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor:Colors.white ,
-                  backgroundColor: GlobalVariables.primaryColor,
-                  shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+              Form(
+                key:_form_key,
+                child: Column(
+                  children: [
+                    txtField.createFormField(_email,"Enter the Email",false,'email','',''),
+                    const SizedBox(height: 10),
+                    txtField.createFormField(_password,"Enter the Password",true,'password','',''),
+                    const SizedBox(height: 25),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor:Colors.white ,
+                        backgroundColor: GlobalVariables.primaryColor,
+                        shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                        minimumSize: const Size.fromHeight(50), // NEW
+                    ),
+                      onPressed: () async {
+                        if(_form_key.currentState!.validate()){
+                          userSignUp();
+                        }
+                    }
+                    
+                    , child: const Text("Sign In")
+                    ),
+                  ],
                 ),
-                  minimumSize: const Size.fromHeight(50), // NEW
-              ),
-                onPressed: () async {
-                  userSignUp();
-              }
-              
-              , child: const Text("Sign In")
               ),
              
             ],

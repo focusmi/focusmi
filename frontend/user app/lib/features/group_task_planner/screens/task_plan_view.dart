@@ -1,6 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-
+import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
 import 'package:focusmi/layouts/task_planner_layout.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
@@ -23,8 +26,9 @@ class GroupTaskPlanner extends StatefulWidget {
 
 
 class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
+  late Map<int,double> planHeight;
   int _selectedIndex = 0;
-  Task entryTask = new Task(task_id: 0, plan_id: 0, timer_id: 0, duration: 0, task_status: '', priority: 0, created_date: '', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: true,task_name: '');
+  Task entryTask = new Task(task_id: 0, plan_id: 0, timer_id: 0, duration: 0, task_status: '', priority: 0, created_at: '', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: true,task_name: '');
   late TextEditingController taskCreate;
   List<TaskPlan> taskPlans = List<TaskPlan>.empty(growable: true);
   Map taskMap = Map();
@@ -43,16 +47,23 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       );
     });
      taskMap[taskid]=List<Task>.empty(growable: true);
-    print(taskMap);
+     setState(() {
+      planHeight[taskid]=10;
+       
+     });
   }
 
   void addTask(){
     var taskid  = tasks.length+1;
     setState(() {
       taskMap[entryTask.plan_id].add(
-        Task(task_id: taskid, plan_id:entryTask.plan_id, timer_id: 0, duration: 0, task_status: 'pending' , priority:0, created_date: '', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: false,task_name:taskCreate.text )
+        Task(task_id: taskid, plan_id:entryTask.plan_id, timer_id: 0, duration: 0, task_status: 'pending' , priority:0, created_at: '2012-03-04', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: false,task_name:taskCreate.text )
       );
       entryTask.plan_id=0;
+    });
+    setState(() {
+      planHeight[entryTask.plan_id]=0;
+      
     });
 
   }
@@ -79,6 +90,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
 
   void initState() {
     taskPlanEditName = 0;
+    planHeight = {};
     taskCreate = TextEditingController();
     super.initState();
     
@@ -98,115 +110,276 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
 
   @override
   Widget build(BuildContext context) {
+    double planWidth = MediaQuery.of(context).size.width;
     return TaskPlannerLayout.mainBoard(
-      Container(
-    
-      child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: taskPlans.length,
-                      scrollDirection:Axis.horizontal,
-                      itemBuilder: (context, index){
-                      taskPlanControllers.add(TextEditingController());
-                        return Column(
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: taskPlans.length,
+                  scrollDirection:Axis.horizontal,
+                  itemBuilder: (context, index){
+                  taskPlanControllers.add(TextEditingController());
+                    return Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Container(
+                        child: Column(
                           children: [
                             Container(
+                              width: planWidth,
+                            
                               child: (taskPlans[index].is_edit!=null && taskPlans[index].is_edit!=true )? 
-                              ElevatedButton(
-                                child: Text(
-                                  taskPlans[index].plan_name
-
+                              GestureDetector(
+                                child: Container(
+                                  padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  height: 40,
+                                  decoration:const BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: GlobalVariables.textFieldBgColor
+                                      )
+                                    )
+                                  ),
+                                  child: Text(
+                                  
+                                    taskPlans[index].plan_name,
+                                    style:const TextStyle(
+                                      fontSize: 24,
+                                      color: GlobalVariables.greyFontColor
+                                    ),
+                                
+                                  ),
                                 ),
-                                onPressed:() {
-                                  _onPressedText(index);
+                                 onTap:() {
+                                  setState(() {
+                                   _onPressedText(index);
+                                    
+                                  });
                                 },
                                 )
                               : Row(
                                 children: [
-                                  Container(width: 100,child: TextField(
-                                    controller: taskPlanControllers[index],
-                                  )),
-                                  ElevatedButton(onPressed: (){
-                                    _addTaskPlanName(index);
-                                  }, 
-                                  child:const Icon(Icons.add))
-                                ],
+                                  Container(
+                                    width: planWidth*0.8,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                                      child: TextField(
+                                        
+                                        decoration: InputDecoration(
+                                          
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 24
+                                          
+                                        ),
+                                      
+                                       controller: taskPlanControllers[index],
+                                                                      ),
+                                    )),
+                                  SizedBox(
+                               
+                                    child: ElevatedButton(
+                                      child:Icon(Icons.check,color: Colors.white,),
+                                      style: ElevatedButton.styleFrom(
+                                        shape: CircleBorder()
+                                        
+                                        ,
+                                        backgroundColor: GlobalVariables.primaryColor
+                                      ),
+                                      onPressed: (){
+                                      _addTaskPlanName(index);
+                                    }, 
+                                    ),
+                                  )
+                                 ],
                               ),
                             ),
-                            SizedBox(
-                          
-                              width: 200,
-                              child: ListView.builder(
+                            SizedBox(height: 10,),
+                             Container( 
+                                width: planWidth,
+                                child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: taskMap[taskPlans[index].plan_id].length,
                                 itemBuilder: (context, subindex){
-                                  return Container(
-                                    
-                                    child:Text(
-                                     ((taskMap[taskPlans[index].plan_id])[subindex].task_name)
-                                    )
-                                  );
-                                }
-                              ),
-                            ),
-                            (entryTask.plan_id != taskPlans[index].plan_id)?
-                            ElevatedButton(
-                              onPressed: (){
-                              createTask(taskPlans[index].plan_id);
-                              }, 
-                               child: Text("Create Task")
-                             ):
-                            Container(
-                              width: 100,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: 200,
-                                    child: TextField(
-                                      controller: taskCreate,
-                                  
+                                   return  Container(
+                                    width:planWidth,
+                                    constraints: BoxConstraints(
+                                      minHeight:70 ,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                        color: GlobalVariables.textFieldBgColor
+                                          
+                                        ),
                                       ),
+                                      
+                                    ),
+                                        
+                                    child:Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          Navigator.pushNamed(
+                                            context,
+                                            SingleTaskView.routeName,
+                                            arguments: (
+                                              taskMap[taskPlans[index].plan_id][subindex]
+                                            )
+                                            );
+                                              },
+                                              child:Container(
+                                                        width: planWidth,
+                                                child: 
+                                                 Padding(
+                                                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                   child: Row(
+                                                     children: [
+                                                      Radio(value: taskMap[taskPlans[index].plan_id][subindex].task_id, groupValue: "", onChanged: (value){
+                                                        setState(() {
+                                                          taskMap[taskPlans[index].plan_id].removeWhere((element) => element.task_id ==value);
+                                                        });
+                                                      }),
+                                                       Container(
+                                                         child: Text(
+                                                          (taskMap[taskPlans[index].plan_id])[subindex].task_name,
+                                                          style: TextStyle(
+                                                            color: GlobalVariables.greyFontColor
+                                                                                                   
+                                                          ),
+                                                          
+                                                          ),
+                                                       ),
+                                                     ],
+                                                   ),
+                                                 )
+                                                
+                                              ),
+                                            ),
+                                    )
+                                        );
+                                      }
+                                    ),
                                   ),
-                                    ElevatedButton(
-                                      onPressed: (){addTask();}, 
-                                      child: Icon(Icons.add)
-                                      )
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  (entryTask.plan_id != taskPlans[index].plan_id)?
+                                  SizedBox(
+                                    width: planWidth*0.90,
+                                    child: GestureDetector(
+                                      child:DottedBorder(
+                                        strokeWidth: 1,
+                                        color: GlobalVariables.primaryColor,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            child:Center(
+                                              child: Text(
+                                                "+ Add Task",
+                                                
+                                                                                
+                                                style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: GlobalVariables.primaryColor
+                                                ),
+                                              ),
+                                            )
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: (){
+                                        setState(() {
+                                          createTask(taskPlans[index].plan_id);
+                                          
+                                        });
+                                      }, 
+                                  
+                                     ),
+                                  ):
+                                  Container(
+                                    width: planWidth,
+                                          decoration: BoxDecoration(
+                                            
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: GlobalVariables.textFieldBgColor
+                                              )
+                                            )
+                                          ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: planWidth*0.75,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                                            child: TextField(
+                                              decoration: InputDecoration(
+                                                
+                                                contentPadding: EdgeInsets.fromLTRB(30, 0, 0, 0)
+                                              ),
+                                              controller: taskCreate,
+                                                                                  
+                                              ),
+                                          ),
+                                        ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: GlobalVariables.primaryColor
+                                            ),
+                                            onPressed: (){
+                                              setState(() {
+                                                
+                                                addTask();
+                                              });
+                                              }, 
+                                            child:const Icon(Icons.add,color: Colors.white,)
+                                            )
+                                      ],
+                                    )
+                                  )
+                      
                                 ],
-                              )
-                            )
-
-                          ],
-                        );
-                      }
-                    )
+                              ),
+                      ),
+                    );
+                        }
+                      ),
+      )
         
-      ),
-      BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Chat',
-          ),
-          BottomNavigationBarItem(
-            icon: ElevatedButton(
-              child:const Icon(Icons.add),
+      ,
+      ConvexAppBar( 
+        style:TabStyle.fixedCircle,
+        backgroundColor: GlobalVariables.primaryColor,
+        height: 60,
+        curveSize: 100,
+        top: -40,
+      items: [
+        TabItem(icon: Icons.group, title: 'Group'),
+   
+        TabItem(icon: ElevatedButton(
+              child:const Icon(Icons.add,color: Colors.white,),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: GlobalVariables.primaryColor,
+                side: BorderSide(
+                  width: 2,
+                  color: Colors.white
+                ),
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(20)
+              ),
               onPressed: (){
                 addTaskPlan();
-                print(taskPlanEditName);
               },
-            ),
-            label: 'Task Plan',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Group',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),        
+            ), title: 'Add'),
+        
+        TabItem(icon: Icons.chat, title: 'Chat'),
+        
+      ],
+    onTap: (int i) => print('click index=$i'),
+  ),        
       "Task Planner"
-    );
+    ,context);
   }
 }
 

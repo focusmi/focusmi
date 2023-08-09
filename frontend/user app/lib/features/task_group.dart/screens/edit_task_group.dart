@@ -28,7 +28,14 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
   late final TextEditingController _searchvalue;
   List<GroupMember> memberList= List<GroupMember>.empty();
   List<GroupMember> searchMemberList = List<GroupMember>.empty();
+  late List<int> listInt= List<int>.empty(growable: true);
 
+  void emptySearchList(){
+      setState(() {
+        searchMemberList=List<GroupMember>.empty();
+      });
+
+  }
 
   void getMembersFromApi(groupID) async{
     GroupService.getGroupMember(groupID).then((response){
@@ -36,10 +43,13 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
         try{
           Iterable list =json.decode(response.body).cast<Map<String, dynamic>>();
           memberList = list.map((model)=>GroupMember.fromJson(model)).toList();
+          for(var element in memberList){
+            listInt.add(element.user_id);
+          }
+         
+         
         }
         catch(e){
-          print("erro---------------");
-          print(e);
           memberList = List.empty();
         }
       });
@@ -47,14 +57,19 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
 
   }
   
+
   void removeMemberApi(groupid, userid)async{
     try{
       var member = await GroupService.removeGroupMember(groupid, userid);
-      getMembersFromApi(groupid);
+      setState(() {
+        getMembersFromApi(groupid);
+        listInt.remove(userid);
+      });
     }
     catch(e){
       print(e);
     }
+    emptySearchList();
   }
       
   Future searchMemberApi()async{
@@ -65,7 +80,6 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
           searchMemberList = list.map((model)=>GroupMember.fromJson(model)).toList();
          }
         catch(e){
-          print("erro---------------");
           print(e);
           searchMemberList = List.empty();
         }
@@ -77,17 +91,21 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
    
     try{
       GroupService.addGroupMember(widget.group.group_id, userID);
-      getMembersFromApi(widget.group.group_id);
+      setState(() {
+        getMembersFromApi(widget.group.group_id);
+      });
+      listInt.add(userID);
     }
     catch(e){
       print(e);
     }
+    emptySearchList();
   }
 
   Widget _buildPopupDialog(BuildContext context,userid) {
     return AlertDialog(
       title: const Text('Popup example'),
-      content: new Column(
+      content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -95,12 +113,12 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
               onPressed:(){
                 removeMemberApi(widget.group.group_id, userid);
               }, 
-              child: Text("Remove")
+              child: const Text("Remove")
             )
         ],
       ),
       actions: <Widget>[
-        new ElevatedButton(
+        ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -117,100 +135,198 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
     super.initState();
     _searchvalue = TextEditingController();
     getMembersFromApi(widget.group.group_id);
+    
+   
   }
   @override
   Widget build(BuildContext context) {
     return layout.mainLayoutWithDrawer(context,
       
       SingleChildScrollView(
-        child: Column(
-          children: [
-            Text(widget.group.group_name),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal:50.0),
-              child: Container(
-                height: 200,
-                child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: memberList.length,
-                      scrollDirection:Axis.horizontal,
-                      itemBuilder: (context, index){
-                        return Container(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height:50,
-                                  child: Image.network('$uri/api/assets/image/user-profs/team.png'),
-                                ),
-                                Column(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height:5,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  "Group ${widget.group.group_name}",
+                  style: const TextStyle(
+                    fontSize: 20
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:2,vertical: 20),
+                child: Container(
+                  height: 100,
+                  child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: memberList.length,
+                        scrollDirection:Axis.horizontal,
+                        itemBuilder: (context, index){
+                          return GestureDetector(
+                            onTap: () {
+                               showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => _buildPopupDialog(context,memberList[index].user_id),
+                                );
+                            },
+                            child: Container(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                                child: Column(
                                   children: [
-                                    Text(memberList[index].username),
-                                    ElevatedButton(
-                                      onPressed: (){
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) => _buildPopupDialog(context,memberList[index].user_id),
-                                          );
-                                      }, 
-                                      child: Text("Edit")
-                                    )
+                                    Container(
+                                      height:50,
+                                      child:  CircleAvatar(
+                                                radius: 40, //radius of avatar
+                                                backgroundColor: Colors.green, //color
+                                                backgroundImage:NetworkImage('$uri/api/assets/image/user-profs/profile-0.jpg'),
+                                              
+                                            ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          memberList[index].username,
+                                          style: const TextStyle(
+                                            fontSize: 12
+                                          ),
+                                        ),
+                                        // Container(
+                                         
+                                        //   height:30,
+                                        //   child: ElevatedButton(
+                                        //     onPressed: (){
+                                        //         showDialog(
+                                        //           context: context,
+                                        //           builder: (BuildContext context) => _buildPopupDialog(context,memberList[index].user_id),
+                                        //         );
+                                        //     }, 
+                                        //     child:Container( 
+                                        //       child:const Icon(Icons.edit)
+                                        //       )
+                                        //   ),
+                                        // )
+                                      ],
+                                    ),
                                   ],
                                 ),
+                              ),
+                            ),
+                          );
+                        }
+                      ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      child: TextField(
+                        decoration: InputDecoration(
+                        suffixIcon: GestureDetector(child: Icon(Icons.search),
+                        onTap:(){searchMemberApi();} ,),
+                        hintText: "Seach by email address",
+                        hintStyle:const TextStyle(color:Color.fromARGB(255, 161, 161, 161),fontSize: 12),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:const BorderSide(color:GlobalVariables.textFieldBgColor ),
+                          borderRadius: BorderRadius.circular(20.0),
+                        )
+                        ),
+                        controller: _searchvalue,
+                        onChanged:(text){
+                          if(text=='') setState(() {
+                            searchMemberList.clear();
+                          });
+                        },
+                      ),
+                      width:MediaQuery.of(context).size.width*0.85 ,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    // FloatingActionButton(
+                      
+                    //   backgroundColor: GlobalVariables.primaryColor,
+                    //   child:Text("Search",style:TextStyle(color: Colors.white)),
+                    //   onPressed:()async{
+                    //     searchMemberApi();
+                    //   } , )
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 30),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: searchMemberList.length,
+                  itemBuilder: (context, index){
+                    return Container(
+                      decoration:const BoxDecoration(
+                        border: Border(
+                          bottom:BorderSide(
+                            color: GlobalVariables.textFieldBgColor
+                          )
+                        )
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 7, 17, 7),
+                        child: Row(
+                          children: [
+                            Container(
+                              child: CircleAvatar(
+                                radius:30,
+                                backgroundImage: NetworkImage('$uri/api/assets/image/user-profs/profile-0.jpg'),
+                              )
+                            ),
+                            const SizedBox(width: 10,),
+                            Row(
+                            
+                              
+                              children: [
+                                 Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                     Text(searchMemberList[index].username),
+                                      Text(searchMemberList[index].email,style:const TextStyle(fontSize: 12)),
+                                  ],
+                                ),
+                                const SizedBox(width: 40,)
+                                ,
+                                (!listInt.contains(searchMemberList[index].user_id))?
+                                ElevatedButton(
+                                  style:ElevatedButton.styleFrom(
+                                    backgroundColor: GlobalVariables.primaryColor
+                                  ),
+                                  child:const Text("Add",style: TextStyle(color: Colors.white),) ,
+                                  onPressed:()async{
+                                    addMemberApi(searchMemberList[index].user_id);
+                                  }
+                                ):
+                               const SizedBox(width: 0,height: 0,)
+                                
+                               
+                               
                               ],
                             ),
-                          ),
-                        );
-                      }
-                    ),
-              ),
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  child: TextField(
-                    controller: _searchvalue,
-                  ),
-                  width:MediaQuery.of(context).size.width*0.70 ,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                FloatingActionButton(
-                  child:Text("Search"),
-                  onPressed:()async{
-                    searchMemberApi();
-                  } , )
-              ],
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: searchMemberList.length,
-              itemBuilder: (context, index){
-                return Container(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(),
-                    child: Column(
-                      children: [
-                        FloatingActionButton(
-                          child:Text("Add") ,
-                          onPressed:()async{
-                            addMemberApi(searchMemberList[index].user_id);
-                          }
+                           
+                          ],
                         ),
-                        Text(searchMemberList[index].username),
-                        Container(
-                          child: Image.network('$uri/api/assets/image/user-profs/team.png'),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              }
-            ),
-          ],
+                      ),
+                    );
+                  }
+                ),
+              ),
+            ],
+          ),
         ),
       )
      ,"Edit Task Group");

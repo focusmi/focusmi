@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:focusmi/features/task_group.dart/services/user_services.dart';
 import 'package:focusmi/layouts/user-layout.dart';
@@ -20,9 +21,30 @@ class _CreateGroupState extends State<CreateGroup> {
     List<GroupMember> selectedMemberList = List<GroupMember>.empty(growable: true);
     late final TextEditingController _searchvalue;
     late final TextEditingController _groupName;
+    late bool buttonToggle;
+    late List<int> listInt= List<int>.empty(growable: true);
+    void emptySearchList(){
+      setState(() {
+        searchMemberList=List<GroupMember>.empty();
+      });
+
+    }
+    void removeMemberApi(userid)async{
+      try{
+        setState(() {
+          selectedMemberList.removeWhere((element) => element.user_id==userid);
+          listInt.remove(userid);
+          
+        });
+      }
+      catch(e){
+        print(e);
+      }
+      emptySearchList();
+    }
     
 
-    Future searchMemberApi()async{
+    Future  searchMemberApi()async{
       var members =await UserService.getUser(_searchvalue.text);
       setState(() {
         try{
@@ -35,11 +57,16 @@ class _CreateGroupState extends State<CreateGroup> {
         }
       });        
 
-  }
+    }
 
-  void creaetGroupApi()async{
-    print("working");
-    GroupService.createGroup(context: context, group_name: _groupName.text, status: 'Active', member_count: 1+selectedMemberList.length, group_id: 0, members: selectedMemberList);
+  void createGroupApi()async{
+    try{
+      GroupService.createGroup(context: context, group_name: _groupName.text, status: 'Active', member_count: 1+selectedMemberList.length, group_id: 0, members: selectedMemberList);
+
+    }
+    catch(e){
+      print(e);
+    }
   }
 
   var layout = LayOut();
@@ -49,6 +76,7 @@ class _CreateGroupState extends State<CreateGroup> {
     super.initState();
     _groupName = TextEditingController();
     _searchvalue = TextEditingController();
+    buttonToggle = false;
   }
 
   @override
@@ -62,8 +90,19 @@ class _CreateGroupState extends State<CreateGroup> {
                 child: TextField(
                   controller: _groupName,
                   decoration: const InputDecoration(
-                    hintText: "Enter Group Name"
+                  hintText: "Enter Group Name",
                   ),
+                  onChanged: (text){
+                      setState(() {
+                        if(text!='' && selectedMemberList.isEmpty!=true){
+                            buttonToggle=true;
+                            print("true");
+                        }
+                        else{
+                          buttonToggle =false;
+                        }
+                      });
+                  },
                 ),
               ),
               Padding(
@@ -81,8 +120,22 @@ class _CreateGroupState extends State<CreateGroup> {
                               child: Row(
                                 children: [
                                   Container(
-                                    height:50,
-                                    child: Image.network('$uri/api/assets/image/user-profs/team.png'),
+                                    height:150,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 60,
+                                          height: 60,
+                                          child: Image.network('$uri/api/assets/image/user-profs/team.png')
+                                        ),
+                                        ElevatedButton(onPressed: (){
+                                         removeMemberApi(searchMemberList[index].user_id);
+                                         emptySearchList();
+                                        },
+                                        child: Icon(Icons.remove)
+                                        )
+                                            ],
+                                    ),
                                   ),
                                   Column(
                                     children: [
@@ -148,7 +201,7 @@ class _CreateGroupState extends State<CreateGroup> {
                             searchMemberApi();
                           });
                         }, 
-                        child:const  Text("Add")
+                        child:const  Text("Search")
                       )
                     ],
                   ),
@@ -162,30 +215,33 @@ class _CreateGroupState extends State<CreateGroup> {
                   itemBuilder: (context, index){
                     return Container(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(),
+                        padding:const EdgeInsets.symmetric(),
                         child: Column(
                           children: [
-                            FloatingActionButton(
-                              child:const Text("Add") ,
-                              onPressed:()async{
-                                searchMemberApi();
-                              }
-                            ),
+                          
                             Container(
-                              child: Image.network('$uri/api/assets/image/user-profs/team.png'),
+                              child: Container(
+                                child: Image.network('$uri/api/assets/image/user-profs/team.png')
+                                ),
                             ),
                             Row(
                               children: [
-                                Text(searchMemberList[index].username),
-                                ElevatedButton(
-                                onPressed: (){
-                                  setState(() {
-                                    selectedMemberList.add(searchMemberList[index]);
-                                    print(selectedMemberList);
-                                  });
+                                (!listInt.contains(searchMemberList[index].user_id))?
+                                  ElevatedButton(
+                                  onPressed: (){
+                                    setState(() {
+                                      selectedMemberList.add(searchMemberList[index]);
+                                      listInt.add(searchMemberList[index].user_id);
+                                      if(_groupName.text!=''){
+                                        buttonToggle =true;
+                                      }
+                                      emptySearchList();
+                                      
+                                    });
                                 }, 
                         child:const  Text("Add")
-                      )
+                      ):const Text("Already in the group"),
+                        Text(searchMemberList[index].username),
                               ],)
                           ],
                         ),
@@ -193,11 +249,15 @@ class _CreateGroupState extends State<CreateGroup> {
                     );
                   }
                 ),
-                
+                (buttonToggle)?
+             FloatingActionButton(onPressed: (){
+              createGroupApi();
+              Navigator.pushNamed(context, GroupList.routeName);
+             }):const Text('')
             ],
           ),
         ),
       )
-    ,"Create Task Group",creaetGroupApi);
+    ,"Create Task Group");
   }
 }

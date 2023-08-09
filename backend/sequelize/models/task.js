@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     duration: DataTypes.INTEGER,
     task_status: DataTypes.TEXT,
     priority: DataTypes.INTEGER,
+    description:DataTypes.TEXT,
     created_at:DataTypes.DATE
   }, {
     sequelize,

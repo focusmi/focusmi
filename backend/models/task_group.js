@@ -18,24 +18,28 @@ class TaskGroup{
 
     async createGroup(result){
         try{ 
-            var result = JSON.parse(result)
+            
+            const d = new Date();
+            var date=d.toISOString();
             // var res = pool.cQuery(`Insert into task_group (group_name,status,"creator_id") values('${this.group_name}','${this.status}',${this.creator_id}) RETURNING group_id`);
             // var res = pool.cQuery(`Insert into group_user ("group_id","user_id",member_status) values('${res}','${this.creator_id}','administrator')`);
-            var group = task_group.create({
-                creator_id:result.creator_id,
-                group_name:result.group_name,
-                statu:"Active",
+            var group =await task_group.create({
+                creator_id:result.group.creator_id,
+                group_name:result.group.group_name,
+                status:"Active",
             });
-            (result.members).forEach(element => {
-                group_user.create({
-                    group_id:element.group_id,
-                    user_id:element.user_id,
-                    previlage:element.previage
-                })
-            });
+            pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${result.group.creator_id},'member','${date}','${date}')`)
+            var i=0;
+          
+            for(i;i<result.members.length;i++){
+                var val = result.members[i]
+                
+                pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${val['user_id']},'member','${date}','${date}')`)
+            };
             return true;
         }
-        catch {
+        catch (e){
+            console.log(e)
             return false;
         }
         
@@ -68,7 +72,6 @@ class TaskGroup{
 
     async getGroupMembers(groupid,userid){
         try{
-            console.log(`select * from group_user full outer join task_group on task_group."group_id" = group_user."group_id" full outer join application_user on application_user."user_id" = group_user."user_id" where group_user."group_id"=${groupid} and task_group."creator_id"<>${userid} `)
             var res =await pool.cQuery(`select * from group_user full outer join task_group on task_group."group_id" = group_user."group_id" full outer join application_user on application_user."user_id" = group_user."user_id" where group_user."group_id"=${groupid} and group_user."user_id"<>${userid} `)
             if(res==0){
                 return {};

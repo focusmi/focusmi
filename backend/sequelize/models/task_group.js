@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.chat,{foreignKey:'group_id'});
       this.hasMany(models.task_plan,{foreignKey:'group_id'});
       this.belongsToMany(models.application_user,{through:models.group_user})
-      this.belongsTo(models.application_user,{foreignKey:'user_id'})
+      this.belongsTo(models.application_user,{foreignKey:'creator_id'})
+
     }
   }
   task_group.init({
@@ -22,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
       primaryKey:true,
       autoIncrement:true
-    } ,
+    },
     creator_id:DataTypes.INTEGER,
     group_name: DataTypes.TEXT,
     created_at:DataTypes.DATE,

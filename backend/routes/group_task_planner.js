@@ -5,6 +5,9 @@ const auth = require('../tokens/auth');
 const { json } = require('body-parser');
 const ApplicationUser = require('../models/application_user');
 const { request } = require('http');
+const TaskPlan = require('../models/taks_plan');
+const task = require('../sequelize/models/task');
+const Task = require('../models/task');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -22,7 +25,6 @@ gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
       }
    }
    catch (e){
-      console.log(e)
       res.status(400);
       res.send({'msg':'User not verified'});
  
@@ -30,14 +32,15 @@ gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    next();
 })
 
-gTaskRoutes.post('/api/create-group',auth,async(req,res,next)=>{
+gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
    try{
-       console.log("reached")
-       console.log(request.body)
-       
+      var taskGroup =new TaskGroup();
+      taskGroup.createGroup(req.body)
+      res.status(200).send("Successful") 
 
    }
-   catch{
+   catch(e){
+         console.log(e)
         res.status(400).send("User not verified");
         return ;
    }
@@ -140,7 +143,6 @@ gTaskRoutes.get('/api/search-group-member',auth,async(req, res, next)=>{
 })
 
 gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res, next)=>{
-   console.log("reached")
    const userid = req.params.userid;
    const groupid = req.params.groupid;
   
@@ -157,5 +159,66 @@ gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res,
    next();
 })
 
+gTaskRoutes.post('/api/create-task-plan',auth,(req, res, next)=>{
+   try{
+      const taskPlan = new TaskPlan();
+      var result = taskPlan.createTaskPlan(req.body)
+      res.status(200).send(true)
+   }
+   catch(e){
+      console.log(e)
+      res.status(400).send(false)
+
+   }
+
+})
+
+gTaskRoutes.post('/api/rename-task-planner',auth,(req , res, next)=>{
+   try{
+      const taskPlan = new TaskPlan()
+      taskPlan.renameTaskPlan(req.plan_id,req.plan_name)
+   }
+   catch(e){
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-plan-task/:planid',auth,(req,res,next)=>{
+   try{
+      var result = Task.getPlanTask(req.params.planid)
+      res.status(200).send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.send(400).send({})
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/update-task-name/',auth,(req,res,next)=>{
+   try{
+      var result = Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
+      res.status(200).send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.send(400).send({})
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-task-plan-by-group/:groupid',auth, (req,res,next)=>{
+   try{
+      
+      var result = TaskPlan.getTaskPlanByGroup(req.params.groupid)
+      res.status(200).send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.status(400).send(false)
+   }
+})
 
 module.exports = gTaskRoutes;

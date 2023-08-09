@@ -32,7 +32,7 @@ class AuthService{
         'Content-Type': 'application/json; charset=UTF-8',
       });
       httpErrorHandle(response: res, context: context, onSuccess: ()async{
-        showSnackBar(context, "Successful");
+        showSuccessSnackBar(context, "Successful");
         SharedPreferences prefs =await SharedPreferences.getInstance();
         Provider.of<UserProvider>(context, listen:false).setUser(jsonDecode(res.body)[0]);
         await prefs.setString('auth-token', (jsonDecode(res.body)[0])['token']);
@@ -41,7 +41,7 @@ class AuthService{
        
       
     }catch(e){
-          showSnackBar(context, e.toString());
+         //showErrorSnackBar(context, e.toString());
     }
   }
 
@@ -58,12 +58,8 @@ class AuthService{
         httpErrorHandle(response: validity, context: context, onSuccess: ()async{
           Provider.of<UserProvider>(context, listen:false).setUser(jsonDecode(validity.body)[0]);
           Navigator.pushNamed(context, GroupList.routeName);
-    var user = Provider.of<UserProvider>(context,listen: false).user;
-       print("]]]]]]]]]");
-       print(user.username);
-    //          print("---------------------------------------======================");
-    // var user = Provider.of<UserProvider>(context,listen: false).user;
-   // print(user.username);
+          var user = Provider.of<UserProvider>(context,listen: false).user;
+          print(user.username);
     });
         
       }
