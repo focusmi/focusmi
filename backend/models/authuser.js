@@ -36,7 +36,8 @@ class AuthUser {
          application_user.create({
             username:this.username,
             email:this.email,
-            password:this.password
+            password:this.password,
+            account_status:this.account_status
          })
           return true;
         }
