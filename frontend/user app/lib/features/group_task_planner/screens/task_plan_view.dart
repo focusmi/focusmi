@@ -299,7 +299,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                   ):
                                   Container(
                                     width: planWidth,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             
                                             border: Border(
                                               bottom: BorderSide(

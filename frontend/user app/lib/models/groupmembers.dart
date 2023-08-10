@@ -5,7 +5,7 @@ class GroupMember {
   final int user_id;
   final String username;
   final String email;
-  final String account_status;
+  final String? account_status;
   final String? profile_image;
 
   GroupMember(this.user_id, this.username, this.email, this.account_status, this.profile_image);
@@ -26,8 +26,8 @@ class GroupMember {
       map['user_id'] as int,
       map['username'] as String,
       map['email'] as String,
-      map['account_status'] as String,
-      map['profile_image'] as String,
+      map['account_status'] as String?,
+      map['profile_image'] as String?,
     );
   }
 
