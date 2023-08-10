@@ -20,7 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void toggleAuthPage() {
     setState(() {
       _authPage =
-          _authPage == AuthPage.signUp ? AuthPage.signIn : AuthPage.signUp;
+          _authPage == AuthPage.signUp ? AuthPage.signIn : AuthPage.signIn;
     });
   }
 
@@ -29,7 +29,7 @@ class _AuthScreenState extends State<AuthScreen> {
     Widget currentPage;
 
     if (_authPage == AuthPage.signUp) {
-      currentPage = SignUpPage();
+      currentPage = SignInPage();
     } else {
       currentPage = SignInPage();
     }
@@ -55,35 +55,35 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               Expanded(child: currentPage),
-              Align(
-                // Center the Row horizontally
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _authPage == AuthPage.signUp
-                          ? 'Already have an account?'
-                          : 'Don\'t have an account?',
-                      style: const TextStyle(
-                        color: GlobalVariables.greyTextColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: toggleAuthPage,
-                      child: Text(
-                        _authPage == AuthPage.signUp ? 'Sign In' : 'Sign Up',
-                        style: const TextStyle(
-                          color: GlobalVariables.primaryText,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 35),
+              // Align(
+              //   // Center the Row horizontally
+              //   alignment: Alignment.center,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.center,
+              //     children: [
+              //       Text(
+              //         _authPage == AuthPage.signUp
+              //             ? 'Already have an account?'
+              //             : 'Don\'t have an account?',
+              //         style: const TextStyle(
+              //           color: GlobalVariables.greyTextColor,
+              //           fontSize: 16,
+              //         ),
+              //       ),
+              //       TextButton(
+              //         onPressed: toggleAuthPage,
+              //         child: Text(
+              //           _authPage == AuthPage.signUp ? 'Sign In' : 'Sign Up',
+              //           style: const TextStyle(
+              //             color: GlobalVariables.primaryText,
+              //             fontSize: 16,
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // const SizedBox(height: 35),
             ],
           ),
         ),

@@ -20,30 +20,30 @@ class AuthService {
     required String password,
     required String name,
   }) async {
-    try {
-      User user =
-          User(id: 0, name: name, email: email, password: password, token: '');
+    // try {
+    //   User user =
+    //       User(id: 0, name: name, email: email, password: password, token: '');
 
-      final String userJson = jsonEncode(user); // Serialize user to JSON string
+    //   final String userJson = jsonEncode(user); // Serialize user to JSON string
 
-      http.Response res = await http.post(
-        Uri.parse('$uri/apis/signup'),
-        body: userJson,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      );
+    //   http.Response res = await http.post(
+    //     Uri.parse('$uri/apis/signup'),
+    //     body: userJson,
+    //     headers: <String, String>{
+    //       'Content-Type': 'application/json; charset=UTF-8',
+    //     },
+    //   );
 
-      httpErrorHandle(
-        response: res,
-        context: context,
-        onSuccess: () {
-          showSnackBar(context, 'Account has been created');
-        },
-      );
-    } catch (err) {
-      showSnackBar(context, err.toString());
-    }
+    //   httpErrorHandle(
+    //     response: res,
+    //     context: context,
+    //     onSuccess: () {
+    //       showSnackBar(context, 'Account has been created');
+    //     },
+    //   );
+    // } catch (err) {
+    //   showSnackBar(context, err.toString());
+    // }
   }
 
   void signInUser({
@@ -92,8 +92,13 @@ class AuthService {
         id: user.id,
         name: field == 'Full Name' ? value : user.name,
         email: field == 'Email' ? value : user.email,
+        mobile: field == 'Mobile Number' ? value : user.mobile,
+        clients: field == 'Total Clients' ? int.parse(value) : user.clients,
+        experience: field == 'Experience' ? int.parse(value) : user.experience,
         password: user.password,
         token: user.token,
+        about: field == 'About' ? value : user.about,
+        status: user.status,
       );
 
       final String userJson =

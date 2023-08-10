@@ -54,7 +54,7 @@ class ProfileDetailsPage extends StatelessWidget {
               const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Mobile Number',
-                value: '077 379 4567',
+                value: user.mobile,
                 arrow: true,
                 onTap: () {
                   Navigator.push(
@@ -67,10 +67,10 @@ class ProfileDetailsPage extends StatelessWidget {
               const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Experience',
-                value: '10 years',
+                value: '${user.experience}',
                 arrow: true,
                 onTap: () {
-                  navigateToEditPage(context, 'Experience', '10');
+                  navigateToEditPage(context, 'Experience', user.experience.toString());
                 },
               ),
               const SizedBox(height: 2.0),
@@ -95,16 +95,19 @@ class ProfileDetailsPage extends StatelessWidget {
               const SizedBox(height: 2.0),
               ProfileField(
                 label: 'Total Clients',
-                value: '',
+                value: '${user.clients}',
                 arrow: false,
-                onTap: () {},
+                onTap: () {
+                },
               ),
               const SizedBox(height: 2.0),
               ProfileField(
                 label: 'About',
-                value: '',
+                value: user.about,
                 arrow: true,
-                onTap: () {},
+                onTap: () {
+                  navigateToEditPage(context, 'Total Clients', user.about);
+                },
               ),
             ],
           ),
@@ -158,17 +161,17 @@ class ProfileField extends StatelessWidget {
     } else if (label == 'Address') {
       fieldValue = 'No 456/1, Matara, Sri Lanka';
     } else if (label == 'Experience') {
-      fieldValue = '10 years';
+      fieldValue = '${user.experience} years';
     } else if (label == 'Mobile Number') {
-      fieldValue = '077 379 4567';
+      fieldValue = '${user.mobile}';
     } else if (label == 'Joined Date') {
       fieldValue = '30 Jan, 2023';
     } else if (label == 'Password') {
       fieldValue = '●●●●●●●●●'; // Display masked password
     } else if (label == 'Total Clients') {
-      fieldValue = '23';
+      fieldValue = '${user.clients}';
     } else if (label == 'About') {
-      fieldValue = '';
+      fieldValue = '${user.about}';
     } else {
       fieldValue = ''; // Default value if field label doesn't match
     }
@@ -305,7 +308,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         );
       }
 
-      if (widget.field != 'Email' ) {
+      if (widget.field != 'Email') {
         _authService.updateUser(
           context: context,
           field: widget.field,
@@ -313,7 +316,6 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         );
         Navigator.pop(context, true);
       }
-
     } else {
       setState(() {
         _errorText = error;

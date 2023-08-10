@@ -7,6 +7,11 @@ class UserProvider extends ChangeNotifier {
     name: '',
     email: '',
     password: '',
+    mobile:'',
+    experience:0,
+    about:'',
+    clients:0,
+    status:'',
     // type: '',
     token: '',
   );

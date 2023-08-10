@@ -60,14 +60,15 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
 
 authRouterTherapist.put('/apis/user/:id',validation.validateInput, validation.validate, auth, async (req, res) => {
   try {
-    const {user_name ,email} = JSON.parse(req.body);
-    const user = await User.findOneById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found!' });
-    }
-    const id = {id: req.params.id }.id
-    const updatedUser = await User.updateUser(id, user_name, email);
-    res.json({ success: true, msg: 'User updated successfully!', user: updatedUser });
+    const {user_name ,email,years_of_experience,phone_number,about} = JSON.parse(req.body);
+    console.log({user_name ,email,years_of_experience,phone_number,about});
+    // const user = await User.findOneById(req.params.id);
+    // if (!user) {
+    //   return res.status(404).json({ msg: 'User not found!' });
+    // }
+    // const id = {id: req.params.id }.id
+    // const updatedUser = await User.updateUser(id, user_name, email);
+    // res.json({ success: true, msg: 'User updated successfully!', user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

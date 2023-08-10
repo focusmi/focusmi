@@ -49,7 +49,7 @@ class _SignInPageState extends State<SignInPage> {
             children: [
               SizedBox(height: screenSize.height * 0.04), // Adjust spacing based on screen height
               Text(
-                'Login to \nyour account',
+                'Login to your account',
                 style: TextStyle(
                   color: GlobalVariables.greyTextColor,
                   fontSize: screenSize.width * 0.05, // Adjust font size based on screen width
