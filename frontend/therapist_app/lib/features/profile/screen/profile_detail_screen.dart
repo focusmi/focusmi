@@ -70,7 +70,8 @@ class ProfileDetailsPage extends StatelessWidget {
                 value: '${user.experience}',
                 arrow: true,
                 onTap: () {
-                  navigateToEditPage(context, 'Experience', user.experience.toString());
+                  navigateToEditPage(
+                      context, 'Experience', user.experience.toString());
                 },
               ),
               const SizedBox(height: 2.0),
@@ -97,8 +98,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 label: 'Total Clients',
                 value: '${user.clients}',
                 arrow: false,
-                onTap: () {
-                },
+                onTap: () {},
               ),
               const SizedBox(height: 2.0),
               ProfileField(
@@ -106,7 +106,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 value: user.about,
                 arrow: true,
                 onTap: () {
-                  navigateToEditPage(context, 'Total Clients', user.about);
+                  navigateToEditPage(context, 'About', user.about);
                 },
               ),
             ],
