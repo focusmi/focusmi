@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/auth/screens/email_verification_screen.dart';
@@ -59,8 +60,7 @@ class ProfileDetailsPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => PhoneVerificationScreen()),
+                    PageTransition(type: PageTransitionType.leftToRight, child: PhoneVerificationScreen())
                   );
                 },
               ),
@@ -120,19 +120,14 @@ class ProfileDetailsPage extends StatelessWidget {
       BuildContext context, String field, String initialValue) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ProfileEditPage(field: field, initialValue: initialValue),
-      ),
+      PageTransition(type: PageTransitionType.leftToRight, child: ProfileEditPage(field: field, initialValue: initialValue)),
     );
   }
 
   void navigateToChangePasswordPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ChangePasswordPage(),
-      ),
+      PageTransition(type: PageTransitionType.leftToRight, child: ChangePasswordPage()),
     );
   }
 }
@@ -314,7 +309,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           field: widget.field,
           value: updatedValue,
         );
-        Navigator.pop(context, true);
+        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: ProfileDetailsPage()));
       }
     } else {
       setState(() {

@@ -1,3 +1,4 @@
+import 'package:page_transition/page_transition.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/auth/services/auth_service.dart';
 import 'package:therapist_app/features/profile/screen/profile_detail_screen.dart';
@@ -96,9 +97,7 @@ class Body extends StatelessWidget {
             press: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileDetailsPage(),
-                ),
+                PageTransition(type: PageTransitionType.leftToRight, child: ProfileDetailsPage()),
               );
             },
           ),
@@ -113,9 +112,7 @@ class Body extends StatelessWidget {
             press: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SetTimeScheduleScreen(),
-                ),
+                PageTransition(type: PageTransitionType.leftToRight, child: SetTimeScheduleScreen()),
               );
             },
           ),
