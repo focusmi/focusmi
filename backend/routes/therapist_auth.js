@@ -61,7 +61,6 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
 authRouterTherapist.put('/apis/user/:id',validation.validateInput, validation.validate, auth, async (req, res) => {
   try {
     const {user_name ,email,years_of_experience,phone_number,about} = JSON.parse(req.body);
-    console.log({user_name ,email,years_of_experience,phone_number,about});
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
@@ -130,7 +129,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../public/assets'));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const uniqueSuffix = req.params.id;
     cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
@@ -146,7 +145,6 @@ authRouterTherapist.post('/apis/upload-profile-pic/:id', auth, upload.single('pr
     }
 
     const profilePicPath = req.file.path; 
-    console.log(profilePicPath);
 
     res.json({ success: true, msg: 'Profile picture uploaded successfully!' });
   } catch (err) {
