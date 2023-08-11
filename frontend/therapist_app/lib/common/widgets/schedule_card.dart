@@ -22,7 +22,7 @@ class ScheduleCard extends StatelessWidget {
     DateTime now = DateTime.now();
 
     if (appointmentDate.isBefore(now)) {
-      return "Time Past";
+      return "Time Pasted";
     } else if (appointmentDate.isAfter(now)) {
       return "Waiting";
     } else {
@@ -73,29 +73,29 @@ class ScheduleCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // InkWell(
-                    //   onTap: () {
-                    //     // Handle cancel appointment
-                    //   },
-                    //   child: Container(
-                    //     width: 120,
-                    //     padding: EdgeInsets.symmetric(vertical: 12),
-                    //     decoration: BoxDecoration(
-                    //       color: Color.fromARGB(255, 217, 219, 222),
-                    //       borderRadius: BorderRadius.circular(50),
-                    //     ),
-                    //     child: Center(
-                    //       child: Text(
-                    //         "Message",
-                    //         style: TextStyle(
-                    //           fontSize: 16,
-                    //           fontWeight: FontWeight.w500,
-                    //           color: Colors.black54,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    InkWell(
+                      onTap: () {
+                        // Handle cancel appointment
+                      },
+                      child: Container(
+                        width: 120,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 217, 219, 222),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Complete",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     InkWell(
                       onTap: () {
                         // Handle reschedule appointment
