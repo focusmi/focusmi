@@ -29,9 +29,9 @@ const User = {
     }
   },
 
-  updateUser: async (id, name, email) => {
+  updateUser: async (id, name, email, years_of_experience,phone_number,about) => {
     try {
-      const query = `UPDATE  administrative_user SET user_name = '${name}', email = '${email}' WHERE "admin_user_ID" = '${id}'`;
+      const query = `UPDATE  administrative_user SET user_name = '${name}', email = '${email}', phone_number = '${phone_number}', years_of_experience = '${years_of_experience}', about = '${about}'  WHERE "admin_user_ID" = '${id}'`;
       await pool.cQuery(query);
       console.log('User updated successfully');
     } catch (error) {
