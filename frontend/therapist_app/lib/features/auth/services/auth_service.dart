@@ -94,7 +94,7 @@ class AuthService {
         email: field == 'Email' ? value : user.email,
         mobile: field == 'Mobile Number' ? value : user.mobile,
         clients: field == 'Total Clients' ? int.parse(value) : user.clients,
-        experience: field == 'Experience' ? int.parse(value) : user.experience,
+        experience: field == 'Experience' ? value : user.experience,
         password: user.password,
         token: user.token,
         about: field == 'About' ? value : user.about,
