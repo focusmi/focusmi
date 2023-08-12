@@ -133,6 +133,7 @@ class Body extends StatelessWidget {
               AuthService().logOut(context);
             },
           ),
+          const SizedBox(height: 20.0),
         ],
       ),
     );
