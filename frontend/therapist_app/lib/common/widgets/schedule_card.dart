@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/features/conference/conference.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 
 class ScheduleCard extends StatelessWidget {
   final String patientName;
-  final String appointmentDate;
+  final String appointmentTime;
+  final String appointmentEndTime;
+  final String status;
 
   ScheduleCard({
     required this.patientName,
-    required this.appointmentDate,
+    required this.appointmentTime,
+    required this.appointmentEndTime,
+    required this.status,
   });
 
   compareWithCurrentTime(String appointmentDateStr) {
@@ -55,81 +60,136 @@ class ScheduleCard extends StatelessWidget {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  patientName,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      patientName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(), // This will create maximum space
+                    Container(
+                      // color: Color.fromARGB(255, 184, 232, 171),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 2), // Set the desired background color
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Color.fromARGB(255, 194, 228, 184)),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 18.0,
+                            height: 18.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: status == 'online'
+                                  ? GlobalVariables.primarySwatch
+                                  : Colors.red,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 3.0,
+                                style: BorderStyle.solid,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            ' ${status} ',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: status == 'online'
+                                    ? GlobalVariables.primarySwatch
+                                    : Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  appointmentDate,
-                //  style: GoogleFonts.abel()
+                Row(
+                  children: [
+                    Text(
+                      appointmentTime,
+                      //  style: GoogleFonts.abel()
+                    ),
+                    Text(' - '),
+                    Text(
+                      appointmentEndTime,
+                      //  style: GoogleFonts.abel()
+                    ),
+                  ],
                 ),
               ],
             ),
             children: [
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Column(
                   children: [
-                    InkWell(
-                      onTap: () {
-                        // Handle cancel appointment
-                      },
-                      child: Container(
-                        width: 120,
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 217, 219, 222),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Complete",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black54,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            // Handle cancel appointment
+                          },
+                          child: Container(
+                            width: 120,
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 217, 219, 222),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Complete",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black54,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        // Handle reschedule appointment
-                        if (compareWithCurrentTime(appointmentDate) !=
-                            'Waiting') {
-                          jumpToMeetingPage(
-                            context,
-                            conferenceId: '1000000000',
-                            userName: user.name,
-                            userId: '${user.id}',
-                          );
-                        } else {
-                          showSnackBar(context, 'Please Waiting');
-                        }
-                      },
-                      child: Container(
-                        width: 120,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xff83de70),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${compareWithCurrentTime(appointmentDate)}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
+                        InkWell(
+                          onTap: () {
+                            // Handle reschedule appointment
+                            if (compareWithCurrentTime(appointmentTime) !=
+                                'Waiting') {
+                              jumpToMeetingPage(
+                                context,
+                                conferenceId: '1000000000',
+                                userName: user.name,
+                                userId: '${user.id}',
+                              );
+                            } else {
+                              showSnackBar(context, 'Please Waiting');
+                            }
+                          },
+                          child: Container(
+                            width: 120,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xff83de70),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${compareWithCurrentTime(appointmentTime)}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -147,11 +207,13 @@ class ScheduleCard extends StatelessWidget {
       required String userId}) {
     Navigator.push(
       context,
-      PageTransition(type:PageTransitionType.topToBottom, child:  VideoConferencePage(
-                conferenceID: conferenceId,
-                userName: userName,
-                userId: userId,
-              )),
+      PageTransition(
+          type: PageTransitionType.topToBottom,
+          child: VideoConferencePage(
+            conferenceID: conferenceId,
+            userName: userName,
+            userId: userId,
+          )),
     );
   }
 }
