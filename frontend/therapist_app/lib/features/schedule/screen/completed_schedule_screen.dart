@@ -67,11 +67,11 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
             Column(
               children: scheduleData.map((schedule) {
                 return ScheduleCard(
-                  patientName: schedule['patient_name'],
-                  appointmentDate: formatAppointmentDateTime(
-                      schedule['appointment_datetime']),
-                  // appointmentTime: schedule['appointment_time'],
-                  // status: schedule['status'],
+                  patientName: schedule['full_name'],
+                  appointmentTime: formatAppointmentDateTime(
+                      schedule['session_time']),
+                  appointmentEndTime: schedule['session_end_time'],
+                  status: schedule['account_status'],
                 );
               }).toList(),
             ),
