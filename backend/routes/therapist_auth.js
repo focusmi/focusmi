@@ -37,7 +37,7 @@ authRouterTherapist.post('/apis/signin', async (req, res) => {
       return res.status(400).json({ msg: 'Invalid password!' });
     }
 
-    const token =  jwt.sign({id:user.admin_user_ID}, "passwordKey");
+    const token =  jwt.sign({id:user.user_id}, "passwordKey");
     res.json({ success: true,token, ...user});
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -60,13 +60,13 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
 
 authRouterTherapist.put('/apis/user/:id',validation.validateInput, validation.validate, auth, async (req, res) => {
   try {
-    const {user_name ,email,years_of_experience,phone_number,about} = JSON.parse(req.body);
+    const {full_name ,email,years_of_experience,phone_number,about} = JSON.parse(req.body);
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
     const id = {id: req.params.id }.id
-    const updatedUser = await User.updateUser(id, user_name, email, years_of_experience,phone_number,about);
+    const updatedUser = await User.updateUser(id, full_name, email, years_of_experience,phone_number,about);
     res.json({ success: true, msg: 'User updated successfully!', user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
