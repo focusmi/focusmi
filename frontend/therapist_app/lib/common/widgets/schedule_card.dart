@@ -76,7 +76,9 @@ class ScheduleCard extends StatelessWidget {
                           vertical: 2), // Set the desired background color
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          color: Color.fromARGB(255, 194, 228, 184)),
+                          color: status == 'online'
+                              ? Color.fromARGB(255, 205, 242, 194)
+                              : Color.fromARGB(255, 241, 210, 208)),
                       child: Row(
                         children: [
                           Container(
@@ -109,6 +111,13 @@ class ScheduleCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 5),
+                const Divider(
+                  height: 15,
+                  thickness: 1,
+                  indent: 0,
+                  endIndent: 0,
+                  color: Color.fromARGB(255, 182, 181, 181),
+                ),
                 Row(
                   children: [
                     Text(
@@ -126,70 +135,80 @@ class ScheduleCard extends StatelessWidget {
             ),
             children: [
               Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            // Handle cancel appointment
-                          },
-                          child: Container(
-                            width: 120,
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 217, 219, 222),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Complete",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black54,
+                    const Divider(
+                      height: 5,
+                      thickness: 1,
+                      indent: 0,
+                      endIndent: 50,
+                      color: Color.fromARGB(255, 182, 181, 181),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              // Handle cancel appointment
+                            },
+                            child: Container(
+                              width: 120,
+                              padding: EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Color.fromARGB(255, 217, 219, 222),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "Complete",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black54,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            // Handle reschedule appointment
-                            if (compareWithCurrentTime(appointmentTime) !=
-                                'Waiting') {
-                              jumpToMeetingPage(
-                                context,
-                                conferenceId: '1000000000',
-                                userName: user.name,
-                                userId: '${user.id}',
-                              );
-                            } else {
-                              showSnackBar(context, 'Please Waiting');
-                            }
-                          },
-                          child: Container(
-                            width: 120,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff83de70),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${compareWithCurrentTime(appointmentTime)}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                          InkWell(
+                            onTap: () {
+                              // Handle reschedule appointment
+                              if (compareWithCurrentTime(appointmentTime) !=
+                                  'Waiting') {
+                                jumpToMeetingPage(
+                                  context,
+                                  conferenceId: '1000000000',
+                                  userName: user.name,
+                                  userId: '${user.id}',
+                                );
+                              } else {
+                                showSnackBar(context, 'Please Waiting');
+                              }
+                            },
+                            child: Container(
+                              width: 120,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff83de70),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${compareWithCurrentTime(appointmentTime)}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
