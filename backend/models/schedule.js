@@ -4,9 +4,8 @@ const Schedule = {
 
   createSchedule: async (adminUserID, fee, sessionTime, sessionEndTime) => {
     try {
-      const query = `INSERT INTO new_therapy_session ("admin_user_ID", fee, session_time, session_end_time) 
-                     VALUES (${adminUserID}, ${fee}, '${sessionTime}','${sessionEndTime}')`;
-      console.log(query)
+      const query = `INSERT INTO therapy_session ("user_id", fee, session_time, session_end_time) 
+                     VALUES (${adminUserID},${fee},'${sessionTime}','${sessionEndTime}')`;
       const insertedSchedule = await pool.cQuery(query);
       return insertedSchedule;
     } catch (error) {
@@ -15,8 +14,8 @@ const Schedule = {
   },
 
   getScheduleDateTime: async (userId) => {
-    try { 
-      const query = `SELECT * FROM new_therapy_session WHERE "admin_user_ID" = '${userId}'`;
+    try {
+      const query = `SELECT * FROM therapy_session WHERE "user_id" = '${userId}'`;
       const scheduleDateTime = await pool.cQuery(query);
       return scheduleDateTime;
     } catch (error) {
@@ -26,7 +25,25 @@ const Schedule = {
 
   getScheduleDataForUser: async (userId) => {
     try {
-      const query = `SELECT * FROM appointments WHERE admin_user_id = '${userId}'`;
+      const query = `SELECT
+      a."appointment_id",
+      a."user_id",
+      a."session_id",
+      u."username",
+      u."account_status",
+      u."full_name",
+      u."email",
+      s."session_time",
+      s."session_end_time"
+  FROM
+      appointment AS a
+  JOIN
+      therapy_session AS s ON a."session_id" = s."session_id"
+  JOIN
+      application_user AS u ON a."user_id" = u."user_id"
+  WHERE
+      s."user_id" = ${userId};
+  `;
       const scheduleData = await pool.cQuery(query);
       return scheduleData;
     } catch (error) {
@@ -36,7 +53,7 @@ const Schedule = {
 
   deleteScheduleData: async (scheduleID) => {
     try {
-      const query = `DELETE FROM appointments WHERE '${scheduleID}' = $1`;
+      const query = `DELETE FROM appointment WHERE '${scheduleID}' = $1`;
       await pool.cQuery(query);
       console.log('Schedule deleted successfully');
     } catch (error) {
