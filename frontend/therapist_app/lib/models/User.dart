@@ -7,7 +7,7 @@ class User {
   final String password;
   final String mobile;
   final int clients;
-  final int experience;
+  final String experience;
   final String about;
   final String status;
   // final String address;
@@ -29,8 +29,8 @@ class User {
 
   Map<String, dynamic> toMap() {
     return {
-      'admin_user_ID': id,
-      'user_name': name,
+      'user_id': id,
+      'full_name': name,
       'email': email,
       'password': password,
       // 'address': address,
@@ -45,16 +45,16 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-        id: map['admin_user_ID'] ?? 0,
-        name: map['user_name'].toString() ?? '',
+        id: map['user_id'] ?? 0,
+        name: map['full_name'].toString() ?? '',
         email: map['email'].toString() ?? '',
         password: map['password'].toString() ?? '',
         token: map['token'].toString() ?? '',
         clients: map['tot_clients'] ?? 0,
         about: map['about'].toString() ?? '',
-        experience: map['years_of_experience'] ?? 0,
+        experience: map['years_of_experience'] ?? '',
         mobile: map['phone_number'].toString() ?? '',
-        status: map['account_status'] ?? 'offline');
+        status: map['account_status'] ?? '');
   }
 
   String toJson() => json.encode(toMap());
