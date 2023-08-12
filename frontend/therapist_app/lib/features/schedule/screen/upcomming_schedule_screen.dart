@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../../provider/user_provider.dart';
 
-enum ScheduleFilter {All, Today, Past, Next } // Added 'Next'
+enum ScheduleFilter { All, Today, Past, Next } // Added 'Next'
 
 class UpcomingScheduleScreen extends StatefulWidget {
   @override
@@ -31,6 +31,11 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
         ', ' +
         DateFormat('hh:mm a').format(dateTime);
   }
+
+  String formatAppointmentTime(String isoDateTime) {
+  DateTime dateTime = DateTime.parse(isoDateTime);
+  return DateFormat('hh:mm a').format(dateTime);
+}
 
   Future<void> fetchScheduleData() async {
     try {
@@ -180,63 +185,64 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
           else
             scheduleData
                   .where((schedule) {
-                    if (selectedFilter == ScheduleFilter.Today) {
-                      final now = DateTime.now();
-                      final appointmentDateTime =
-                          DateTime.parse(schedule['appointment_datetime']);
-                      return appointmentDateTime.day == now.day &&
-                          appointmentDateTime.month == now.month &&
-                          appointmentDateTime.year == now.year;
-                    } else if (selectedFilter == ScheduleFilter.Past) {
-                      return DateTime.parse(schedule['appointment_datetime'])
-                          .isBefore(DateTime.now());
-                    } else if (selectedFilter == ScheduleFilter.Next) {
-                      // Added 'Next'
-                      return DateTime.parse(schedule['appointment_datetime'])
-                          .isAfter(DateTime.now());
-                    }
-                    return true; // Show all by default
+              if (selectedFilter == ScheduleFilter.Today) {
+                final now = DateTime.now();
+                final appointmentDateTime =
+                    DateTime.parse(schedule['session_time']);
+                return appointmentDateTime.day == now.day &&
+                    appointmentDateTime.month == now.month &&
+                    appointmentDateTime.year == now.year;
+              } else if (selectedFilter == ScheduleFilter.Past) {
+                return DateTime.parse(schedule['session_time'])
+                    .isBefore(DateTime.now());
+              } else if (selectedFilter == ScheduleFilter.Next) {
+                // Added 'Next'
+                return DateTime.parse(schedule['session_time'])
+                    .isAfter(DateTime.now());
+              }
+              return true; // Show all by default
                   })
                   .isEmpty // Check if the filtered list is empty
-              ? Center(
-              child: Container(
-                height: 200,
-                margin: const EdgeInsets.only(top: 100),
+                ? Center(
+                    child: Container(
+                      height: 200,
+                      margin: const EdgeInsets.only(top: 100),
                 child:
                     Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
-              ),
-            )
-              : Column(
+                    ),
+                  )
+                : Column(
                   children: scheduleData
                       .where((schedule) {
-                        if (selectedFilter == ScheduleFilter.Today) {
-                          final now = DateTime.now();
-                          final appointmentDateTime =
-                              DateTime.parse(schedule['appointment_datetime']);
-                          return appointmentDateTime.day == now.day &&
-                              appointmentDateTime.month == now.month &&
-                              appointmentDateTime.year == now.year;
-                        } else if (selectedFilter == ScheduleFilter.Past) {
-                          return DateTime.parse(schedule['appointment_datetime'])
-                              .isBefore(DateTime.now());
-                        } else if (selectedFilter == ScheduleFilter.Next) {
-                          // Added 'Next'
-                          return DateTime.parse(schedule['appointment_datetime'])
-                              .isAfter(DateTime.now());
-                        }
-                        return true; // Show all by default
+                      if (selectedFilter == ScheduleFilter.Today) {
+                        final now = DateTime.now();
+                        final appointmentDateTime =
+                            DateTime.parse(schedule['session_time']);
+                        return appointmentDateTime.day == now.day &&
+                            appointmentDateTime.month == now.month &&
+                            appointmentDateTime.year == now.year;
+                      } else if (selectedFilter == ScheduleFilter.Past) {
+                        return DateTime.parse(schedule['session_time'])
+                            .isBefore(DateTime.now());
+                      } else if (selectedFilter == ScheduleFilter.Next) {
+                        // Added 'Next'
+                        return DateTime.parse(schedule['session_time'])
+                            .isAfter(DateTime.now());
+                      }
+                      return true; // Show all by default
                       })
                       .map((schedule) {
-                        return ScheduleCard(
-                          patientName: schedule['patient_name'],
-                          appointmentDate: formatAppointmentDateTime(
-                              schedule['appointment_datetime']),
-                          // appointmentTime: schedule['appointment_time'],
-                          // status: schedule['status'],
-                        );
+                      return ScheduleCard(
+                        patientName: schedule['full_name'],
+                        appointmentTime:
+                            formatAppointmentDateTime(schedule['session_time']),
+                        appointmentEndTime: formatAppointmentTime(
+                            schedule['session_end_time']),
+                        status: schedule['account_status'],
+                      );
                       })
                       .toList(),
-                ),
+                  ),
         ],
       ),
     );
