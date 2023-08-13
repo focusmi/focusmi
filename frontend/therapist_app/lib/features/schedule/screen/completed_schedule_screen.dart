@@ -28,6 +28,11 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
         DateFormat('hh:mm a').format(dateTime);
   }
 
+  String formatAppointmentTime(String isoDateTime) {
+    DateTime dateTime = DateTime.parse(isoDateTime);
+    return DateFormat('hh:mm a').format(dateTime);
+  }
+
   Future<void> fetchScheduleData() async {
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -44,6 +49,9 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final completedScheduleData =
+        scheduleData.where((schedule) => schedule['complete'] == true).toList();
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -55,7 +63,7 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 15),
-          if (scheduleData.isNotEmpty)
+          if (completedScheduleData.isEmpty)
             Center(
               child: Container(
                   height: 200,
@@ -65,13 +73,14 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
             )
           else
             Column(
-              children: scheduleData.map((schedule) {
-                return ScheduleCard(
+              children: completedScheduleData.map((schedule) {
+                return CompleteScheduleCard(
                   patientName: schedule['full_name'],
-                  appointmentTime: formatAppointmentDateTime(
-                      schedule['session_time']),
-                  appointmentEndTime: schedule['session_end_time'],
-                  status: schedule['account_status'],
+                  appointmentTime:
+                      formatAppointmentDateTime(schedule['session_time']),
+                  appointmentEndTime:
+                      formatAppointmentTime(schedule['session_end_time']),
+                  complete: schedule['complete'],
                 );
               }).toList(),
             ),

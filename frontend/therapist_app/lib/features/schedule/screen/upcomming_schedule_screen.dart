@@ -65,6 +65,8 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final UpcomingScheduleData =
+        scheduleData.where((schedule) => schedule['complete'] == false).toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -181,7 +183,7 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
             Center(
               child: CircularProgressIndicator(),
             )
-          else if (scheduleData.isEmpty)
+          else if (UpcomingScheduleData.isEmpty)
             Center(
               child: Container(
                 height: 200,
@@ -191,7 +193,7 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
               ),
             )
           else
-            scheduleData.where((schedule) {
+            UpcomingScheduleData.where((schedule) {
               if (selectedFilter == ScheduleFilter.Today) {
                 final now = DateTime.now();
                 final appointmentDateTime =
@@ -218,7 +220,7 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                     ),
                   )
                 : Column(
-                    children: scheduleData.where((schedule) {
+                    children: UpcomingScheduleData.where((schedule) {
                       if (selectedFilter == ScheduleFilter.Today) {
                         final now = DateTime.now();
                         final appointmentDateTime =
