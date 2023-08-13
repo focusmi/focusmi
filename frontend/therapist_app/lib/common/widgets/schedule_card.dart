@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/features/conference/conference.dart';
+import 'package:therapist_app/features/schedule/service/scheduleservice.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 
 class ScheduleCard extends StatelessWidget {
@@ -13,12 +14,20 @@ class ScheduleCard extends StatelessWidget {
   final String appointmentTime;
   final String appointmentEndTime;
   final String status;
+  final String appointmentEndDateTime;
+  final bool complete;
+  final int appointmentId;
+  final Function() onAppointmentCompleted;
 
   ScheduleCard({
     required this.patientName,
     required this.appointmentTime,
     required this.appointmentEndTime,
     required this.status,
+    required this.complete,
+    required this.appointmentEndDateTime,
+    required this.appointmentId,
+    required this.onAppointmentCompleted,
   });
 
   compareWithCurrentTime(String appointmentDateStr) {
@@ -36,6 +45,19 @@ class ScheduleCard extends StatelessWidget {
     }
   }
 
+  compareTime(String appointmentDateStr) {
+    DateFormat format = DateFormat("yyyy-MM-dd, hh:mm a");
+    DateTime appointmentDate = format.parse(appointmentDateStr);
+
+    DateTime now = DateTime.now();
+
+    if (appointmentDate.isBefore(now)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
@@ -46,7 +68,7 @@ class ScheduleCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         elevation: 4,
-        color: Color.fromARGB(255, 243, 247, 248),
+        color: const Color.fromARGB(255, 243, 247, 248),
         child: Theme(
           data: Theme.of(context).copyWith(
             dividerColor: Colors.transparent, // Remove the divider line
@@ -56,7 +78,7 @@ class ScheduleCard extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            backgroundColor: Color.fromARGB(255, 243, 247, 248),
+            backgroundColor: const Color.fromARGB(255, 243, 247, 248),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -68,17 +90,17 @@ class ScheduleCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Spacer(), // This will create maximum space
+                    const Spacer(), // This will create maximum space
                     Container(
                       // color: Color.fromARGB(255, 184, 232, 171),
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 2), // Set the desired background color
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: status == 'online'
-                              ? Color.fromARGB(255, 205, 242, 194)
-                              : Color.fromARGB(255, 241, 210, 208)),
+                              ? const Color.fromARGB(255, 205, 242, 194)
+                              : const Color.fromARGB(255, 241, 210, 208)),
                       child: Row(
                         children: [
                           Container(
@@ -124,7 +146,7 @@ class ScheduleCard extends StatelessWidget {
                       appointmentTime,
                       //  style: GoogleFonts.abel()
                     ),
-                    Text(' - '),
+                    const Text(' - '),
                     Text(
                       appointmentEndTime,
                       //  style: GoogleFonts.abel()
@@ -135,7 +157,8 @@ class ScheduleCard extends StatelessWidget {
             ),
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
                 child: Column(
                   children: [
                     const Divider(
@@ -146,33 +169,11 @@ class ScheduleCard extends StatelessWidget {
                       color: Color.fromARGB(255, 182, 181, 181),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(
+                          left: 5, top: 8, bottom: 8, right: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              // Handle cancel appointment
-                            },
-                            child: Container(
-                              width: 120,
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 217, 219, 222),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  "Complete",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
                           InkWell(
                             onTap: () {
                               // Handle reschedule appointment
@@ -202,6 +203,62 @@ class ScheduleCard extends StatelessWidget {
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                     color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          Visibility(
+                            visible: !complete &&
+                                compareTime(appointmentEndDateTime),
+                            child: GestureDetector(
+                              onTap: () async {
+
+                                try {
+                                  final user = Provider.of<UserProvider>(
+                                          context,
+                                          listen: false)
+                                      .user;
+                                  final response =
+                                      await ScheduleService.completeAppointment(
+                                    appointmentId,
+                                    user.token,
+                                  );
+
+                                  if (response.statusCode == 200) {
+                                    onAppointmentCompleted();
+                                    showSnackBar(context,
+                                        'Appointment complete successfully');
+                                    // Successfully completed the appointment, you can perform any necessary actions here
+                                  } else {
+                                    showSnackBar(context,
+                                        'Failed to complete Appointment');
+                                    // Handle error response from the backend
+                                    // You can show a Snackbar or display an error message
+                                  }
+                                } catch (e) {
+                                  // Handle exceptions that occurred during the request
+                                  // You can show a Snackbar or display an error message
+                                }
+                              },
+                              child: Container(
+                                width: 120,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 217, 219, 222),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: const Center(
+                                  child: Text(
+                                    "Complete",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black54,
+                                    ),
                                   ),
                                 ),
                               ),
