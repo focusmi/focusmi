@@ -58,9 +58,9 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
   }
 });
 
-authRouterTherapist.put('/apis/user/:id',validation.validateInput, validation.validate, auth, async (req, res) => {
+authRouterTherapist.put('/apis/user/:id',auth, async (req, res) => {
   try {
-    const {full_name ,email,years_of_experience,phone_number,about} = JSON.parse(req.body);
+    const {full_name ,email,years_of_experience,phone_number,about} = req.body;
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
