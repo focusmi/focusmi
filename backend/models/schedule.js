@@ -43,7 +43,7 @@ const Schedule = {
   JOIN
       application_user AS u ON a."user_id" = u."user_id"
   WHERE
-      s."user_id" = ${userId} AND a."complete" = 'false'
+      s."user_id" = ${userId}
   `;
       const scheduleData = await pool.cQuery(query);
       return scheduleData;
