@@ -88,7 +88,7 @@ class AuthService {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       final user = userProvider.user;
 
-      final updatedUser = User(
+      final User updatedUser = User(
         id: user.id,
         name: field == 'Full Name' ? value : user.name,
         email: field == 'Email' ? value : user.email,
@@ -101,12 +101,19 @@ class AuthService {
         status: user.status,
       );
 
-      final String userJson =
-          jsonEncode(updatedUser); // Serialize updated user to JSON string
-
       final res = await http.put(
         Uri.parse('$uri/apis/user/${user.id}'),
-        body: userJson,
+        body: jsonEncode({
+          'user_id': updatedUser.id,
+          'full_name': updatedUser.name,
+          'email': updatedUser.email,
+          'password': updatedUser.password,
+          'tot_clients': updatedUser.clients,
+          'about': updatedUser.about,
+          'years_of_experience': updatedUser.experience,
+          'phone_number': updatedUser.mobile,
+          'account_status': updatedUser.status,
+        }),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token':
