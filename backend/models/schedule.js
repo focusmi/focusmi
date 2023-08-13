@@ -29,6 +29,7 @@ const Schedule = {
       a."appointment_id",
       a."user_id",
       a."session_id",
+      a."complete",
       u."username",
       u."account_status",
       u."full_name",
@@ -42,7 +43,7 @@ const Schedule = {
   JOIN
       application_user AS u ON a."user_id" = u."user_id"
   WHERE
-      s."user_id" = ${userId};
+      s."user_id" = ${userId} AND a."complete" = 'false'
   `;
       const scheduleData = await pool.cQuery(query);
       return scheduleData;
@@ -58,6 +59,16 @@ const Schedule = {
       console.log('Schedule deleted successfully');
     } catch (error) {
       throw new Error('Error deleting schedule data:', error);
+    }
+  },
+
+  completeAppointment:async (appointmentId) =>{
+    try {
+      const query = `UPDATE appointment SET "complete" = 'true' WHERE  "appointment_id" = '${appointmentId}'`;
+      await pool.cQuery(query);
+      console.log('Appointment complete successfully');
+    } catch (error) {
+      throw new Error('Error completing appointment:', error);
     }
   }
 };
