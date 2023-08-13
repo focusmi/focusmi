@@ -61,7 +61,6 @@ class User {
 
   factory User.fromJson(String source) {
     Map<String, dynamic> map = json.decode(source);
-    print(map);
     return User.fromMap(map);
   }
 }
