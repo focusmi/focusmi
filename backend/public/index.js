@@ -27,8 +27,7 @@ app.use(cors({
 }))
 
 app.use(cors())
-// app.use(express.json())
-app.use(express.json({ limit: '10mb', extended: true, strict: false }));
+app.use(express.json())
 app.use(express.urlencoded({extended: true}))//url encoded bodies)
 app.use(bodyParser.json())
 app.use(express.static('public'))
