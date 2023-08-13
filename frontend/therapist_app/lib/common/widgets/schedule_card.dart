@@ -293,3 +293,133 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
+
+
+class CompleteScheduleCard extends StatelessWidget {
+  final String patientName;
+  final String appointmentTime;
+  final String appointmentEndTime;
+  // final String status;
+  // final String appointmentEndDateTime;
+  final bool complete;
+  // final int appointmentId;
+
+  CompleteScheduleCard({
+    required this.patientName,
+    required this.appointmentTime,
+    required this.appointmentEndTime,
+    // required this.status,
+    required this.complete,
+    // required this.appointmentEndDateTime,
+  });
+
+  compareWithCurrentTime(String appointmentDateStr) {
+    DateFormat format = DateFormat("yyyy-MM-dd, hh:mm a");
+    DateTime appointmentDate = format.parse(appointmentDateStr);
+
+    DateTime now = DateTime.now();
+
+    if (appointmentDate.isBefore(now)) {
+      return "Time Pasted";
+    } else if (appointmentDate.isAfter(now)) {
+      return "Waiting";
+    } else {
+      return "Join";
+    }
+  }
+
+  compareTime(String appointmentDateStr) {
+    DateFormat format = DateFormat("yyyy-MM-dd, hh:mm a");
+    DateTime appointmentDate = format.parse(appointmentDateStr);
+
+    DateTime now = DateTime.now();
+
+    if (appointmentDate.isBefore(now)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 4,
+        color: const Color.fromARGB(255, 243, 247, 248),
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            dividerColor: Colors.transparent, // Remove the divider line
+            expansionTileTheme: ExpansionTileThemeData(),
+
+          ),
+          child: ExpansionTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            backgroundColor: const Color.fromARGB(255, 243, 247, 248),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      patientName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      appointmentTime,
+                    ),
+                    const Text(' - '),
+                    Text(
+                      appointmentEndTime,
+                      //  style: GoogleFonts.abel()
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                child: Column(
+                  children: [
+                    const Divider(
+                      height: 5,
+                      thickness: 1,
+                      indent: 0,
+                      endIndent: 50,
+                      color: Color.fromARGB(255, 182, 181, 181),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 5, top: 8, bottom: 8, right: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+}
