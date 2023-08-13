@@ -34,4 +34,14 @@ ScheduleRouter.get('/apis/schedule/time/:userId', auth, async (req, res) => {
   }
 });
 
+ScheduleRouter.put('/apis/schedule/complete/:appointmentId', auth, async (req, res) => {
+  try {
+    const appointmentId = req.params.appointmentId;
+    await Schedule.completeAppointment(appointmentId);
+    res.json({ success: true, msg: 'Appointment successfully!' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = ScheduleRouter;
