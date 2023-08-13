@@ -60,7 +60,8 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
           const SizedBox(height: 20),
           const Text(
             "Appointments",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 20, 
+            fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 15),
           if (completedScheduleData.isEmpty)

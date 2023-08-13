@@ -210,7 +210,7 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                     .isAfter(DateTime.now());
               }
               return true; // Show all by default
-            }).isEmpty // Check if the filtered list is empty
+            }).isEmpty
                 ? Center(
                     child: Container(
                       height: 200,
