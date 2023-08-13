@@ -33,9 +33,9 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
   }
 
   String formatAppointmentTime(String isoDateTime) {
-  DateTime dateTime = DateTime.parse(isoDateTime);
-  return DateFormat('hh:mm a').format(dateTime);
-}
+    DateTime dateTime = DateTime.parse(isoDateTime);
+    return DateFormat('hh:mm a').format(dateTime);
+  }
 
   Future<void> fetchScheduleData() async {
     try {
@@ -53,6 +53,14 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
         isLoading = false;
       });
     }
+  }
+
+  void _handleAppointmentCompleted() {
+    // Update the page state as needed
+    setState(() {
+      // Update your data or perform any necessary actions
+      fetchScheduleData();
+    });
   }
 
   @override
@@ -183,8 +191,7 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
               ),
             )
           else
-            scheduleData
-                  .where((schedule) {
+            scheduleData.where((schedule) {
               if (selectedFilter == ScheduleFilter.Today) {
                 final now = DateTime.now();
                 final appointmentDateTime =
@@ -201,19 +208,17 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                     .isAfter(DateTime.now());
               }
               return true; // Show all by default
-                  })
-                  .isEmpty // Check if the filtered list is empty
+            }).isEmpty // Check if the filtered list is empty
                 ? Center(
                     child: Container(
                       height: 200,
                       margin: const EdgeInsets.only(top: 100),
-                child:
-                    Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
+                      child: Lottie.asset('assets/images/Comp.json',
+                          fit: BoxFit.cover),
                     ),
                   )
                 : Column(
-                  children: scheduleData
-                      .where((schedule) {
+                    children: scheduleData.where((schedule) {
                       if (selectedFilter == ScheduleFilter.Today) {
                         final now = DateTime.now();
                         final appointmentDateTime =
@@ -230,18 +235,21 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                             .isAfter(DateTime.now());
                       }
                       return true; // Show all by default
-                      })
-                      .map((schedule) {
+                    }).map((schedule) {
                       return ScheduleCard(
                         patientName: schedule['full_name'],
                         appointmentTime:
                             formatAppointmentDateTime(schedule['session_time']),
-                        appointmentEndTime: formatAppointmentTime(
-                            schedule['session_end_time']),
+                        appointmentEndTime:
+                            formatAppointmentTime(schedule['session_end_time']),
                         status: schedule['account_status'],
+                        appointmentEndDateTime: formatAppointmentDateTime(
+                            schedule['session_end_time']),
+                        complete: schedule['complete'],
+                        appointmentId: schedule['appointment_id'],
+                        onAppointmentCompleted: _handleAppointmentCompleted,
                       );
-                      })
-                      .toList(),
+                    }).toList(),
                   ),
         ],
       ),
