@@ -23,4 +23,25 @@ class ScheduleService {
       throw Exception('Error fetching schedule data: $e');
     }
   }
+
+  static Future<http.Response> completeAppointment(
+    int appointmentId,
+    String userToken,
+  ) async {
+    print(userToken);
+    try {
+      final response = await http.put(
+        Uri.parse('$uri/apis/schedule/complete/$appointmentId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': userToken,
+        },
+      );
+      print(response.statusCode);
+
+      return response;
+    } catch (e) {
+      throw Exception('Error completing appointment: $e');
+    }
+  }
 }
