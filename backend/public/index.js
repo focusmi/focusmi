@@ -15,7 +15,7 @@ const pool = require("../database/dbconnection");
 const gTaskRoutes = require("../routes/group_task_planner");
 const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
-
+const appointmentRouter = require("../routes/appointment"); 
 
 dotenv.config()
 
@@ -35,7 +35,7 @@ app.use(express.static('public'))
 app.use(assetRouter)
 app.use(authRoutes)
 app.use(gTaskRoutes)
-
+app.use(appointmentRouter)
 
 
 

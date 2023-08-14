@@ -18,12 +18,6 @@ class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => ViewAppointmentsModel());
-  //}
-
-  @override
   void dispose() {
     _model.dispose();
 

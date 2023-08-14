@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:test/add_appointment.dart';
 
@@ -8,7 +10,20 @@ import 'councillor_details_model.dart';
 export 'councillor_details_model.dart';
 
 class DetailsWidget extends StatefulWidget {
-  const DetailsWidget({Key? key}) : super(key: key);
+  final String name;
+  final String about;
+  final String experience;
+  final int totcustomer;
+  final int userId;
+
+  DetailsWidget({
+    Key? key,
+    required this.name,
+    required this.about,
+    required this.experience,
+    required this.totcustomer,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   _DetailsWidgetState createState() => _DetailsWidgetState();
@@ -18,12 +33,6 @@ class _DetailsWidgetState extends State<DetailsWidget> {
   late DetailsModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => DetailsModel());
-  //}
 
   @override
   void dispose() {
@@ -70,22 +79,18 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: Image.network(
-                      'https://picsum.photos/seed/621/600',
-                      fit: BoxFit.contain,
-                    ),
                   ),
                 ),
               ),
               Text(
-                'Dr. Adam Thompson',
+                '${widget.name}',
                 style: FlutterFlowTheme.of(context).bodyText1.override(
                       fontFamily: 'Readex Pro',
                       fontSize: 20,
                     ),
               ),
               Text(
-                'MBBS(Col)',
+                '${widget.about}',
                 style: FlutterFlowTheme.of(context).bodyText1.override(
                       fontFamily: 'Readex Pro',
                       color: const Color(0xFF505056),
@@ -118,12 +123,12 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '1000+ Patients',
+                    '${widget.totcustomer}+ Patients',
                     style: FlutterFlowTheme.of(context).bodyText1,
                   ),
                   const SizedBox(width: 20),
                   Text(
-                    '10 Yrs Experience',
+                    '${widget.experience} Yrs Experience',
                     style: FlutterFlowTheme.of(context).bodyText1,
                   ),
                   const SizedBox(width: 20),
@@ -195,7 +200,8 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const AppointmentPage(),
+                        builder: (context) =>
+                            AppointmentPage(userId: widget.userId),
                       ),
                     );
                   },
