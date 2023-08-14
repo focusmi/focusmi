@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String IP =  dotenv.get("IP", fallback:"");
 
-String uri = 'http://'+IP +':3002';
+String uri = 'http://'+IP +':3001';
 
 class GlobalVariables {
   static const secondaryColor = Color.fromRGBO(255, 153, 0, 1);

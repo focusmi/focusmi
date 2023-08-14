@@ -7,6 +7,7 @@ const {administrative_user} = require('../sequelize/models')
 
 //signup routes
 authRoutes.post('/api/signup', async (req,res,next)=>{
+    console.log('hi')
     const {username, email, password} = req.body;
     let User = new AuthUser(email, password, username);
     var result = await User.createUser();
@@ -27,6 +28,7 @@ authRoutes.post('/api/signup', async (req,res,next)=>{
 
 
 authRoutes.post('/api/admin-signin',async(req,res,next)=>{
+    console.log('hi')
     const {email,password} = req.body.user;
     let User = new AuthUser(email, password, '');
     var result = await User.checkAdminUser();
