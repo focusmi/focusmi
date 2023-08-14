@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       session_time: {
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       session_end_time: {
         type: Sequelize.TIME

@@ -13,7 +13,7 @@ class FormTextField{
                       hintStyle:const TextStyle(color:Color.fromARGB(255, 161, 161, 161) ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:const BorderSide(color:GlobalVariables.textFieldBgColor ),
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(20.0)
                       )
                   ),
                   obscureText: ob,

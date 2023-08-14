@@ -61,8 +61,23 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
   void removeMemberApi(groupid, userid)async{
     try{
       var member = await GroupService.removeGroupMember(groupid, userid);
+      GroupService.getGroupMember(groupid).then((response){
       setState(() {
-        getMembersFromApi(groupid);
+        try{
+          Iterable list =json.decode(response.body).cast<Map<String, dynamic>>();
+          memberList = list.map((model)=>GroupMember.fromJson(model)).toList();
+          for(var element in memberList){
+            listInt.add(element.user_id);
+          }
+         
+         
+        }
+        catch(e){
+          memberList = List.empty();
+        }
+      });
+    });
+      setState(() {
         listInt.remove(userid);
       });
     }
@@ -91,9 +106,22 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
    
     try{
       GroupService.addGroupMember(widget.group.group_id, userID);
+      GroupService.getGroupMember(widget.group.group_id).then((response){
       setState(() {
-        getMembersFromApi(widget.group.group_id);
+        try{
+          Iterable list =json.decode(response.body).cast<Map<String, dynamic>>();
+          memberList = list.map((model)=>GroupMember.fromJson(model)).toList();
+          for(var element in memberList){
+            listInt.add(element.user_id);
+          }
+         
+         
+        }
+        catch(e){
+          memberList = List.empty();
+        }
       });
+    });
       listInt.add(userID);
     }
     catch(e){
@@ -182,9 +210,9 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      height:50,
+                                     
                                       child:  CircleAvatar(
-                                                radius: 40, //radius of avatar
+                                                radius: 30, //radius of avatar
                                                 backgroundColor: Colors.green, //color
                                                 backgroundImage:NetworkImage('$uri/api/assets/image/user-profs/profile-0.jpg'),
                                               
@@ -237,7 +265,7 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
                         hintStyle:const TextStyle(color:Color.fromARGB(255, 161, 161, 161),fontSize: 12),
                         enabledBorder: OutlineInputBorder(
                           borderSide:const BorderSide(color:GlobalVariables.textFieldBgColor ),
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(20.0)
                         )
                         ),
                         controller: _searchvalue,

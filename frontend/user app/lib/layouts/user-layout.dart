@@ -1,12 +1,13 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/appointment/screens/select_councillor.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/task_group.dart/screens/create_group.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 class LayOut{
-
+  
   Widget mainLayout(Widget widget){
     return Scaffold(
         appBar: AppBar(
@@ -136,6 +137,7 @@ class LayOut{
                 //selected: _selectedIndex == 2,
                 onTap: () {
                   // Update the state of the app
+                  Navigator.pushNamed(context, CounselorsListWidget.routeName);
                 // _onItemTapped(2);
                   // Then close the drawer
         
@@ -222,10 +224,8 @@ class LayOut{
                       ),
                       ),
                   ),
-              
-              
-              ListTile(
-                title: const Text('Home'),
+                ListTile(
+                title: const Text('Task Planner',style: TextStyle(fontSize: 15),),
                 //selected: _selectedIndex == 0,
                 onTap: () {
                   // Update the state of the app
@@ -235,7 +235,7 @@ class LayOut{
                 },
               ),
               ListTile(
-                title: const Text('Busines'),
+                title: const Text('Task Groups',style: TextStyle(fontSize: 15),),
                 //selected: _selectedIndex == 1,
                 onTap: () {
                   // Update the state of the app
@@ -245,7 +245,7 @@ class LayOut{
                 },
               ),
               ListTile(
-                title: const Text('School'),
+                title: const Text('Mindfulness Courses',style: TextStyle(fontSize: 15),),
                 //selected: _selectedIndex == 2,
                 onTap: () {
                   // Update the state of the app
@@ -254,6 +254,29 @@ class LayOut{
         
                 },
               ),
+              ListTile(
+                title: const Text('Meet Professional',style: TextStyle(fontSize: 15),),
+                //selected: _selectedIndex == 2,
+                onTap: () {
+                  // Update the state of the app
+                // _onItemTapped(2);
+                  Navigator.pushNamed(context, CounselorsListWidget.routeName);
+                  // Then close the drawer
+        
+                },
+                
+              ),
+                ListTile(
+                title: const Text('My Profile',style: TextStyle(fontSize: 15),),
+                //selected: _selectedIndex == 2,
+                onTap: () {
+                  // Update the state of the app
+                // _onItemTapped(2);
+                  // Then close the drawer
+        
+                },)
+              
+             
             ],
           ),
         ),
@@ -369,6 +392,7 @@ class LayOut{
                 onTap: () {
                   // Update the state of the app
                 // _onItemTapped(2);
+                  Navigator.pushNamed(context, CounselorsListWidget.routeName);
                   // Then close the drawer
         
                 },

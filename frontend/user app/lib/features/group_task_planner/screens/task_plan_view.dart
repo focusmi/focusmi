@@ -54,7 +54,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   }
 
   void addTask(){
-    var taskid  = tasks.length+1;
+    var taskid  = taskMap[entryTask.plan_id].length+1;
     setState(() {
       taskMap[entryTask.plan_id].add(
         Task(task_id: taskid, plan_id:entryTask.plan_id, timer_id: 0, duration: 0, task_status: 'pending' , priority:0, created_at: '2012-03-04', created_time: '', completed_date: '', completed_time: '', color: '', description: '', is_text_field: false,task_name:taskCreate.text )
@@ -176,8 +176,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                        controller: taskPlanControllers[index],
                                                                       ),
                                     )),
-                                  SizedBox(
-                               
+                                  SizedBox(                             
                                     child: ElevatedButton(
                                       child:Icon(Icons.check,color: Colors.white,),
                                       style: ElevatedButton.styleFrom(
@@ -194,19 +193,19 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                  ],
                               ),
                             ),
-                            SizedBox(height: 10,),
-                             Container( 
+                            const SizedBox(height: 10,),
+                            Container( 
                                 width: planWidth,
                                 child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: taskMap[taskPlans[index].plan_id].length,
                                 itemBuilder: (context, subindex){
-                                   return  Container(
+                                   return  ((taskMap[taskPlans[index].plan_id])[subindex].task_name!='')?Container(
                                     width:planWidth,
-                                    constraints: BoxConstraints(
+                                    constraints: const BoxConstraints(
                                       minHeight:70 ,
                                     ),
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       border: Border(
                                         bottom: BorderSide(
                                         color: GlobalVariables.textFieldBgColor
@@ -214,8 +213,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                         ),
                                       ),
                                       
-                                    ),
-                                        
+                                    ),                                        
                                     child:Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: GestureDetector(
@@ -223,9 +221,9 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                           Navigator.pushNamed(
                                             context,
                                             SingleTaskView.routeName,
-                                            arguments: (
-                                              taskMap[taskPlans[index].plan_id][subindex]
-                                            )
+                                              arguments: (
+                                                taskMap[taskPlans[index].plan_id][subindex]
+                                              )
                                             );
                                               },
                                               child:Container(
@@ -237,13 +235,13 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                      children: [
                                                       Radio(value: taskMap[taskPlans[index].plan_id][subindex].task_id, groupValue: "", onChanged: (value){
                                                         setState(() {
-                                                          taskMap[taskPlans[index].plan_id].removeWhere((element) => element.task_id ==value);
+                                                          taskMap[taskPlans[index].plan_id].removeWhere((element) => element.task_id==value);
                                                         });
                                                       }),
                                                        Container(
                                                          child: Text(
                                                           (taskMap[taskPlans[index].plan_id])[subindex].task_name,
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                             color: GlobalVariables.greyFontColor
                                                                                                    
                                                           ),
@@ -252,16 +250,15 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                        ),
                                                      ],
                                                    ),
-                                                 )
-                                                
+                                                 )                                         
                                               ),
                                             ),
                                     )
-                                        );
+                                        ):SizedBox(width: 0, height: 0,);
                                       }
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   (entryTask.plan_id != taskPlans[index].plan_id)?
@@ -299,7 +296,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                   ):
                                   Container(
                                     width: planWidth,
-                                          decoration: const BoxDecoration(
+                                          decoration: BoxDecoration(
                                             
                                             border: Border(
                                               bottom: BorderSide(

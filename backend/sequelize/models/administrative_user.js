@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     account_status: DataTypes.TEXT,
     years_of_experience: DataTypes.TEXT,
     tot_clients: DataTypes.INTEGER,
-    password:DataTypes.STRING
+    password:DataTypes.STRING,
+    title:DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'administrative_user',

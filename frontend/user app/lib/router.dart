@@ -1,3 +1,4 @@
+import "package:focusmi/features/appointment/screens/select_councillor.dart";
 import "package:focusmi/features/authentication/screens/auth_choic_screen.dart";
 import "package:focusmi/features/authentication/screens/auth_screen.dart";
 import "package:focusmi/features/authentication/screens/sigin_screen.dart";
@@ -69,6 +70,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
         builder:(context) => SingleTaskView(
           task:args
         ),
+      );
+    case CounselorsListWidget.routeName:
+     return MaterialPageRoute(
+        settings: routeSettings,
+        builder:(context) => CounselorsListWidget(),
       );
     default:
     return MaterialPageRoute(

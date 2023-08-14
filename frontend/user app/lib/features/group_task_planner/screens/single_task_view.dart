@@ -1,10 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/models/groupmembers.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:focusmi/widgets/texts.dart';
 
 class SingleTaskView extends StatefulWidget {
   static const routeName = '/single_task_view';
@@ -29,6 +32,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late Map<int, List<GroupMember>> _subTaskAllocation;
   late bool toggleInput;
   late TextEditingController _subtaskValue;
+  late DateTime dateTime;
+  late DateTime? showDateTime;
+  late DateTime now;
+  late TimeOfDay nowtime;
+  late TimeOfDay? showTime;
+  late Color? label;
 
   @override
   void initState() {
@@ -53,6 +62,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     toggleInput = false;
     _searchValue = TextEditingController();
     _subtaskValue = TextEditingController();
+
+    // fixed the date to taday\
+    now = DateTime.now();
+    dateTime = DateTime(now.year, now.month, now.day);
+    showDateTime = null;
+    showTime = null;
+    nowtime = TimeOfDay.now();
+    label = Colors.white;
   }
 
   void searchMember(text) {
@@ -66,7 +83,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         if (re.hasMatch(member.email.toLowerCase()) ||
             re.hasMatch(member.username.toLowerCase())) {
           setState(() {
-            print(member.username);
             showMemeberList.add(member);
           });
         }
@@ -100,7 +116,26 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void allocateMember(GroupMember member, subtask) {
     setState(() {
       _subTaskAllocation[subtask]?.add(member);
+      print(_subTaskAllocation);
     });
+  }
+
+  Future<DateTime?> pickDate() => showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(now.year-1, now.month, now.day), lastDate: DateTime(now.year+1, now.month, now.day));
+  Future<TimeOfDay?> pickTime() => showTimePicker(context: context, initialTime: nowtime);
+  void setSchedule()async{
+    DateTime? resultDate = await pickDate();
+    if(resultDate!=null){
+      TimeOfDay? resultTime = await pickTime();
+      setState(() {
+        showDateTime = resultDate;
+      });
+      if(resultDate!=null){
+        setState(() {
+          showTime = resultTime;
+        });
+      }
+    }
+
   }
 
   Widget _buildAddMemberPopup(BuildContext context, subtaskid) {
@@ -136,10 +171,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     }
                   },
                 ),
+                //member list
                 ListView.builder(
                     shrinkWrap: true,
                     itemCount: showMemeberList.length,
-                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
@@ -173,89 +208,375 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         context,
         SingleChildScrollView(
           child: Container(
-            child: Column(
-              children: [
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  Text("Task :" + widget.task.task_name),
-                  (widget.task.description != '')
-                      ? Text("Description" + widget.task.description)
-                      : SizedBox(
-                          width: 0,
-                          height: 0,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal:18.0,vertical: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      Container(
+                       width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          widget.task.task_name,
+                          style:TextStyle(
+                            fontSize: 24,
+                            color: GlobalVariables.greyFontColor
+                          ) 
+                          ),
+                      ),
+                      (widget.task.description != '')
+                          ? Text("Description" + widget.task.description)
+                          : SizedBox(
+                              width: 0,
+                              height: 0,
+                            ),
+                      Container(
+                          width:MediaQuery.of(context).size.width,
+                          child: Text("Created On :" + widget.task.created_at,style: TextStyle(
+                            color: GlobalVariables.greyFontColor
+                          ),)
                         ),
-                  Text("Created On :" + widget.task.created_at)
-                ]),
-                Container(
-                  child: Column(
-                    children: [
-                      ListView.builder(
-                          itemCount: subTasks.length,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              child: Column(
+                      Container(
+                        height: 10,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: label
+                        ),
+                      ),
+                    ]),
+                  ),
+                  SizedBox(height: 20,),
+                  Container(
+                    height: 85,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(
+                        color: GlobalVariables.textFieldBgColor,
+                        
+                      )
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:8.0, vertical: 10),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: const Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Text(subTasks[index].sub_label),
-                                      ElevatedButton(
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  _buildAddMemberPopup(
-                                                      context,
-                                                      memberList[index]
-                                                          .user_id),
-                                            );
-                                          },
-                                          child: const Icon(Icons.add))
-                                    ],
+                                  CircleAvatar(
+                                    
+                                   backgroundColor: Color.fromARGB(255, 123, 17, 211),
+                                    child: Icon(Icons.format_list_bulleted,color: Colors.white,)
                                   ),
-                                  ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount:_subTaskAllocation[subTasks[index].task_id]?.length,
-                                      itemBuilder: (context, subindex) {
-                                        return Text(_subTaskAllocation[subTasks[index].task_id]?[subindex].username ??'');
-                                      })
+                                  Text("Change Taskplan",style: TextStyle(color: GlobalVariables.greyFontColor, fontSize:12),)
                                 ],
                               ),
-                            );
-                          }),
-                      (toggleInput)
-                          ? Row(
-                              children: [
-                                SizedBox(
-                                  width: 100,
-                                  child: TextField(
-                                    controller: _subtaskValue,
+                      
+                            ),
+                            const SizedBox(width: 30,),
+                            
+                            Container(
+                              child: const Column(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: Colors.amber,
+                                   child:Icon(Icons.move_to_inbox,color: Colors.white,)
+                                  ),
+                                  Text("Add to My Tasks",style: TextStyle(color: GlobalVariables.greyFontColor, fontSize:12),)
+                                ],
+                              ),
+                      
+                            )
+                      
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                  ,
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: GlobalVariables.textFieldBgColor,
+                        
+                      )
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Row(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.label,color: GlobalVariables.greyFontColor,),
+                              SizedBox(width: 5,),
+                              Text("Label :",style:TextStyle(color:GlobalVariables.greyFontColor)),
+                              SizedBox(width: 20,),
+                              Container(
+                                width: 220,
+                                child: BlockPicker(onColorChanged: (color){
+                                  setState(() {
+                                    label= color;
+                                  });
+                                },pickerColor: Colors.white,),
+                              )
+                            ],
+                          ),
+                          SizedBox(),
+                          Container(width: 15,height: 5,)
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10,)
+                  ,
+                   Container(
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: GlobalVariables.textFieldBgColor,
+                        
+                      )
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10,),
+                          (showDateTime!=null)?
+                          Row(
+                                children: [
+                                  Icon(Icons.schedule,color: GlobalVariables.greyFontColor,),
+                                  SizedBox(width: 5,),
+                                  Text("Edit Deadline",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                    
+                                  ],
+                                ):SizedBox(width: 0,height: 0,) ,
+                          SizedBox(height:5),
+                          Row(
+                            
+                            children:[
+                              SizedBox(width: 5,),
+                              (showDateTime!=null)? CustomText.normalText('Date :'):SizedBox(width: 0,height: 0,),
+                               (showDateTime!=null)? CustomText.normalText("${showDateTime?.year}-${(showDateTime?.month).toString().padLeft(2,'0')}-${(showDateTime?.day).toString().padLeft(2,'0')}"):SizedBox(width: 0,height: 0,),
+                              (showDateTime!=null)?const SizedBox(width: 20,):SizedBox(width: 0,height: 0,),
+                              (showTime!=null)?CustomText.normalText('Time :'):SizedBox(width: 0,height: 0,),
+                              (showTime!=null)?CustomText.normalText("${(showTime?.hour)?.toString().padLeft(2,'0')}:${(showTime?.minute)?.toString().padLeft(2,'0')}"):SizedBox(width: 0,height: 0,),
+                    
+                              (showDateTime==null)?Row(
+                              children:[
+                              SizedBox(width: 5,),
+                              GestureDetector(
+                              onTap: (){
+                                setSchedule();
+                              }, child:Row(
+                                children: [
+                                  Icon(Icons.schedule,color: GlobalVariables.greyFontColor,),
+                                  SizedBox(width: 5,),
+                                  CustomText.normalText("Set Deadline"),
+                    
+                                  ],
+                                ) 
+                              ),]
+                              ):SizedBox(width: 0,height: 0,),
+                            SizedBox(width: 5,),
+                    
+                            ],
+                          ),
+                          SizedBox(height: 14,),
+                          Row(
+                            children: [
+                              SizedBox(width:0),
+                              Icon(Icons.add_location,color: GlobalVariables.greyFontColor,),
+                              SizedBox(width: 5,),
+                              Text("Add Location",style: TextStyle(
+                                color: GlobalVariables.greyFontColor
+                              ),)
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListView.builder(
+                            itemCount: subTasks.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical:4),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: GlobalVariables.textFieldBgColor,
+                              
+                                     )
+                                   ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 32,
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                child: CustomText.normalText(subTasks[index].sub_label),
+                                                width: 315,
+                                              ),
+                                              Container(
+                                                    child: GestureDetector(
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) =>
+                                                            _buildAddMemberPopup(
+                                                                context,
+                                                                subTasks[index].stack_id),
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      decoration: const BoxDecoration(
+                                                        color: Colors.white
+                                                      ),
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          color: GlobalVariables.primaryColor,
+                                                        ),
+                                                      ),
+                                                    )
+                                                    ),
+                                                  )
+                                              
+                                            ],
+                                          ),
+                                        ),
+                                        (_subTaskAllocation[subTasks[index].stack_id]?.length!=0)?Container(
+                                          height: 60,
+                                          decoration: const BoxDecoration(
+                                            border: Border(
+                                              top:BorderSide(
+                                                color: GlobalVariables.textFieldBgColor
+                                              )
+                                            )
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+                                            child: Row(
+                                                                              
+                                              children: [
+                                                Center(
+                                                  child: Container(
+                                                    width: 330,
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        scrollDirection: Axis.horizontal,
+                                                        itemCount:_subTaskAllocation[subTasks[index].task_id]?.length,
+                                                        itemBuilder: (context, subindex) {
+                                                          return Padding(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                            child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??''),
+                                                          );
+                                                        }),
+                                                  ),
+                                                ),
+                                                    
+                                              ],
+                                            ),
+                                          ),
+                                        ):SizedBox(width: 0,height: 0,)
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        addSubTask(_subtaskValue.text, 1);
-                                        _subtaskValue.text = '';
-                                        toggleInput = false;
-                                      });
-                                    },
-                                    child: const Text("Add"))
-                              ],
-                            )
-                          : GestureDetector(
-                              child: Container(
-                                child: const Text("Add Task"),
+                              );
+                            }),
+                        (toggleInput)
+                            ? Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: GlobalVariables.textFieldBgColor
+                                )
                               ),
-                              onTap: () {
-                                setState(() {
-                                  toggleInput = true;
-                                });
-                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical:8.0, horizontal:5),
+                                child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width*0.7,
+                                        child: TextField(
+                                          controller: _subtaskValue,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              addSubTask(_subtaskValue.text, 1);
+                                              _subtaskValue.text = '';
+                                              toggleInput = false;
+                                            });
+                                          },
+                                          child: Container(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: const Text("Add",style: TextStyle(
+                                                color:Colors.white
+                                              ),),
+                                            ),
+                                            
+                                            decoration: BoxDecoration(
+                                              color: GlobalVariables.primaryColor,
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                  color: GlobalVariables.textFieldBgColor
+                                              )
+                                            ),
+                                          ))
+
+                                    ],
+                                  ),
+                              ),
                             )
-                    ],
-                  ),
-                )
-              ],
+                            : GestureDetector(
+                                child: Container(
+                                  height: 50,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("+Add Sub Task",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                  ),
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    toggleInput = true;
+                                  });
+                                },
+                              )
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),

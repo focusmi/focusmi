@@ -83,14 +83,20 @@ class _GroupListState extends State<GroupList> {
                                 children: [
                                   Row(
                                     children: [ 
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("Group Name : ${characterList[index].group_name}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                                          Text("Member Count : ${characterList[index].member_count}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                                          Text("Created On : ${((characterList[index].created_at).split("T"))[0]}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                                          
-                                        ],
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Container(
+                                      
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Group : ${characterList[index].group_name}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                              Text("Member Count : ${characterList[index].member_count}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                              Text("Created On : ${((characterList[index].created_at).split("T"))[0]}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                              
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                           const SizedBox(width: 130),
                                           ElevatedButton(
