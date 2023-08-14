@@ -126,7 +126,7 @@ authRouterTherapist.get('/', auth, async(req,res)=>{
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../public/assets'));
+    cb(null, path.join(__dirname, '../public/assets/images'));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = req.params.id;
@@ -145,6 +145,8 @@ authRouterTherapist.post('/apis/upload-profile-pic/:id', auth, upload.single('pr
     }
 
     const profilePicPath = req.file.path; 
+    const id = req.params.id;
+    await User.uploadUserProfilePicture(id,profilePicPath);
 
     res.json({ success: true, msg: 'Profile picture uploaded successfully!' });
   } catch (err) {
@@ -153,21 +155,19 @@ authRouterTherapist.post('/apis/upload-profile-pic/:id', auth, upload.single('pr
 });
 
 
-authRouterTherapist.get('/apis/user/:id/profile-picture', auth, async (req, res) => {
+authRouterTherapist.get('/apis/user/profile-picture/:id', auth, async (req, res) => {
   try {
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
-
-    const profilePictureUrl = user.profile_picture; // Change this to the actual field name in your User model
-    print(profilePictureUrl);
+    const profilePictureUrl = await User.fetchUserProfilePicture(req.params.id); // Change this to the actual field name in your User model
 
     if (!profilePictureUrl) {
       return res.status(404).json({ msg: 'Profile picture not found for this user!' });
     }
 
-    res.json({ success: true, profilePictureUrl });
+    res.json(profilePictureUrl);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

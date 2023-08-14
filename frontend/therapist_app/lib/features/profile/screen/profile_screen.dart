@@ -269,7 +269,8 @@ class _ProfilePicState extends State<ProfilePic> {
             backgroundImage: _selectedImage != null
                 ? FileImage(_selectedImage!)
                 : (_profilePictureUrl != null
-                    ? NetworkImage(_profilePictureUrl!)
+                    // ? NetworkImage(_profilePictureUrl!)
+                    ?const AssetImage("assets/images/doctor1.jpg")
                     : const AssetImage("assets/images/doctor1.jpg")
                         as ImageProvider<Object>),
           ),

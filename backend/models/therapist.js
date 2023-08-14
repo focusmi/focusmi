@@ -57,7 +57,27 @@ const User = {
     } catch (error) {
       throw new Error('Error updating user password:', error);
     }
-  }
+  },
+
+  uploadUserProfilePicture: async (id,filePath) => {
+    try {
+      const query = `UPDATE  administrative_user SET profile_image = '${filePath}'  WHERE "user_id" = '${id}'`;
+      await pool.cQuery(query);
+      console.log('Profile picture upload successfully');
+    } catch (error) {
+      throw new Error('Error uploading profile picture:', error);
+    }
+  },
+
+  fetchUserProfilePicture: async (id) => {
+    try {
+      const query = `SELECT profile_image FROM  administrative_user WHERE "user_id" = '${id}'`;
+      const filePath = await pool.cQuery(query);
+      return filePath[0]
+    } catch (error) {
+      throw new Error('Failed to load profile picture:', error);
+    }
+  },
 };
 
 module.exports = User;

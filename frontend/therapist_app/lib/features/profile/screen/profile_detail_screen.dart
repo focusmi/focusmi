@@ -309,7 +309,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
           field: widget.field,
           value: updatedValue,
         );
-        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeftWithFade, child: ProfileDetailsPage()));
+        Navigator.push(context, PageTransition(type: PageTransitionType.rightToLeft, child: ProfileDetailsPage()));
       }
     } else {
       setState(() {

@@ -11,18 +11,18 @@ class ProfileService {
       BuildContext context, File imageFile) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.user;
-    
+
     try {
       var request = http.MultipartRequest(
           'POST', Uri.parse('$uri/apis/upload-profile-pic/${user.id}'));
 
       // Include the authentication token in the headers
       request.headers['x-auth-token'] = user.token;
-      
+
       request.files.add(
           await http.MultipartFile.fromPath('profile_picture', imageFile.path));
       var response = await request.send();
-      
+
       return response.statusCode == 200;
     } catch (error) {
       print('Error uploading profile picture: $error');
@@ -36,7 +36,7 @@ class ProfileService {
 
     try {
       final response = await http.get(
-        Uri.parse('$uri/apis/user/${user.id}/profile-picture'),
+        Uri.parse('$uri/apis/user/profile-picture/${user.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'x-auth-token': user.token,
@@ -45,7 +45,7 @@ class ProfileService {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        return responseData['profile_picture']; // Update with the actual field name returned by the server
+        return responseData['profile_image']; // Update with the actual field name returned by the server
       } else {
         print('Failed to load profile picture');
         return null;
@@ -56,4 +56,3 @@ class ProfileService {
     }
   }
 }
-
