@@ -11,6 +11,8 @@ let dotenv = require("dotenv");
 let  {verify} = require('jsonwebtoken');
 const dbmodel = require("../models/core/dbmodel");
 const authRoutes = require("../routes/user_auth");
+const authRouterTherapist = require("../routes/therapist_auth")
+const ScheduleRouter = require('../routes/schedule')
 const pool = require("../database/dbconnection");
 const gTaskRoutes = require("../routes/group_task_planner");
 const {task_group} = require("../sequelize/models");
@@ -35,6 +37,8 @@ app.use(express.static('public'))
 app.use(assetRouter)
 app.use(authRoutes)
 app.use(gTaskRoutes)
+app.use(authRouterTherapist)
+app.use(ScheduleRouter)
 
 
 
