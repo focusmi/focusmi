@@ -260,7 +260,7 @@ class LayOut{
                 onTap: () {
                   // Update the state of the app
                 // _onItemTapped(2);
-                 // Navigator.pushNamed(context, CounselorsListWidget.routeName);
+                 Navigator.pushNamed(context, CounselorsListWidgetWidget.routeName);
                   // Then close the drawer
         
                 },
@@ -392,7 +392,7 @@ class LayOut{
                 onTap: () {
                   // Update the state of the app
                 // _onItemTapped(2);
-                  //Navigator.pushNamed(context, CounselorsListWidget.routeName);
+                  Navigator.pushNamed(context, CounselorsListWidgetWidget.routeName);
                   // Then close the drawer
         
                 },

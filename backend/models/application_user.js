@@ -23,22 +23,19 @@ class ApplicationUser {
         return result
     }
 
-}
-
-const AUser = {
-
-    listCounciloors: async () => {
+    static listCounciloors=async () => {
         try {
             const query = `SELECT * FROM public.administrative_user
             ORDER BY user_id ASC`;
             const users = await pool.cQuery(query);
+            console.log(users)
             return users;
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    listAppointments: async () => {
+    static listAppointments=async () => {
         try {
             const query = `SELECT * FROM public.appointment
             ORDER BY appointment_id ASC`;
@@ -47,9 +44,9 @@ const AUser = {
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    listtimeslots: async (userId) => {
+    static listtimeslots=async (userId) => {
         try {
             const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
             console.log(query);
@@ -58,9 +55,9 @@ const AUser = {
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    updateSession: async (sessionId,userId) => {
+    static updateSession=async (sessionId,userId) => {
         try {
             const query1 = `UPDATE public.therapy_session SET booking_status=true WHERE session_id=${sessionId}`;
             const query2 = `INSERT INTO public.appointment (user_id, session_id, appointment_status) VALUES (${userId},${sessionId}, 'Not Completed');`;
@@ -76,4 +73,4 @@ const AUser = {
 }
 
 module.exports = ApplicationUser;
-module.exports = AUser;
+

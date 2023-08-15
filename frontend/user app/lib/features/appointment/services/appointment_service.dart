@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:http/http.dart' as http;
 
 class AppointmentService {
   static Future<List<dynamic>> getCouncillorList() async {
     try {
+        print('$uri/api/customer');
       final response = await http.get(
-        Uri.parse('http://192.168.1.18:3001/api/customer'),
+        Uri.parse('$uri/api/customer'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

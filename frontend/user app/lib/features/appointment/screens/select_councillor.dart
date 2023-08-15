@@ -1,31 +1,35 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 import 'package:focusmi/features/appointment/services/appointment_service.dart';
 
-
 import '../../../constants/global_variables.dart';
 import 'councillor_details.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({Key? key}) : super(key: key);
+class CounselorsListWidgetWidget extends StatefulWidget {
+  const CounselorsListWidgetWidget({Key? key}) : super(key: key);
+  static const String routeName = '/select_councillor';
 
   @override
-  _HomePageWidgetState createState() => _HomePageWidgetState();
+  _CounselorsListWidgetWidgetState createState() => _CounselorsListWidgetWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget> {
   late List<dynamic> councillorData; // To store the fetched data
 
   @override
   void initState() {
     super.initState();
     fetchCouncillorData();
+    councillorData = [];
+    
   }
 
   Future<void> fetchCouncillorData() async {
     try {
       final data = await AppointmentService.getCouncillorList();
+      print(data);
       setState(() {
         councillorData = data;
       });
@@ -65,11 +69,12 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                 for (var councillor in councillorData ?? [])
                   CouncillorCard(
                     imageUrl: 'https://picsum.photos/seed/87/600',
-                    fullname: "Dr." + councillor['full_name'],
-                    qulification: councillor['about'],
+                    username: councillor['full_name'],
+                    about: councillor['about'],
+                    email: councillor['email'],
                     exp: councillor['years_of_experience'],
-                    tot: councillor['tot_clients'],
-                    userId: councillor['user_id'],
+                    tot_clients: councillor['tot_clients'],
+                    user_id: councillor['user_id'],
                   ),
               ],
             ),
@@ -81,21 +86,24 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 }
 
 class CouncillorCard extends StatelessWidget {
-  final String imageUrl;
-  final String fullname;
-  final String qulification;
-  final String exp;
-  final int tot;
-  final int userId;
+  final String? imageUrl;
+  final String? username;
+  final String? about;
+  final String? email;
+  final String? exp;
+  final int? tot_clients;
+  final int? user_id;
 
   CouncillorCard({
-    required this.imageUrl,
-    required this.fullname,
-    required this.qulification,
-    required this.exp,
-    required this.tot,
-    required this.userId,
-  });
+    Key? key,
+    this.imageUrl,
+    this.username,
+    this.about,
+    this.email,
+    this.exp,
+    this.tot_clients,
+    this.user_id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -118,14 +126,14 @@ class CouncillorCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(imageUrl),
+                        image: NetworkImage(imageUrl??''),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   SizedBox(width: 10),
                   Text(
-                    fullname,
+                    username??'',
                     style: FlutterFlowTheme.of(context).bodyText1.override(
                           fontFamily: 'Readex Pro',
                           fontSize: 20,
@@ -144,11 +152,11 @@ class CouncillorCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DetailsWidget(
-                        name: fullname,
-                        about: qulification,
-                        experience: exp,
-                        totcustomer: tot,
-                        userId: userId,
+                        name: username??'',
+                        about: about??'',
+                        experience: exp??'',
+                        totcustomer: tot_clients??0,
+                        userId: user_id??0,
                       ),
                     ),
                   );

@@ -39,6 +39,7 @@ app.use(authRoutes)
 app.use(gTaskRoutes)
 app.use(authRouterTherapist)
 app.use(ScheduleRouter)
+app.use(appointmentRouter)
 
 
 
