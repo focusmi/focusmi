@@ -10,6 +10,7 @@ packages:
     source: hosted
     version: "2.11.0"
   auto_size_text:
+<<<<<<< HEAD
     dependency: "direct main"
     description:
       name: auto_size_text
@@ -18,13 +19,15 @@ packages:
     source: hosted
     version: "3.0.0"
   avatar_glow:
+=======
+>>>>>>> origin/feat-user_appointment
     dependency: "direct main"
     description:
-      name: avatar_glow
-      sha256: "3627f6f97d1f10d3c1996ae108d3488eabaf68c0cf0c3eac7e7c746a3812881d"
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.2"
+    version: "3.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -57,13 +60,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.1"
-  convex_bottom_bar:
-    dependency: "direct main"
+  crypto:
+    dependency: transitive
     description:
-      name: convex_bottom_bar
-      sha256: ebf0f3deb1e8e99374d844fee7485d2980ec502dedfaad395c12118477933aef
+      name: crypto
+      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "3.2.0"
   crypto:
     dependency: transitive
@@ -72,6 +76,8 @@ packages:
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
+=======
+>>>>>>> origin/feat-user_appointment
     version: "3.0.3"
   cupertino_icons:
     dependency: "direct main"
@@ -81,14 +87,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  dotted_border:
-    dependency: "direct main"
-    description:
-      name: dotted_border
-      sha256: "07a5c5e8d4e6e992279e190e0352be8faa5b8f96d81c77a78b2d42f060279840"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0+3"
   fake_async:
     dependency: transitive
     description:
@@ -280,21 +278,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-  path_drawing:
+  path_provider:
     dependency: transitive
     description:
-      name: path_drawing
-      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
+      name: path_provider
+      sha256: "909b84830485dbcd0308edf6f7368bc8fd76afa26a270420f34cabea2a6467a0"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
-  path_parsing:
+    version: "2.1.0"
+  path_provider_android:
     dependency: transitive
     description:
-      name: path_parsing
-      sha256: e3e67b1629e6f7e8100b367d3db6ba6af4b1f0bb80f64db18ef1fbabd2fa9ccf
+      name: path_provider_android
+      sha256: "5d44fc3314d969b84816b569070d7ace0f1dea04bd94a83f74c4829615d22ad8"
       url: "https://pub.dev"
     source: hosted
+<<<<<<< HEAD
     version: "1.0.1"
   path_provider:
     dependency: transitive
@@ -311,6 +310,8 @@ packages:
       sha256: "5d44fc3314d969b84816b569070d7ace0f1dea04bd94a83f74c4829615d22ad8"
       url: "https://pub.dev"
     source: hosted
+=======
+>>>>>>> origin/feat-user_appointment
     version: "2.1.0"
   path_provider_foundation:
     dependency: transitive
@@ -537,10 +538,17 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
+<<<<<<< HEAD
       sha256: "3dd2388cc0c42912eee04434531a26a82512b9cb1827e0214430c9bcbddfe025"
       url: "https://pub.dev"
     source: hosted
     version: "6.0.38"
+=======
+      sha256: "78cb6dea3e93148615109e58e42c35d1ffbf5ef66c44add673d0ab75f12ff3af"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.37"
+>>>>>>> origin/feat-user_appointment
   url_launcher_ios:
     dependency: transitive
     description:

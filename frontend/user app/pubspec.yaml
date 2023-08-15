@@ -1,4 +1,4 @@
-name: focusmi
+name: test
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -34,23 +34,33 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  http: ^1.1.0
-  provider: ^6.0.5
+  google_fonts: ^5.1.0
   shared_preferences: ^2.2.0
+<<<<<<< HEAD
   avatar_glow: ^2.0.2
   dotted_border: ^2.0.0+3
   convex_bottom_bar: ^3.2.0
   flutter_datetime_picker: ^1.5.1
   google_fonts: ^5.1.0
+=======
+>>>>>>> origin/feat-user_appointment
   intl: ^0.18.1
   json_path: ^0.6.2
   timeago: ^3.5.0
   url_launcher: ^6.1.12
   page_transition: ^2.0.9
+<<<<<<< HEAD
   font_awesome_flutter: ^10.5.0
   auto_size_text: ^3.0.0
   table_calendar: ^3.0.9
   flutter_colorpicker: ^1.0.3
+=======
+  provider: ^6.0.5
+  font_awesome_flutter: ^10.5.0
+  auto_size_text: ^3.0.0
+  table_calendar: ^3.0.9
+  http: ^1.0.0
+>>>>>>> origin/feat-user_appointment
 
 dev_dependencies:
   flutter_test:
@@ -103,9 +113,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+<<<<<<< HEAD
   assets:
     - assets/images/team.jpg
     - assets/images/new.jpg
     - assets/images/success.gif
     - assets/images/kite.gif
     - assets/images/choose-task.gif
+=======
+>>>>>>> origin/feat-user_appointment

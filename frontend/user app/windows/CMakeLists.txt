@@ -1,10 +1,18 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+<<<<<<< HEAD
 project(therapist_app LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "therapist_app")
+=======
+project(test LANGUAGES CXX)
+
+# The name of the executable created for the application. Change this to change
+# the on-disk name of your application.
+set(BINARY_NAME "test")
+>>>>>>> origin/feat-user_appointment
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "therapist_app",
     "short_name": "therapist_app",
+=======
+    "name": "test",
+    "short_name": "test",
+>>>>>>> origin/feat-user_appointment
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
