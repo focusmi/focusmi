@@ -18,14 +18,14 @@ appointmentRouter.get('/api/get_time_slots/:userId',async (req,res)=>{
     res.json(councillors);
 })
 
-appointmentRouter.post('/api/update_session/:userId',async (req,res)=>{
+appointmentRouter.post('/api/update_session/',async (req,res)=>{
     const {sessionId,userId} = req.body; // Destructure the session_id from the request body
     await ApplicationUser.updateSession(sessionId,userId);
 })
 
 appointmentRouter.get('/api/view_appointments/:userId',async (req,res)=>{
     const userId = req.params.userId;
-    const appointments = await AUser.listAppointments(userId);
+    const appointments = await ApplicationUser.listAppointments(userId);
     res.json(appointments);
 })
 
