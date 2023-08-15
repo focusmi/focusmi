@@ -54,6 +54,7 @@ authRoutes.post('/api/admin-signin',async(req,res,next)=>{
 })
 
 authRoutes.post('/api/signin', async (req,res,next) => {
+    console.log("inside")
     const {email,password} = req.body;
     let User = new AuthUser(email, password, '');
     var result = await User.checkUser();

@@ -47,7 +47,7 @@ const PORT = process.env.PORT || 3000
 
 //connection
 try{
-    app.listen(PORT,() => console.info(`Server has started on ${PORT}`))
+    app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
 
 }
 catch{

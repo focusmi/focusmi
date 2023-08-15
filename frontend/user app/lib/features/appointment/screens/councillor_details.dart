@@ -1,10 +1,11 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
-import 'package:test/add_appointment.dart';
+import 'package:focusmi/features/appointment/screens/add_appointment.dart';
+import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
+import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+
 
 import 'councillor_details_model.dart';
 export 'councillor_details_model.dart';
@@ -201,6 +202,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
+            
                             AppointmentPage(userId: widget.userId),
                       ),
                     );

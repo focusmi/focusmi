@@ -1,6 +1,8 @@
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
+
+
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 
 import 'View_appointment_model.dart';
 export 'View_appointment_model.dart';

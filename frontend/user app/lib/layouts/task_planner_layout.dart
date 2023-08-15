@@ -115,7 +115,7 @@ class TaskPlannerLayout{
                 title: const Text('Meet Professional',style: TextStyle(fontSize: 15),),
                 //selected: _selectedIndex == 2,
                 onTap: () {
-                  Navigator.pushNamed(context, CounselorsListWidget.routeName);
+                 // Navigator.pushNamed(context, CounselorsListWidget.routeName);
                   // Update the state of the app
                 // _onItemTapped(2);
                   // Then close the drawer
