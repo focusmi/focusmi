@@ -1,5 +1,5 @@
-import '/flutter_flow/flutter_flow_calendar.dart';
-import '/flutter_flow/form_field_controller.dart';
+import 'flutter_flow/flutter_flow_calendar.dart';
+import 'flutter_flow/form_field_controller.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentModel {
