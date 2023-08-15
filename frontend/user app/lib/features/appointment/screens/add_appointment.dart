@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:test/services/appointment_service.dart';
 import 'package:test/view_appointments.dart';
 import 'constants/global_variables.dart';
-import 'flutter_flow/flutter_flow_theme.dart';
-import 'flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 
 class AppointmentPage extends StatefulWidget {

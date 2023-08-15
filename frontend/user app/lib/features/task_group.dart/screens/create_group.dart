@@ -334,9 +334,9 @@ class _CreateGroupState extends State<CreateGroup> {
                                           
                                         });
                                     }, 
-                                    child:const  Text("Add",style: TextStyle(color: Colors.white),)
-                                    ):(SizedBox(width: 0,height: 0,))),
-                                    SizedBox(width: 10,)
+                            child:const  Text("Add",style: TextStyle(color: Colors.white),)
+                          ):(SizedBox(width: 0,height: 0,))),
+                          SizedBox(width: 10,)
                                   ],)
                               ],
                             ),

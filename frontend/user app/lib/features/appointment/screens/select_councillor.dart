@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test/services/appointment_service.dart';
-import 'flutter_flow/flutter_flow_theme.dart';
-import 'flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 
 import '../../../constants/global_variables.dart';
 import 'councillor_details.dart';
