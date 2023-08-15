@@ -3,8 +3,8 @@ import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 import 'package:focusmi/features/appointment/services/appointment_service.dart';
-
-
+import 'package:focusmi/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class ViewAppointmentsWidget extends StatefulWidget {
   const ViewAppointmentsWidget({Key? key}) : super(key: key);
@@ -14,7 +14,7 @@ class ViewAppointmentsWidget extends StatefulWidget {
 }
 
 class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
-  late List<dynamic> appointmentData; // To store the fetched data
+  late List<dynamic> appointmentData = []; // To store the fetched data
 
   @override
   void initState() {
@@ -24,8 +24,9 @@ class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
 
   Future<void> fetchAppointmentData() async {
     try {
-      const userId = 1;
-      final data = await AppointmentService.getAppointments(userId);
+      var user = Provider.of<UserProvider>(context, listen: false).user;
+      print(user.user_id);
+      final data = await AppointmentService.getAppointments(user.user_id);
       setState(() {
         appointmentData = data;
       });

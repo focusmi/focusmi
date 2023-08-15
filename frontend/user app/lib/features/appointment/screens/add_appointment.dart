@@ -4,6 +4,8 @@ import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_t
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 import 'package:focusmi/features/appointment/screens/view_appointments.dart';
 import 'package:focusmi/features/appointment/services/appointment_service.dart';
+import 'package:focusmi/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'flutter_flow/flutter_flow_util.dart';
 
@@ -83,9 +85,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 spacing: 8,
                 children: timeslotlist.map(
                   (slot) {
-                    final sessionTime = DateTime.parse(slot['session_time']);
+                    final sessionTime = DateTime.parse(slot['session_time']).toLocal();
                     final sessionEndTime =
-                        DateTime.parse(slot['session_end_time']);
+                        DateTime.parse(slot['session_end_time']).toLocal();
                     final isSelected = selectedSessionId == slot['session_id'];
                     return ChoiceChip(
                       label: Text(
@@ -118,15 +120,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
                             print(
                                 'Problem Description: ${_problemDescriptionController.text}');
                             // ... other form processing logic ...
+                            var user = Provider.of<UserProvider>(context,
+                                    listen: false)
+                                .user;
                             AppointmentService.updateSession(
-                                selectedSessionId!, widget.userId);
+                                selectedSessionId!, user.user_id);
                           }
 
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                            
                                   const ViewAppointmentsWidget(),
                             ),
                           );
