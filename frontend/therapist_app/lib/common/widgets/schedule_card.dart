@@ -32,7 +32,7 @@ class ScheduleCard extends StatelessWidget {
 
   compareWithCurrentTime(String appointmentDateStr) {
     DateFormat format = DateFormat("yyyy-MM-dd, hh:mm a");
-    DateTime appointmentDate = format.parse(appointmentDateStr);
+    DateTime appointmentDate = format.parse(appointmentDateStr).toLocal();
 
     DateTime now = DateTime.now();
 
@@ -47,7 +47,7 @@ class ScheduleCard extends StatelessWidget {
 
   compareTime(String appointmentDateStr) {
     DateFormat format = DateFormat("yyyy-MM-dd, hh:mm a");
-    DateTime appointmentDate = format.parse(appointmentDateStr);
+    DateTime appointmentDate = format.parse(appointmentDateStr).toLocal();
 
     DateTime now = DateTime.now();
 
