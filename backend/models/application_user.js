@@ -23,7 +23,7 @@ class ApplicationUser {
         return result
     }
 
-    static listCounciloors=async () => {
+    static listCounciloors = async () => {
         try {
             const query = `SELECT * FROM public.administrative_user
             ORDER BY user_id ASC`;
@@ -35,8 +35,8 @@ class ApplicationUser {
         }
     }
 
-    static listAppointments=async () => {
-         try {
+    static listAppointments = async (userId) => {
+        try {
             const query = `SELECT * FROM public.appointment WHERE user_id=${userId}`;
             const users = await pool.cQuery(query);
             return users;
@@ -45,7 +45,7 @@ class ApplicationUser {
         }
     }
 
-    static listtimeslots=async (userId) => {
+    static listtimeslots = async (userId) => {
         try {
 
             const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
@@ -53,15 +53,15 @@ class ApplicationUser {
             return slot_list;
 
         } catch (error) {
-            
+
             throw new Error('Error Finding Councillors:', error);
         }
     }
 
-    static updateSession=async (sessionId,userId) => {
+    static updateSession = async (sessionId, userId) => {
         try {
             const query1 = `UPDATE public.therapy_session SET booking_status=true WHERE session_id=${sessionId}`;
-            const query2 = `INSERT INTO public.appointment (user_id, session_id, appointment_status) VALUES (${userId},${sessionId}, 'Not Completed');`;
+            const query2 = `INSERT INTO public.appointment (user_id, session_id, complete) VALUES (${userId},${sessionId}, 'false');`;
             console.log(query1);
             console.log(query2);
             await pool.cQuery(query1);
