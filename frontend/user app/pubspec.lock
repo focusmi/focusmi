@@ -10,7 +10,6 @@ packages:
     source: hosted
     version: "2.11.0"
   auto_size_text:
-<<<<<<< HEAD
     dependency: "direct main"
     description:
       name: auto_size_text
@@ -19,8 +18,6 @@ packages:
     source: hosted
     version: "3.0.0"
   avatar_glow:
-=======
->>>>>>> origin/feat-user_appointment
     dependency: "direct main"
     description:
       name: auto_size_text
@@ -67,7 +64,6 @@ packages:
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "3.2.0"
   crypto:
     dependency: transitive
@@ -76,8 +72,6 @@ packages:
       sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
       url: "https://pub.dev"
     source: hosted
-=======
->>>>>>> origin/feat-user_appointment
     version: "3.0.3"
   cupertino_icons:
     dependency: "direct main"
@@ -293,7 +287,6 @@ packages:
       sha256: "5d44fc3314d969b84816b569070d7ace0f1dea04bd94a83f74c4829615d22ad8"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "1.0.1"
   path_provider:
     dependency: transitive
@@ -310,8 +303,6 @@ packages:
       sha256: "5d44fc3314d969b84816b569070d7ace0f1dea04bd94a83f74c4829615d22ad8"
       url: "https://pub.dev"
     source: hosted
-=======
->>>>>>> origin/feat-user_appointment
     version: "2.1.0"
   path_provider_foundation:
     dependency: transitive
@@ -538,17 +529,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-<<<<<<< HEAD
       sha256: "3dd2388cc0c42912eee04434531a26a82512b9cb1827e0214430c9bcbddfe025"
       url: "https://pub.dev"
     source: hosted
     version: "6.0.38"
-=======
-      sha256: "78cb6dea3e93148615109e58e42c35d1ffbf5ef66c44add673d0ab75f12ff3af"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.37"
->>>>>>> origin/feat-user_appointment
   url_launcher_ios:
     dependency: transitive
     description:
