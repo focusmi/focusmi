@@ -23,6 +23,11 @@ appointmentRouter.post('/api/update_session/:userId',async (req,res)=>{
     await ApplicationUser.updateSession(sessionId,userId);
 })
 
+appointmentRouter.get('/api/view_appointments/:userId',async (req,res)=>{
+    const userId = req.params.userId;
+    const appointments = await AUser.listAppointments(userId);
+    res.json(appointments);
+})
 
 module.exports = appointmentRouter;
 

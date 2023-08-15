@@ -36,9 +36,8 @@ class ApplicationUser {
     }
 
     static listAppointments=async () => {
-        try {
-            const query = `SELECT * FROM public.appointment
-            ORDER BY appointment_id ASC`;
+         try {
+            const query = `SELECT * FROM public.appointment WHERE user_id=${userId}`;
             const users = await pool.cQuery(query);
             return users;
         } catch (error) {
@@ -48,11 +47,13 @@ class ApplicationUser {
 
     static listtimeslots=async (userId) => {
         try {
+
             const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
-            console.log(query);
             const slot_list = await pool.cQuery(query);
             return slot_list;
+
         } catch (error) {
+            
             throw new Error('Error Finding Councillors:', error);
         }
     }
