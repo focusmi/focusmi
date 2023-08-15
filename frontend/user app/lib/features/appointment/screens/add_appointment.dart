@@ -1,40 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
-import 'package:focusmi/features/appointment/screens/view_appointments.dart';
-
+import 'package:test/services/appointment_service.dart';
+import 'package:test/view_appointments.dart';
+import 'constants/global_variables.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
+import 'flutter_flow/flutter_flow_util.dart';
 
 class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({Key? key}) : super(key: key);
+  final int userId;
+
+  AppointmentPage({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   _AppointmentPageState createState() => _AppointmentPageState();
 }
 
 class _AppointmentPageState extends State<AppointmentPage> {
+  late List<dynamic> timeslotlist = [];
+  int? selectedSessionId;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchtimeslotData();
+  }
+
+  Future<void> fetchtimeslotData() async {
+    try {
+      final data = await AppointmentService.getTimeSlotList(widget.userId);
+      setState(() {
+        timeslotlist = data;
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
-  DateTime? _selectedDate;
-  String? _selectedTime;
-  String? _selectedGender;
-  String? _selectedAge;
   TextEditingController _fullNameController = TextEditingController();
   TextEditingController _problemDescriptionController = TextEditingController();
-
-  List<String> _ages = List.generate(80, (index) => (index + 1).toString());
-
-  List<String> _genders = ['Male', 'Female'];
-
-  List<String> _times = [
-    '09:00 A.M',
-    '09:30 A.M',
-    '10:00 A.M',
-    '10:30 A.M',
-    '11:00 A.M',
-    '11:30 A.M',
-    '12:00 A.M',
-    '12:30 P.M'
-  ];
 
   @override
   void dispose() {
@@ -57,7 +64,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 fontSize: 22,
               ),
         ),
-        actions: [],
         centerTitle: true,
         elevation: 2,
       ),
@@ -68,123 +74,33 @@ class _AppointmentPageState extends State<AppointmentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2101),
-                  );
-                  if (picked != null && picked != _selectedDate) {
-                    setState(() {
-                      _selectedDate = picked;
-                    });
-                  }
-                },
-                child: Text(_selectedDate != null
-                    ? "${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}"
-                    : "Select Date"),
-              ),
-              SizedBox(height: 16),
               Text(
                 'Select Time:',
                 style: TextStyle(fontSize: 16),
               ),
               Wrap(
                 spacing: 8,
-                children: _times
-                    .map(
-                      (time) => ChoiceChip(
-                        label: Text(time),
-                        selected: _selectedTime == time,
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedTime = selected ? time : null;
-                          });
-                        },
+                children: timeslotlist.map(
+                  (slot) {
+                    final sessionTime = DateTime.parse(slot['session_time']);
+                    final sessionEndTime =
+                        DateTime.parse(slot['session_end_time']);
+                    final isSelected = selectedSessionId == slot['session_id'];
+                    return ChoiceChip(
+                      label: Text(
+                        '${DateFormat('MMM d, yyyy - hh:mm a').format(sessionTime)} - ${DateFormat('hh:mm a').format(sessionEndTime)}',
                       ),
-                    )
-                    .toList(),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Full Name:',
-                style: TextStyle(fontSize: 16),
-              ),
-              TextFormField(
-                controller: _fullNameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your full name';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Age:',
-                style: TextStyle(fontSize: 16),
-              ),
-              DropdownButtonFormField<String>(
-                value: _selectedAge,
-                onChanged: (newValue) {
-                  setState(() {
-                    _selectedAge = newValue;
-                  });
-                },
-                items: _ages.map<DropdownMenuItem<String>>(
-                  (age) {
-                    return DropdownMenuItem<String>(
-                      value: age,
-                      child: Text(age),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        setState(() {
+                          selectedSessionId =
+                              selected ? slot['session_id'] : null;
+                        });
+                      },
                     );
                   },
                 ).toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select your age';
-                  }
-                  return null;
-                },
               ),
-              SizedBox(height: 16),
-              Text(
-                'Gender:',
-                style: TextStyle(fontSize: 16),
-              ),
-              Wrap(
-                spacing: 8,
-                children: _genders
-                    .map(
-                      (gender) => ChoiceChip(
-                        label: Text(gender),
-                        selected: _selectedGender == gender,
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedGender = selected ? gender : null;
-                          });
-                        },
-                      ),
-                    )
-                    .toList(),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Problem Description:',
-                style: TextStyle(fontSize: 16),
-              ),
-              TextFormField(
-                controller: _problemDescriptionController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please provide a problem description';
-                  }
-                  return null;
-                },
-                maxLines: 3,
-              ),
-              SizedBox(height: 16),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -194,26 +110,25 @@ class _AppointmentPageState extends State<AppointmentPage> {
                           const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                       child: FFButtonWidget(
                         onPressed: () {
-                          print('Button pressed ...');
                           if (_formKey.currentState!.validate()) {
                             // Process the form data
-                            print('Form submitted');
-                            print('Date: $_selectedDate');
-                            print('Time: $_selectedTime');
+                            print('Selected Session ID: $selectedSessionId');
                             print('Full Name: ${_fullNameController.text}');
-                            print('Age: $_selectedAge');
-                            print('Gender: $_selectedGender');
                             print(
                                 'Problem Description: ${_problemDescriptionController.text}');
+                            // ... other form processing logic ...
+                            AppointmentService.updateSession(
+                                selectedSessionId!, widget.userId);
                           }
-                        
+
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ViewAppointmentsWidget()));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const ViewAppointmentsWidget(),
+                            ),
+                          );
                         },
-                        
                         text: 'Book Appointment',
                         options: FFButtonOptions(
                           height: 40,
@@ -245,4 +160,16 @@ class _AppointmentPageState extends State<AppointmentPage> {
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Appointment App',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    home: AppointmentPage(
+      userId: 0,
+    ),
+  ));
 }

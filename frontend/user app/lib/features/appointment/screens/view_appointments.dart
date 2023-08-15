@@ -1,7 +1,6 @@
-
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 
 import 'View_appointment_model.dart';
 export 'View_appointment_model.dart';
@@ -19,18 +18,12 @@ class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => ViewAppointmentsModel());
-  //}
-
-  @override
   void dispose() {
     _model.dispose();
 
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

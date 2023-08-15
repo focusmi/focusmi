@@ -1,150 +1,179 @@
 import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
-import 'package:focusmi/features/appointment/screens/add_appointment.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
-import 'package:focusmi/layouts/user-layout.dart';
-import 'package:focusmi/widgets/containers.dart';
-import 'package:focusmi/widgets/texts.dart';
+import 'package:test/services/appointment_service.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 
+import '../../../constants/global_variables.dart';
 import 'councillor_details.dart';
-import 'select_councellor_model.dart';
-export 'select_councellor_model.dart';
 
-class CounselorsListWidget extends StatefulWidget {
-  static const routeName = '/select_councillor';
-  const CounselorsListWidget({Key? key}) : super(key: key);
+class HomePageWidget extends StatefulWidget {
+  const HomePageWidget({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CounselorsListWidgetState createState() => _CounselorsListWidgetState();
+  _HomePageWidgetState createState() => _HomePageWidgetState();
 }
 
-class _CounselorsListWidgetState extends State<CounselorsListWidget> {
-  late HomePageModel _model;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+class _HomePageWidgetState extends State<HomePageWidget> {
+  late List<dynamic> councillorData; // To store the fetched data
 
   @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => HomePageModel());
-  //}
-  @override
-  void dispose() {
-    _model.dispose();
+  void initState() {
+    super.initState();
+    fetchCouncillorData();
+  }
 
-    super.dispose();
+  Future<void> fetchCouncillorData() async {
+    try {
+      final data = await AppointmentService.getCouncillorList();
+      setState(() {
+        councillorData = data;
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    LayOut layout = LayOut();
-    return layout.mainLayoutWithDrawer(
-      context, 
-      SafeArea(
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: GlobalVariables.backgroundColor,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF83DE70),
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Councillors',
+            style: FlutterFlowTheme.of(context).bodyText1.override(
+                  fontFamily: 'Outfit',
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+          ),
+          actions: [],
+          centerTitle: false,
+          elevation: 2,
+        ),
+        body: SafeArea(
           top: true,
           child: Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-            child: CustomContainer.normalContainer(Column(
+            child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                  child: Column(
-                    crossAxisAlignment:CrossAxisAlignment.start ,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            width: 80,
-                            height: 80,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.network(
-                              'https://picsum.photos/seed/87/600',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment:CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                onTap:    () {
-                             
-                                    Navigator.push(
-                      context,
-                      
-                      MaterialPageRoute(
-                        builder: (context) => const AppointmentPage(),
-                      ),
-                    );
-                                  },
-                                child: Container(
-                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Adam Thompson\nMBBS(Col)',
-                                        style:TextStyle(
-                                          color:GlobalVariables.greyFontColor 
-                                        ),
-                                      ),
-                                      Text(
-                                        '12 years of experience as a life coach....',
-                                        style: TextStyle(
-                                            color: GlobalVariables.greyFontColor,
-                                            fontSize: 12
-                                        ),
-                                        
-                                      ),
-                                    ],
-                                  )
-                                  ),
-                              ),
-                              GestureDetector(
-                                onTap:(){Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                        builder: (context) =>
-                                        const DetailsWidget()));
-                                        
-                                        },
-                                        
-                                child: Container(
-                                  height: 30,
-                                  child: Text(
-                                    'Press here to see more',
-                                    style: TextStyle(
-                                        decoration: TextDecoration.underline,
-                                        color: GlobalVariables.greyFontColor,
-                                        fontSize: 12
-                                    ),
-                                    
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                    
-                        ],
-                      ),
-                
-                    ],
+                for (var councillor in councillorData ?? [])
+                  CouncillorCard(
+                    imageUrl: 'https://picsum.photos/seed/87/600',
+                    fullname: "Dr." + councillor['full_name'],
+                    qulification: councillor['about'],
+                    exp: councillor['years_of_experience'],
+                    tot: councillor['tot_clients'],
+                    userId: councillor['user_id'],
                   ),
-                ),
-                
-                
               ],
-            ), 115, 100),
+            ),
           ),
         ),
-      "Counselors"
+      ),
+    );
+  }
+}
+
+class CouncillorCard extends StatelessWidget {
+  final String imageUrl;
+  final String fullname;
+  final String qulification;
+  final String exp;
+  final int tot;
+  final int userId;
+
+  CouncillorCard({
+    required this.imageUrl,
+    required this.fullname,
+    required this.qulification,
+    required this.exp,
+    required this.tot,
+    required this.userId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    fullname,
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Readex Pro',
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: FFButtonWidget(
+                onPressed: () {
+                  print('Button pressed ...');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailsWidget(
+                        name: fullname,
+                        about: qulification,
+                        experience: exp,
+                        totcustomer: tot,
+                        userId: userId,
+                      ),
+                    ),
+                  );
+                },
+                text: 'Details',
+                options: FFButtonOptions(
+                  height: 40,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  color: const Color(0xFF83DE70),
+                  textStyle: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Readex Pro',
+                        color: Colors.white,
+                      ),
+                  elevation: 3,
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1,
+                  ),
+                  borderRadius: 8,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
