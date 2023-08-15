@@ -37,13 +37,9 @@ app.use(express.static('public'))
 app.use(assetRouter)
 app.use(authRoutes)
 app.use(gTaskRoutes)
-<<<<<<< HEAD
 app.use(authRouterTherapist)
 app.use(ScheduleRouter)
 
-=======
-app.use(appointmentRouter)
->>>>>>> origin/feat-user_appointment
 
 
 
