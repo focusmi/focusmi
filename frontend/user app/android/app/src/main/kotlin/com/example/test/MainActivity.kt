@@ -1,4 +1,4 @@
-package com.example.therapist_app
+package com.example.focusmi
 
 import io.flutter.embedding.android.FlutterActivity
 

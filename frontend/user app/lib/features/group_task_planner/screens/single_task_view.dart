@@ -116,7 +116,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void allocateMember(GroupMember member, subtask) {
     setState(() {
       _subTaskAllocation[subtask]?.add(member);
-      print(_subTaskAllocation);
     });
   }
 

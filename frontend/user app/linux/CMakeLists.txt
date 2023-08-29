@@ -5,10 +5,10 @@ project(runner LANGUAGES CXX)
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 <<<<<<< HEAD
-set(BINARY_NAME "therapist_app")
+set(BINARY_NAME "focusmi")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
-set(APPLICATION_ID "com.example.therapist_app")
+set(APPLICATION_ID "com.example.focusmi")
 =======
 set(BINARY_NAME "test")
 # The unique GTK application identifier for this application. See:

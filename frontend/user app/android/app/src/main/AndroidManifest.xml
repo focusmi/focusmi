@@ -12,7 +12,7 @@
  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
  <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
-        android:label="therapist_app"
+        android:label="focusmi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -91,12 +91,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
 <<<<<<< HEAD
-            VALUE "FileDescription", "therapist_app" "\0"
+            VALUE "FileDescription", "focusmi" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "therapist_app" "\0"
+            VALUE "InternalName", "focusmi" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "therapist_app.exe" "\0"
-            VALUE "ProductName", "therapist_app" "\0"
+            VALUE "OriginalFilename", "focusmi.exe" "\0"
+            VALUE "ProductName", "focusmi" "\0"
 =======
             VALUE "FileDescription", "test" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"

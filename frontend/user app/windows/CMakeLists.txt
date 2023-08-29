@@ -1,11 +1,11 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
 <<<<<<< HEAD
-project(therapist_app LANGUAGES CXX)
+project(focusmi LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "therapist_app")
+set(BINARY_NAME "focusmi")
 =======
 project(test LANGUAGES CXX)
 
