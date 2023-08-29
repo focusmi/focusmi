@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "33CC10EC2044A3C60003C045"
 <<<<<<< HEAD
-               BuildableName = "therapist_app.app"
+               BuildableName = "focusmi.app"
 =======
                BuildableName = "test.app"
 >>>>>>> origin/feat-user_appointment
@@ -36,7 +36,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
 <<<<<<< HEAD
-            BuildableName = "therapist_app.app"
+            BuildableName = "focusmi.app"
 =======
             BuildableName = "test.app"
 >>>>>>> origin/feat-user_appointment
@@ -74,7 +74,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
 <<<<<<< HEAD
-            BuildableName = "therapist_app.app"
+            BuildableName = "focusmi.app"
 =======
             BuildableName = "test.app"
 >>>>>>> origin/feat-user_appointment
@@ -95,7 +95,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
 <<<<<<< HEAD
-            BuildableName = "therapist_app.app"
+            BuildableName = "focusmi.app"
 =======
             BuildableName = "test.app"
 >>>>>>> origin/feat-user_appointment

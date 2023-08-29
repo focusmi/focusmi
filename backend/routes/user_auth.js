@@ -4,13 +4,15 @@ let authRoutes = express.Router()
 const {createAccessToken ,createRefreshToken, sendRefreshToken, sendAccessToken, isAuth}= require('../tokens/tokens')
 const { verify } = require('jsonwebtoken')
 const {administrative_user} = require('../sequelize/models')
+const {user_otp} = require('../sequelize/models')
+const {application_user} = require('../sequelize/models')
+const auth = require('../tokens/auth');
 
 //signup routes
 authRoutes.post('/api/signup', async (req,res,next)=>{
-    console.log('hi')
     const {username, email, password} = req.body;
     let User = new AuthUser(email, password, username);
-    var result = await User.createUser();
+    var result = await User.createUser(res,req);
     if(result=='exists'){
         res.status(400);
         res.send({msg:`User ${email} exists`});
@@ -20,15 +22,14 @@ authRoutes.post('/api/signup', async (req,res,next)=>{
         res.send("Database connection error");
     }
     else{
-        res.status(200);
-        res.send("Account successfully created");
+        
+        
     }
     next();
 })
 
 
 authRoutes.post('/api/admin-signin',async(req,res,next)=>{
-    console.log('hi')
     const {email,password} = req.body.user;
     let User = new AuthUser(email, password, '');
     var result = await User.checkAdminUser();
@@ -105,6 +106,18 @@ authRoutes.get("/api/is-token-valid",async(req, res, next)=>{
     next();
 })
 
+authRoutes.post("/api/change-password",auth,async(req, res, next)=>{
+    try{
+        const {user, password} = req.body;
+        AuthUser.changePassword(password, user);
+    }
+    catch(e){
+        console.log(e)    
+    }
+    next();
+})
+
+
 authRoutes.get('/refresh-token', (req,res) =>{
     const token =req.cookies.refreshToken;
     //if refresh token is not sent send empty access toekn
@@ -131,5 +144,28 @@ authRoutes.get('/refresh-token', (req,res) =>{
     
 })
 
+authRoutes.post('/api/verify-user',auth,async(req, res,next)=>{
+
+    var userID=req.user;
+    let userID_id =  ((userID)[0]).user_id
+     if(userID_id!=0){
+        let result = await user_otp.findOne({where:{
+            user_id:userID_id
+        }}).then(record=>{
+            
+            if(record.otp == req.body.otp){
+                application_user.create({account_status:'verified'})
+                res.send(userID[0])
+            }
+            else{
+                res.send(false)
+            }
+        })
+       
+        
+     }
+     next()
+     
+})
 
 module.exports = authRoutes;
