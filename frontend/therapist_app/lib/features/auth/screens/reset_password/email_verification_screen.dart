@@ -128,7 +128,9 @@ class _VerificationFormState extends State<VerificationForm> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CreatePasswordScreen(),
+                    builder: (context) => CreatePasswordScreen(
+                      email: '',
+                    ),
                   ),
                 );
               },
