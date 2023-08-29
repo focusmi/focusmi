@@ -173,6 +173,35 @@ authRouterTherapist.get('/apis/user/profile-picture/:id', auth, async (req, res)
   }
 });
 
+authRouterTherapist.post('/apis/forgot-password-email-verify', async (req, res) => {
+  try {
+    const {email} = req.body;
+    const user = await User.findOneByEmail(email);
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found!' });
+    }
+    res.json({ success: true});
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+authRouterTherapist.put('/apis/reset-password', async (req, res) => {
+    console.log(req.body)
+    try {
+      const { password, email } = req.body;
+      const user = await User.findOneByEmail(email);
+      if (!user) {
+        return res.status(404).json({ msg: 'User not found!' });
+      }
+      const hashPassword = await bcrypt.hash(password, 8);
+      const updatedUser = await User.updateUserPassword(user['user_id'], hashPassword);
+  
+      res.json({ success: true, msg: 'Password updated successfully!', user: updatedUser });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+});
 
 
 module.exports = authRouterTherapist;
