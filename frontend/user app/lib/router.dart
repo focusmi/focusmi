@@ -71,10 +71,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings){
           task:args
         ),
       );
-    case CounselorsListWidget.routeName:
+    case CounselorsListWidgetWidget.routeName:
      return MaterialPageRoute(
         settings: routeSettings,
-        builder:(context) => CounselorsListWidget(),
+        builder:(context) => CounselorsListWidgetWidget(),
       );
     default:
     return MaterialPageRoute(

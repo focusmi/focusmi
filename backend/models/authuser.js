@@ -2,6 +2,11 @@ const pool = require("../database/dbconnection");
 const {hash, compare} = require("bcryptjs");
 const {application_user} = require('../sequelize/models');
 const {administrative_user} = require("../sequelize/models");
+const {user_otp} = require("../sequelize/models");
+const { generateOTP } = require("./core/otp");
+const { sendMail } = require("./core/email");
+const { createAccessToken, sendAccessToken } = require("../tokens/tokens");
+
 
 class AuthUser {
 
@@ -25,20 +30,30 @@ class AuthUser {
     }
 
     //create new user
-    async createUser(){
+    async createUser(res,req){
       if(await this.checkEmailExist(this.email)){
         return 'exists';
       }
       else{
         try{
           this.password=await hash(this.password, 10);
-         // const res = await pool.cQuery(`Insert into application_user (username,email,password) values('${this.username}', '${this.email}', '${await hash(this.password, 10)}')`);
-         application_user.create({
+         let user =await application_user.create({
             username:this.username,
             email:this.email,
             password:this.password,
-            account_status:this.account_status
+            account_status:"not verfied"
          })
+         //generate OTP
+          let otp = generateOTP();
+          console.log("-------"+user.dataValues.user_id)
+          user_otp.create({
+            user_id:user.dataValues.user_id,
+            otp:otp
+          })
+          sendMail(this.email, otp)
+          const accessToken = createAccessToken([user.dataValues])
+          
+          sendAccessToken(res, req, accessToken,[user.dataValues]);
           return true;
         }
         catch(e){
@@ -78,7 +93,23 @@ class AuthUser {
       }
     }
     
+    static async changePassword(password,userId) {
+      try{
+        let enc_password=await hash(password, 10);
+        const res = await application_user.update({password:enc_password},{
+          where:{
+            user_id:userId
+          }
+        })
+      }
+      catch(e){
+        console.log(e);
+      }
+    }
     
+    static async sendOtp(userId){
+
+    }
 
     //updaee web token field
     async createToken() {

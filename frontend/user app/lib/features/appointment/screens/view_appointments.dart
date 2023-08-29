@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
-
-import 'View_appointment_model.dart';
-export 'View_appointment_model.dart';
+import 'package:focusmi/features/appointment/services/appointment_service.dart';
+import 'package:focusmi/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class ViewAppointmentsWidget extends StatefulWidget {
   const ViewAppointmentsWidget({Key? key}) : super(key: key);
@@ -14,35 +14,38 @@ class ViewAppointmentsWidget extends StatefulWidget {
 }
 
 class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
-  late ViewAppointmentsModel _model;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+  late List<dynamic> appointmentData = []; // To store the fetched data
 
   @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => ViewAppointmentsModel());
-  //}
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
+  void initState() {
+    super.initState();
+    fetchAppointmentData();
   }
-  
+
+  Future<void> fetchAppointmentData() async {
+    try {
+      var user = Provider.of<UserProvider>(context, listen: false).user;
+      print(user.user_id);
+      final data = await AppointmentService.getAppointments(user.user_id);
+      setState(() {
+        appointmentData = data;
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        backgroundColor: GlobalVariables.backgroundColor,
         appBar: AppBar(
           backgroundColor: const Color(0xFF83DE70),
           automaticallyImplyLeading: false,
           title: Text(
-            'Appointments',
+            'Your Appointments',
             style: FlutterFlowTheme.of(context).bodyText1.override(
                   fontFamily: 'Outfit',
                   color: Colors.white,
@@ -55,140 +58,102 @@ class _ViewAppointmentsWidgetState extends State<ViewAppointmentsWidget> {
         ),
         body: SafeArea(
           top: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      'Appointment 1',
-                      style: FlutterFlowTheme.of(context).bodyText1,
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(150, 0, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: 'Join Now',
-                          options: FFButtonOptions(
-                            height: 40,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                24, 0, 24, 0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                0, 0, 0, 0),
-                            color: FlutterFlowTheme.of(context).primaryColor,
-                            textStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                            elevation: 3,
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      'Appointment 2',
-                      style: FlutterFlowTheme.of(context).bodyText1,
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(150, 0, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: '2023-08-14',
-                          options: FFButtonOptions(
-                            height: 40,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                24, 0, 24, 0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                0, 0, 0, 0),
-                            color: FlutterFlowTheme.of(context).primaryColor,
-                            textStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                            elevation: 3,
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      'Appointment 3',
-                      style: FlutterFlowTheme.of(context).bodyText1,
-                    ),
-                    Flexible(
-                      child: Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(150, 0, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: '2023-08-16',
-                          options: FFButtonOptions(
-                            height: 40,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                24, 0, 24, 0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                0, 0, 0, 0),
-                            color: FlutterFlowTheme.of(context).primaryColor,
-                            textStyle:
-                                FlutterFlowTheme.of(context).bodyText1.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                            elevation: 3,
-                            borderSide: const BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: 8,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                for (var appointment in appointmentData ?? [])
+                  AppointmentCard(
+                    appointmentNo: appointment['appointment_id'],
+                  ),
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AppointmentCard extends StatelessWidget {
+  final int appointmentNo;
+  AppointmentCard({
+    required this.appointmentNo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "Appointment No :" + appointmentNo.toString(),
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Readex Pro',
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: FFButtonWidget(
+                onPressed: () {
+                  print('Button pressed ...');
+                  // Navigator.push(
+                  //   context,
+                  //   // MaterialPageRoute(
+                  //   //   builder: (context) => DetailsWidget(
+                  //   //     name: fullname,
+                  //   //     about: qulification,
+                  //   //     experience: exp,
+                  //   //     totcustomer: tot,
+                  //   //     userId: userId,
+                  //   //   ),
+                  //   // ),
+                  // );
+                },
+                text: 'More Info',
+                options: FFButtonOptions(
+                  height: 40,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  color: const Color(0xFF83DE70),
+                  textStyle: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Readex Pro',
+                        color: Colors.white,
+                      ),
+                  elevation: 3,
+                  borderSide: const BorderSide(
+                    color: Colors.transparent,
+                    width: 1,
+                  ),
+                  borderRadius: 8,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

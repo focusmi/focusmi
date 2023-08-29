@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/authentication/screens/auth-otp-insert.dart';
 import 'package:focusmi/features/authentication/screens/auth_choic_screen.dart';
 import 'package:focusmi/features/authentication/services/auth_service.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const GroupList():const LandingPage(),
+      home: OTPinsert() //Provider.of<UserProvider>(context).user.token.isNotEmpty ?const GroupList():const LandingPage(),
     );
   }
 }

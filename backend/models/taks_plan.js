@@ -32,7 +32,7 @@ class TaskPlan{
     async createTaskPlan(plan){
         try{
 
-            var res = await task_plan({
+            var res = await task_plan.create({
                 group_id:plan.group_id,
                 plan_name:plan.plan_name,
                 location:plan.location,

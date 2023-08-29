@@ -17,7 +17,7 @@ const pool = require("../database/dbconnection");
 const gTaskRoutes = require("../routes/group_task_planner");
 const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
-
+const appointmentRouter = require("../routes/appointment"); 
 
 dotenv.config()
 
@@ -39,6 +39,7 @@ app.use(authRoutes)
 app.use(gTaskRoutes)
 app.use(authRouterTherapist)
 app.use(ScheduleRouter)
+app.use(appointmentRouter)
 
 
 
@@ -47,7 +48,7 @@ const PORT = process.env.PORT || 3000
 
 //connection
 try{
-    app.listen(PORT,() => console.info(`Server has started on ${PORT}`))
+    app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
 
 }
 catch{

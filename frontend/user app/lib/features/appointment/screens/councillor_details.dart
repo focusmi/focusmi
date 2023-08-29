@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/appointment/screens/add_appointment.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
-import 'package:focusmi/layouts/user-layout.dart';
-import 'package:focusmi/widgets/texts.dart';
-
 
 import 'councillor_details_model.dart';
 export 'councillor_details_model.dart';
 
 class DetailsWidget extends StatefulWidget {
-  const DetailsWidget({Key? key}) : super(key: key);
+  final String name;
+  final String about;
+  final String experience;
+  final int totcustomer;
+  final int userId;
+
+  DetailsWidget({
+    Key? key,
+    required this.name,
+    required this.about,
+    required this.experience,
+    required this.totcustomer,
+    required this.userId,
+  }) : super(key: key);
 
   @override
   _DetailsWidgetState createState() => _DetailsWidgetState();
@@ -23,12 +32,6 @@ class _DetailsWidgetState extends State<DetailsWidget> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
-  //void initState() {
-  //super.initState();
-  //_model = createModel(context, () => DetailsModel());
-  //}
-
-  @override
   void dispose() {
     _model.dispose();
 
@@ -37,113 +40,191 @@ class _DetailsWidgetState extends State<DetailsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    LayOut layout = LayOut();
-    return layout.mainLayoutWithDrawer(
-      context, 
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 60),
-        child: SafeArea(
-            top: true,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.network(
-                        'https://picsum.photos/seed/621/600',
-                        fit: BoxFit.contain,
-                      ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF83DE70),
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Councillor Profile',
+            style: FlutterFlowTheme.of(context).bodyText1.override(
+                  fontFamily: 'Outfit',
+                  color: Colors.white,
+                  fontSize: 22,
+                ),
+          ),
+          actions: [],
+          centerTitle: false,
+          elevation: 2,
+        ),
+        body: SafeArea(
+          top: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
-                CustomText.titleText(
-                  'Adam Thompson',
-                ),
-                CustomText.normalText(
-                  'MBBS(Col)',
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(
-                        Icons.people,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24,
-                      ),
-                      Icon(
-                        Icons.explicit,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24,
-                      ),
-                     
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              Text(
+                '${widget.name}',
+                style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Readex Pro',
+                      fontSize: 20,
+                    ),
+              ),
+              Text(
+                '${widget.about}',
+                style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Readex Pro',
+                      color: const Color(0xFF505056),
+                    ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CustomText.normalText(
-                      '1000+ Patients',
-                      
+                    Icon(
+                      Icons.people,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24,
                     ),
-                    const SizedBox(width: 20),
-                    CustomText.normalText(
-                      '10 Yrs Experience',
-                      
+                    Icon(
+                      Icons.explicit,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24,
                     ),
-                    const SizedBox(width: 20),
-                   
+                    Icon(
+                      Icons.star_rate_sharp,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24,
+                    ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: CustomText.normalText(
-                    'Career',
-                    
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${widget.totcustomer}+ Patients',
+                    style: FlutterFlowTheme.of(context).bodyText1,
                   ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: CustomText.normalText(
-                    'Mental Health Counselors, facilitating positive change through compassionate communication in a safe environment',
-                    
+                  const SizedBox(width: 20),
+                  Text(
+                    '${widget.experience} Yrs Experience',
+                    style: FlutterFlowTheme.of(context).bodyText1,
                   ),
+                  const SizedBox(width: 20),
+                  Text(
+                    '4.5 Ratings',
+                    style: FlutterFlowTheme.of(context).bodyText1,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'About Doctor',
+                  textAlign: TextAlign.start,
+                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Readex Pro',
+                        fontSize: 20,
+                      ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  
-                  child:ElevatedButton(
-                    child:CustomText.buttonWhiteText("Take Appointment Now"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: GlobalVariables.primaryColor
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        
-                        MaterialPageRoute(
-                          builder: (context) => const AppointmentPage(),
+              ),
+              Text(
+                'Mental Health Counselors, facilitating positive change through compassionate communication in a safe environment',
+                style: FlutterFlowTheme.of(context).bodyText1,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'Working Time',
+                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Readex Pro',
+                        fontSize: 20,
+                      ),
+                ),
+              ),
+              Text(
+                'Mon - Sat (8.00 AM - 5.00 PM)',
+                style: FlutterFlowTheme.of(context).bodyText1,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Text(
+                  'Contact',
+                  style: FlutterFlowTheme.of(context).bodyText1.override(
+                        fontFamily: 'Readex Pro',
+                        fontSize: 20,
+                      ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.message_rounded,
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Messaging',
+                    style: FlutterFlowTheme.of(context).bodyText1,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: FFButtonWidget(
+                  onPressed: () {
+                    print('Button pressed ...');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AppointmentPage(userId: widget.userId),
+                      ),
+                    );
+                  },
+                  text: 'Book Appointment',
+                  options: FFButtonOptions(
+                    height: 40,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    iconPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    color: const Color(0xFF83DE70),
+                    textStyle: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Readex Pro',
+                          color: Colors.white,
                         ),
-                      );
-                    },
-                    
-                    )
+                    elevation: 3,
+                    borderSide: const BorderSide(
+                      color: Colors.transparent,
+                      width: 1,
+                    ),
+                    borderRadius: 8,
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-      ), 
-      "Counselor Profile");
+        ),
+      ),
+    );
   }
 }
