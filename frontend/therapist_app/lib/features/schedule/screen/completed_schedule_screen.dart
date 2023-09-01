@@ -51,7 +51,7 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
   Widget build(BuildContext context) {
     final completedScheduleData =
         scheduleData.where((schedule) => schedule['complete'] == true).toList();
-
+    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -76,7 +76,7 @@ class _CompletedScheduleScreenState extends State<CompletedScheduleScreen> {
             Column(
               children: completedScheduleData.map((schedule) {
                 return CompleteScheduleCard(
-                  patientName: schedule['full_name'],
+                  patientName: schedule['full_name'] ?? schedule['username'],
                   appointmentTime:
                       formatAppointmentDateTime(schedule['session_time']),
                   appointmentEndTime:
