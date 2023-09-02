@@ -78,6 +78,15 @@ const User = {
       throw new Error('Failed to load profile picture:', error);
     }
   },
+
+  updateUserStatus: async (id, status) => {
+    try {
+      const query = `UPDATE  administrative_user SET account_status = '${status}'  WHERE "user_id" = '${id}'`;
+      await pool.cQuery(query);
+    } catch (error) {
+      throw new Error('Error updating status:', error);
+    }
+  }
 };
 
 module.exports = User;
