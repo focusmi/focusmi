@@ -203,5 +203,18 @@ authRouterTherapist.put('/apis/reset-password', async (req, res) => {
     }
 });
 
+authRouterTherapist.put('/apis/user/update-state/:id', async (req, res) => {
+  try {
+    const { state } = req.body;
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
+    }
+    const updateStatus = await User.updateUserStatus(req.params.id,state); 
+    res.json({ success: true, msg: 'State Updated' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = authRouterTherapist;
