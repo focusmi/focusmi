@@ -25,7 +25,10 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.TEXT,
     skill: DataTypes.TEXT,
     duration: DataTypes.INTEGER,
-    ratings: DataTypes.INTEGER
+    ratings: DataTypes.INTEGER,
+    image: DataTypes.TEXT,
+  
+    
   }, {
     sequelize,
     modelName: 'mindfulness_course',

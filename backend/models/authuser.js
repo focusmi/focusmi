@@ -20,7 +20,7 @@ class AuthUser {
 
     //check user if exist
     async checkEmailExist(){
-      const res = await pool.cQuery(`Select * from application_user where email='${this.email}'`);
+      const res = await pool.cQuery(`Select * from application_user where email='${this.email}' and account_status<>'not verfied'`);
       if(res){
         return true;
       }
@@ -30,6 +30,7 @@ class AuthUser {
     }
 
     //create new user
+    //if new user is not verifed and need to signup againg delete already existing account
     async createUser(res,req){
       if(await this.checkEmailExist(this.email)){
         return 'exists';
@@ -37,7 +38,26 @@ class AuthUser {
       else{
         try{
           this.password=await hash(this.password, 10);
-         let user =await application_user.create({
+          var user = await application_user.findOne({where:{email:this.email}})
+          if(user){
+            user_otp.destroy({
+              where:{
+                user_id:user.user_id
+              }
+            }
+  
+            )
+            application_user.destroy(
+              {
+                where:{
+                  email:this.email,
+                  account_status:"not verfied"
+                }
+              }
+            )
+
+          }
+         user =await application_user.create({
             username:this.username,
             email:this.email,
             password:this.password,
@@ -45,7 +65,6 @@ class AuthUser {
          })
          //generate OTP
           let otp = generateOTP();
-          console.log("-------"+user.dataValues.user_id)
           user_otp.create({
             user_id:user.dataValues.user_id,
             otp:otp
@@ -124,6 +143,35 @@ class AuthUser {
       const res= await pool.cQuery(`select * from application_user where "user_id"=${id}`)
       if(res==0) return false;
       else return true;
+    }
+
+    static async changePackage(id, packageno){
+      switch(packageno){
+        case 1:{
+          application_user.update({user_id:id},{
+            where:{
+              account_status:"no package"
+            }
+          })
+          break
+        }
+        case 2:{
+          application_user.update({user_id:id},{
+            where:{
+              account_status:"freedom"
+            }
+          })
+          break
+        }
+        case 1:{
+          application_user.update({user_id:id},{
+            where:{
+              account_status:"extra freedom"
+            }
+          })
+          break
+        }
+      }
     }
 
     

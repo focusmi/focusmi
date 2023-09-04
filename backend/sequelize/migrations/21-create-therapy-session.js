@@ -33,7 +33,10 @@ module.exports = {
       },
       updated_at: {
         type: Sequelize.DATE
-      }
+      },
+      image:{
+        type: Sequelize.TEXT
+      } 
     });
   },
   async down(queryInterface, Sequelize) {

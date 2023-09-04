@@ -121,7 +121,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     onPressed: () async {
                       if (_form_key.currentState!.validate()) {
                         signUpUser();
-                        Navigator.pushNamed(context, SignScreen.routeName);
                       }
                     },
                     child: const Text("Sign Up"))

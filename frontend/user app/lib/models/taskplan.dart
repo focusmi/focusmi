@@ -5,24 +5,24 @@ class TaskPlan {
   final int plan_id;
   final int group_id;
   String plan_name;
-  final String location;
-  final String schedule_date; 
-  final String schedule_type;
-  final String time;
-  final String reminder_status;
-  final String created_date;
+  final String? location;
+  final String? schedule_date; 
+  final String? schedule_type;
+  final String? time;
+  final String? reminder_status;
+  final String? created_date;
   bool? is_edit;
 
   TaskPlan({
     required this.plan_id,
     required this.group_id,
     required this.plan_name,
-    required this.location,
-    required this.schedule_date,
-    required this.schedule_type,
-    required this.time,
-    required this.reminder_status,
-    required this.created_date,
+    this.location,
+    this.schedule_date,
+    this.schedule_type,
+    this.time,
+    this.reminder_status,
+    this.created_date,
     this.is_edit
   });
   

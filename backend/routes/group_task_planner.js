@@ -6,8 +6,8 @@ const { json } = require('body-parser');
 const ApplicationUser = require('../models/application_user');
 const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
-const task = require('../sequelize/models/task');
 const Task = require('../models/task');
+const {task_plan} = require('../sequelize/models');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -127,6 +127,16 @@ gTaskRoutes.get('/api/add-group-member/:userid/:groupid',auth,(req, res, next)=>
    next();
 })
 
+gTaskRoutes.post('/api/add-task',auth,async(req, res, next)=>{
+   try{
+      Task.createTask(req.body)
+      
+   }
+   catch(e){
+      print(e)
+   }
+})
+
 gTaskRoutes.get('/api/search-group-member',auth,async(req, res, next)=>{
    try{
   
@@ -173,10 +183,10 @@ gTaskRoutes.post('/api/create-task-plan',auth,(req, res, next)=>{
 
 })
 
-gTaskRoutes.post('/api/rename-task-planner',auth,(req , res, next)=>{
+gTaskRoutes.post('/api/rename-task-plan',auth,(req , res, next)=>{
    try{
       const taskPlan = new TaskPlan()
-      taskPlan.renameTaskPlan(req.plan_id,req.plan_name)
+      taskPlan.renameTaskPlan(req.body.plan_id,req.body.plan_name)
    }
    catch(e){
       console.log(e)
@@ -185,9 +195,9 @@ gTaskRoutes.post('/api/rename-task-planner',auth,(req , res, next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/get-plan-task/:planid',auth,(req,res,next)=>{
+gTaskRoutes.get('/api/get-plan-task/:planid',auth,async(req,res,next)=>{
    try{
-      var result = Task.getPlanTask(req.params.planid)
+      var result = await Task.getPlanTask(req.params.planid)
       res.status(200).send(result)
    }
    catch(e){
@@ -197,9 +207,9 @@ gTaskRoutes.get('/api/get-plan-task/:planid',auth,(req,res,next)=>{
    next()
 })
 
-gTaskRoutes.post('/api/update-task-name/',auth,(req,res,next)=>{
+gTaskRoutes.post('/api/update-task-name/',auth,async(req,res,next)=>{
    try{
-      var result = Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
+      var result =await Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
       res.status(200).send(result)
    }
    catch(e){
@@ -209,16 +219,37 @@ gTaskRoutes.post('/api/update-task-name/',auth,(req,res,next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/get-task-plan-by-group/:groupid',auth, (req,res,next)=>{
+gTaskRoutes.post('/api/delete-task-plan/:planid',auth,async(req, res, next)=>{
    try{
-      
-      var result = TaskPlan.getTaskPlanByGroup(req.params.groupid)
+      var result = await task_plan.destroy({plan_id:req.params.planid})
+   }
+   catch(e){
+      console.log(e)
+   }
+   next() 
+})
+
+gTaskRoutes.get('/api/get-task-plan-by-group/:groupid',auth, async(req,res,next)=>{
+   try{ 
+      var result = await TaskPlan.getTaskPlanByGroup(req.params.groupid)
       res.status(200).send(result)
    }
    catch(e){
       console.log(e)
       res.status(400).send(false)
    }
+   next()
+})
+
+gTaskRoutes.post('/api/create-task',auth, async(req, res, next)=>{
+   try{
+      Task.createTask(req.body)
+
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
 })
 
 module.exports = gTaskRoutes;

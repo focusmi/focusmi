@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     location: DataTypes.TEXT,
     scheduled_date: DataTypes.DATE,
     scheduled_time: DataTypes.TIME,
-    schdule_type: DataTypes.TEXT,
+    schedule_type: DataTypes.TEXT,
     reminder_status: DataTypes.TEXT,
     user_id: DataTypes.INTEGER
   }, {

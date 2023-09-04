@@ -1,5 +1,5 @@
 let express = require('express')
-const AuthUser = require('../models/authuser')
+const AuthUser = require('../models/authuser') 
 let authRoutes = express.Router()
 const {createAccessToken ,createRefreshToken, sendRefreshToken, sendAccessToken, isAuth}= require('../tokens/tokens')
 const { verify } = require('jsonwebtoken')
@@ -7,9 +7,12 @@ const {administrative_user} = require('../sequelize/models')
 const {user_otp} = require('../sequelize/models')
 const {application_user} = require('../sequelize/models')
 const auth = require('../tokens/auth');
+const TaskPlan = require('../models/taks_plan')
+const task = require('../sequelize/models/task')
 
 //signup routes
 authRoutes.post('/api/signup', async (req,res,next)=>{
+    console.log("inside")
     const {username, email, password} = req.body;
     let User = new AuthUser(email, password, username);
     var result = await User.createUser(res,req);
@@ -67,6 +70,7 @@ authRoutes.post('/api/signin', async (req,res,next) => {
         res.status(400).send({msg:"Wrong Email or Password",type:2})
     }
     else{
+        console.log("is")
         //create refresh and access token
         const accessToken = createAccessToken(result)
         const refreshToken = createRefreshToken(result)
@@ -144,21 +148,61 @@ authRoutes.get('/refresh-token', (req,res) =>{
     
 })
 
-authRoutes.post('/api/verify-user',auth,async(req, res,next)=>{
+authRoutes.get('/api/get-recent-task-plans',auth,async(req, res, next)=>{
+    try{
+        var userID=req.user;
+        let userID_id =  ((userID)[0]).user_id
+        if(userID_id!=0){
+            var taskPlan =  new TaskPlan();
+            var result = taskPlan.getRecentTaskPlans(userID_id)
+            res.send(result)
+        }
+        else{
+            res.send(false)
+        }
+        
+    }
+    catch(e){
+        res.send([]);
+    }
+    next()
+})
 
-    var userID=req.user;
+authRoutes.get('/api/set-package/:package',auth,async(req, res, next)=>{
+    try{
+        var userID=req.user;
+        let userID_id =  ((userID)[0]).user_id
+        if(userID_id!=0){
+           //set package
+           AuthUser.changePackage(userID_id, req.params.package)
+        } 
+    }
+    catch(e){
+        console.log(e)
+    }
+    next()
+})
+
+authRoutes.get('/api/verify-user/:otp',auth,async(req, res,next)=>{
+    var userID=req.user; 
     let userID_id =  ((userID)[0]).user_id
      if(userID_id!=0){
         let result = await user_otp.findOne({where:{
             user_id:userID_id
         }}).then(record=>{
             
-            if(record.otp == req.body.otp){
-                application_user.create({account_status:'verified'})
-                res.send(userID[0])
+            if(record.otp == req.params.otp){
+                application_user.update({account_status:'verified'},{
+                    where:{
+                        user_id:userID_id
+                    }
+                })
+                userID[0]['token']=(req.headers['authorization']).split(' ')[1]
+                userID[0]['msg']="Success"
+                res.send([userID[0]])
             }
             else{
-                res.send(false)
+                res.status(400).send({'result':false, msg:'Incorrect PTP'})
             }
         })
        

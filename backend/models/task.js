@@ -35,6 +35,7 @@ class Task{
     }
 
     static async getPlanTask(taskplan){
+ 
         var result = await task.findAll({
             where:{
                 plan_id:taskplan
