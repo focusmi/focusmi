@@ -78,6 +78,7 @@ const User = {
       throw new Error('Failed to load profile picture:', error);
     }
   },
+  
 };
 
 module.exports = User;

@@ -47,18 +47,18 @@ class TaskPlan {
       plan_id: map['plan_id'] as int,
       group_id: map['group_id'] as int,
       plan_name: map['plan_name'] as String,
-      location: map['location'] as String,
-      schedule_date: map['schedule_date'] as String,
-      schedule_type: map['schedule_type'] as String,
-      time: map['time'] as String,
-      reminder_status: map['reminder_status'] as String,
-      created_date: map['created_date'] as String,
+      location: map['location'] as String?,
+      schedule_date: map['schedule_date'] as String?,
+      schedule_type: map['schedule_type'] as String?,
+      time: map['time'] as String?,
+      reminder_status: map['reminder_status'] as String?,
+      created_date: map['created_date'] as String?,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory TaskPlan.fromJson(String source) => TaskPlan.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory TaskPlan.fromJson(Map<String, dynamic> source) => TaskPlan.fromMap(source as Map<String, dynamic>);
 
   
 

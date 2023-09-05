@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:focusmi/constants/global_variables.dart';
 
 class GTaskPlannerServices {
-  static void createTaskPlan(TaskPlan taskplan) async {
+  static Future createTaskPlan(TaskPlan taskplan) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -16,8 +18,9 @@ class GTaskPlannerServices {
                 'authorization': 'Bearer ' + token.toString()
               },
               body: taskplan.toJson());
-    } 
-    catch (e) {
+      return jsonDecode(res.body)['plan_id'];
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -31,9 +34,6 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-      List<TaskPlan> result= res.fromMap(Map<String, dynamic> map){
-
-      };
       return res;
     } catch (e) {
       print(e);
@@ -45,14 +45,13 @@ class GTaskPlannerServices {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
       http.Response res =
-          await http.post(Uri.parse('$uri/api/rename-task-planner'),
+          await http.post(Uri.parse('$uri/api/rename-task-plan'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
                 'authorization': 'Bearer ' + token.toString()
               },
               body: taskPlan.toJson());
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   static void dropTaskPlan() async {
@@ -64,8 +63,7 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   static void addTask() async {
@@ -78,7 +76,6 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 }

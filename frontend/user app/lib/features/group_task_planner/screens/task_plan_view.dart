@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskgroup.dart';
 import 'package:focusmi/models/taskplan.dart';
+import 'package:http/http.dart';
 
 class GroupTaskPlanner extends StatefulWidget {
   static const String routeName = '/task_plan_view';
@@ -50,21 +53,27 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   List<TextEditingController> taskPlanControllers =
       List<TextEditingController>.empty(growable: true);
   late var taskPlanEditName;
+  late int editplan;
 
   void addTaskPlan() async {
     var taskplanid = taskPlans.length + 1;
     var groupid = widget.group.group_id;
     var name = 'Task Plan - $taskplanid';
-    GTaskPlannerServices.createTaskPlan(
-        TaskPlan(plan_id: taskplanid, group_id: groupid, plan_name: name));
-    setState(() async {
-      taskPlans = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
-      print("////////////////////");
-      print(taskPlans);
-      print("////////////////////");
-    });
-    taskMap[taskplanid] = List<Task>.empty(growable: true);
+    taskplanid = await GTaskPlannerServices.createTaskPlan(TaskPlan(
+        plan_id: taskplanid,
+        group_id: groupid,
+        plan_name: name,
+        is_edit: true));
+    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
     setState(() {
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+      for (var plans in taskPlans) {
+        taskMap[plans.plan_id] = List.empty(growable: true);
+      }
+    });
+    setState(() {
+      editplan = taskplanid;
       planHeight[taskplanid] = 10;
     });
   }
@@ -114,23 +123,44 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
 
   void initState() {
     taskPlanEditName = 0;
+    editplan = 0;
     planHeight = {};
     taskCreate = TextEditingController();
+    _getTaskPlan();
     super.initState();
   }
 
   void _onPressedText(index) {
     setState(() {
-      taskPlans[index].is_edit = true;
+      editplan = taskPlans[index].plan_id;
       taskPlanControllers[index].text = taskPlans[index].plan_name;
     });
   }
 
-  void _addTaskPlanName(index) {
+  void _addTaskPlanName(index) async {
+    var groupid = widget.group.group_id;
+    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
     setState(() {
+      editplan = 0;
       taskPlans[index].plan_name = taskPlanControllers[index].text;
       GTaskPlannerServices.renameTaskPlan(taskPlans[index]);
-      taskPlans[index].is_edit = false;
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+      for (var plans in taskPlans) {
+        taskMap[plans.plan_id] = List.empty(growable: true);
+      }
+    });
+  }
+
+  void _getTaskPlan() async {
+    var groupid = widget.group.group_id;
+    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
+    setState(() {
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+      for (var plans in taskPlans) {
+        taskMap[plans.plan_id] = List.empty(growable: true);
+      }
     });
   }
 
@@ -153,8 +183,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                       children: [
                         Container(
                           width: planWidth,
-                          child: (taskPlans[index].is_edit != null &&
-                                  taskPlans[index].is_edit != true)
+                          child: (taskPlans[index].plan_id != null &&
+                                  taskPlans[index].plan_id != editplan)
                               ? GestureDetector(
                                   child: Container(
                                     padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
@@ -202,7 +232,10 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                             backgroundColor:
                                                 GlobalVariables.primaryColor),
                                         onPressed: () {
-                                          _addTaskPlanName(index);
+                                          setState(() {
+                                            _addTaskPlanName(index);
+                                            
+                                          });
                                         },
                                       ),
                                     )

@@ -169,23 +169,25 @@ gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res,
    next();
 })
 
-gTaskRoutes.post('/api/create-task-plan',auth,(req, res, next)=>{
+gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
    try{
       const taskPlan = new TaskPlan();
-      var result = taskPlan.createTaskPlan(req.body)
-      res.status(200).send(true)
+      var result = await taskPlan.createTaskPlan(req.body)
+      res.status(200).json({'plan_id':result.dataValues.plan_id})
    }
    catch(e){
       console.log(e)
       res.status(400).send(false)
 
    }
+   next()
 
 })
 
 gTaskRoutes.post('/api/rename-task-plan',auth,(req , res, next)=>{
    try{
       const taskPlan = new TaskPlan()
+      console.log(req.body.plan_id+"------"+req.body.plan_name)
       taskPlan.renameTaskPlan(req.body.plan_id,req.body.plan_name)
    }
    catch(e){
