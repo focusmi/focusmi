@@ -240,12 +240,12 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                       return true; // Show all by default
                     }).map((schedule) {
                       return ScheduleCard(
-                        patientName: schedule['username'],
+                        patientName: schedule['full_name'] ?? schedule['username'],
                         appointmentTime:
                             formatAppointmentDateTime(schedule['session_time']),
                         appointmentEndTime:
                             formatAppointmentTime(schedule['session_end_time']),
-                        status: schedule['account_status'] ?? 'online',
+                        status: schedule['account_status'] ?? 'idle',
                         appointmentEndDateTime: formatAppointmentDateTime(
                             schedule['session_end_time']),
                         complete: schedule['complete'],
