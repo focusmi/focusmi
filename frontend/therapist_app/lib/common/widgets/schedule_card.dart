@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -181,7 +183,7 @@ class ScheduleCard extends StatelessWidget {
                                   'Waiting') {
                                 jumpToMeetingPage(
                                   context,
-                                  conferenceId: '1000000000',
+                                  conferenceId: '${appointmentId*pow(10,9)}',
                                   userName: user.name,
                                   userId: '${user.id}',
                                 );
