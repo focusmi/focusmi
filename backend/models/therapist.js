@@ -86,7 +86,31 @@ const User = {
     } catch (error) {
       throw new Error('Error updating status:', error);
     }
-  }
+  },
+
+  addBlog: async (user_id, title, description, filePath) => {
+    try {
+      const query = `INSERT INTO  blog(user_id,title, description, image) VALUES('${user_id}', '${title}', '${description}','${filePath}')`;
+      console.log(query)
+      await pool.cQuery(query);
+      console.log('Blog upload successfully');
+    } catch (error) {
+      throw new Error('Error adding blog:', error);
+    }
+  },
+
+  fetchBlogs: async (id) => {
+    try {
+      const query = `SELECT * FROM blog WHERE "user_id" = '${id}'`;
+      const blogs = await pool.cQuery(query);
+      return blogs;
+    } catch (error) {
+      throw new Error('Error fetching blogs:', error);
+    }
+  },
+
+
+
 };
 
 module.exports = User;
