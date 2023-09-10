@@ -1,0 +1,61 @@
+const express = require('express');
+const blogRouterTherapist = express.Router();
+const User = require('../models/therapist');
+const auth = require('../middleware/auth');
+const multer = require('multer'); // Add this line to import multer for handling file uploads
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/assets/images/blogs-images'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = req.params.id + '-' + Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+blogRouterTherapist.post('/apis/user/add-blog/:id',upload.single('blog_image'), async (req, res) => {
+  try {
+    const { title, description, authorName} = req.body;
+
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found!' });
+    }
+    const filePath = req.file.path;
+    const parts = filePath.split('\\');
+    const index = parts.indexOf('assets');
+    if (index !== -1) {
+      const path = parts.slice(index).join('/');
+      await User.addBlog(req.params.id, title, description, path);
+
+    } else {
+      console.log('Path not found in the input string.');
+    }
+   
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+blogRouterTherapist.get('/apis/user/fetch-blog/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
+    }
+    const blogs = await User.fetchBlogs(req.params.id);
+    res.json(blogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+module.exports = blogRouterTherapist;
