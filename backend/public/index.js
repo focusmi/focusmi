@@ -18,7 +18,7 @@ const gTaskRoutes = require("../routes/group_task_planner");
 const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
 const appointmentRouter = require("../routes/appointment"); 
-const userTRoutes = require("../routes/user-therapist");
+const userTRoutes = require("../routes/adminitrator");
 
 dotenv.config()
 
