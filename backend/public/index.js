@@ -18,6 +18,7 @@ const gTaskRoutes = require("../routes/group_task_planner");
 const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
 const appointmentRouter = require("../routes/appointment"); 
+const blogRouterTherapist = require("../routes/therapist_blog"); 
 
 dotenv.config()
 
@@ -40,6 +41,7 @@ app.use(gTaskRoutes)
 app.use(authRouterTherapist)
 app.use(ScheduleRouter)
 app.use(appointmentRouter)
+app.use(blogRouterTherapist)
 
 
 
