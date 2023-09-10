@@ -1,7 +1,7 @@
+import 'package:therapist_app/features/blog/screen/blog_screen.dart';
 import 'package:therapist_app/features/home/screen/home_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../features/messages/screen/message_screen.dart';
 import '../../features/profile/screen/profile_screen.dart';
 import '../../features/schedule/screen/schedule_screen.dart';
 
@@ -16,7 +16,7 @@ class _NavBarRootsState extends State<NavBarRoots> {
   int _selectedIndex = 0;
   final _screens = [
     const HomeScreen(),
-    MessagesScreen(),
+    BlogScreen(),
     ScheduleScreen(),
     ProfileScreen(),
   ];
@@ -48,9 +48,9 @@ class _NavBarRootsState extends State<NavBarRoots> {
                 icon: Icon(Icons.home_filled), label: "Home"),
             BottomNavigationBarItem(
                 icon: Icon(
-                  CupertinoIcons.chat_bubble_text_fill,
+                  CupertinoIcons.news_solid,
                 ),
-                label: "Messages"),
+                label: "Blogs"),
             BottomNavigationBarItem(
                 icon: Icon(Icons.calendar_month_outlined), label: "Schedule"),
             BottomNavigationBarItem(
