@@ -61,11 +61,11 @@ class _UserInfoState extends State<UserInfo> {
         width: 48.0,
         height: 48.0,
         decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/doctor1.jpg"),
-            fit: BoxFit.cover,
-            repeat: ImageRepeat.repeat,
-          ),
+          // image: DecorationImage(
+          //   image: AssetImage("assets/images/doctor1.jpg"),
+          //   fit: BoxFit.cover,
+          //   repeat: ImageRepeat.repeat,
+          // ),
           borderRadius: BorderRadius.all(Radius.circular(18.0)),
         ),
         child: Stack(
