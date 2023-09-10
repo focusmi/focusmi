@@ -3,9 +3,9 @@ const { RowDescriptionMessage, CommandCompleteMessage } = require('pg-protocol/d
 const { UNSAFE_NavigationContext } = require('react-router-dom')
 const User = require('../models/therapist')
 const UserTherapist = require('../models/user-therapist')
-let userAuthRouter = express.Router()
+let userTRoutes = express.Router()
 
-userAuthRouter.post('/api/create-therapist/:name', async(req,res,next) => {
+userTRoutes.post('/api/create-therapist', async(req,res,next) => {
     try{
         UserTherapist.createTherapist(req.body)
         res.status(400).send(true)
@@ -17,7 +17,7 @@ userAuthRouter.post('/api/create-therapist/:name', async(req,res,next) => {
     next()
 })
 
-userAuthRouter.get('/api/get-therapist/', async(req,res,next)=>{
+userTRoutes.get('/api/get-therapist/', async(req,res,next)=>{
     try{
         var result =  await UserTherapist.getTherapist()
         res.status(400).send(result)
@@ -29,7 +29,7 @@ userAuthRouter.get('/api/get-therapist/', async(req,res,next)=>{
     next()
 })
 
-userAuthRouter.post('/api/update-user', async(req, res, next)=>{
+userTRoutes.post('/api/update-user', async(req, res, next)=>{
     try{
         UserTherapist.updateuser(req.body.user_id, req.body)
         res.status(400).send(true)
@@ -40,7 +40,7 @@ userAuthRouter.post('/api/update-user', async(req, res, next)=>{
     }
 })
 
-userAuthRouter.get('/api/delet-user/:userid',async(req,res,next)=>{
+userTRoutes.get('/api/delet-user/:userid',async(req,res,next)=>{
     try{
         UserTherapist.deleteuser(req.params.userid)
         res.status(400).send(true)
@@ -57,7 +57,5 @@ userAuthRouter.get('/api/delet-user/:userid',async(req,res,next)=>{
 
 
 
-router.get('/error',(req,res)=>{
-    throw new Error("This is a forced error")
-})
-module.exports = mRouter
+
+module.exports = userTRoutes

@@ -5,19 +5,20 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPageServices {
-  static void getRecentTaskPlans() async {
+  static Future getBlogs() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      http.Response res = await http.get(
-          Uri.parse('$uri/api/get-recent-task-plans'),
+      http.Response res = await http.get(Uri.parse('$uri/api/get-all-blogs'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-      print(res);
+      return res;
     } catch (e) {
-      //showErrorSnackBar(context, e.toString());
+      print(e);
     }
   }
+
+  
 }

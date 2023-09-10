@@ -21,13 +21,13 @@ class UserTherapist{
             {
                 username:user.username,
                 full_name:user.full_name,
-                role:user.roler,
+                role:user.role,
                 email:user.email,
                 phone_number:user.phone_number,
                 about:user.about,
                 account_status:user.account_status,
                 years_of_experience:user.years_of_experience,
-                tot_clients:user.tot_client,
+                tot_clients:user.tot_clients,
                 password:user.password,
                 title:user.title
             }

@@ -6,6 +6,7 @@ import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/constants/utils.dart';
 import 'package:focusmi/features/authentication/screens/auth-otp-insert.dart';
 import 'package:focusmi/features/authentication/screens/choose-package.dart';
+import 'package:focusmi/features/mainpage/screens/main_page.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/models/user.dart';
 import 'package:focusmi/providers/user_provider.dart';
@@ -43,7 +44,7 @@ class AuthService {
                 .setUser(jsonDecode(res.body)[0]);
             await prefs.setString(
                 'auth-token', (jsonDecode(res.body)[0])['token']);
-            Navigator.pushNamed(context, GroupList.routeName);
+            Navigator.pushNamed(context, MainScreen.routeName);
           });
     } catch (e) {
       //showErrorSnackBar(context, e.toString());

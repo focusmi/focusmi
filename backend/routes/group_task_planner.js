@@ -8,6 +8,8 @@ const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
 const Task = require('../models/task');
 const {task_plan} = require('../sequelize/models');
+const pool = require('../database/dbconnection');
+const Blog = require('../models/blog');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -171,8 +173,10 @@ gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res,
 
 gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
    try{
+      var userID=req.user;
+      userID =  ((userID)[0]).user_id
       const taskPlan = new TaskPlan();
-      var result = await taskPlan.createTaskPlan(req.body)
+      var result = await taskPlan.createTaskPlan(req.body,userID)
       res.status(200).json({'plan_id':result.dataValues.plan_id})
    }
    catch(e){
@@ -250,6 +254,57 @@ gTaskRoutes.post('/api/create-task',auth, async(req, res, next)=>{
    }
    catch(e){
       console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-recent-task-by-user',auth,async(req, res, next)=>{
+   var userID=req.user;
+   console.log("Error")
+   console.log(userID)
+   userID =  ((userID)[0]).user_id
+  try{
+      var result = await task_plan.findAll({
+         where:{
+            user_id:userID
+         },
+         order:[
+            ['updated_at','DESC']
+         ]
+      
+      })
+      res.send(result)
+  }
+  catch(e){
+
+  } 
+  next()
+})
+
+gTaskRoutes.get('/api/get-all-blogs',auth, async(req, res, next)=>{
+   var userID = req.user;
+   userID = ((userID)[0]).user_id
+   try{
+      var result = await Blog.getAllBlogs()
+      res.send(result)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/create-blog',auth,async(req, res, next)=>{
+   console.log("hit")
+   var userID = req.user;
+   userID = ((userID)[0]).user_id
+   try{
+      var result = await Blog.createBlog(req.body)
+      res.send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.send(false)
    }
    next()
 })

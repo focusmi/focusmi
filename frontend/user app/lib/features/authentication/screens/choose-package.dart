@@ -22,7 +22,7 @@ class _ChoosePackageState extends State<ChoosePackage> {
           Container(
             child: Column(
               children: [
-                Text("Packge 1"),
+                Text("Free Package"),
                 ElevatedButton(
                     onPressed: () {
                       changePackageApi(1);

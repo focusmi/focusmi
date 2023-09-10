@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusmi/features/authentication/screens/auth-otp-insert.dart';
 import 'package:focusmi/features/authentication/screens/auth_choic_screen.dart';
 import 'package:focusmi/features/authentication/services/auth_service.dart';
+import 'package:focusmi/features/mainpage/screens/main_page.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:focusmi/router.dart';
@@ -36,7 +37,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const GroupList():const LandingPage(),
+      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const MainScreen():const LandingPage(),
     );
   }
 }

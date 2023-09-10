@@ -1,7 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
+import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/layouts/user-layout.dart';
+import 'package:focusmi/models/blog.dart';
+import 'package:focusmi/models/taskplan.dart';
 import 'package:focusmi/providers/user_provider.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,15 +21,43 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  void getRecentPlanApi() {
-    MainPageServices.getRecentTaskPlans();
+  late List<TaskPlan> taskPlan;
+  late List<Blog> blogs;
+  void getTaskPlanApi() async {
+    try {
+      Response response = await GTaskPlannerServices.getRecentTaskPlan();
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      List<TaskPlan> result =
+          list.map((model) => TaskPlan.fromJson(model)).toList();
+      setState(() {
+        taskPlan = result;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getBlogs() async {
+    try {
+      Response response = await MainPageServices.getBlogs();
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      List<Blog> result = list.map((model) => Blog.fromJson(model)).toList();
+      setState(() {
+        blogs = result;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   void initState() {
+    taskPlan = List<TaskPlan>.empty(growable: true);
+    blogs = List<Blog>.empty(growable: true);
+    getTaskPlanApi();
+    getBlogs();
     // TODO: implement initState
     super.initState();
-    getRecentPlanApi();
   }
 
   @override
@@ -38,8 +74,13 @@ class _MainScreenState extends State<MainScreen> {
               const SizedBox(
                 width: 20,
               ),
-              Container(
-                child: Center(child: Text("Task Groups")),
+              GestureDetector(
+                child: Container(
+                  child: Center(child: Text("Task Groups")),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, GroupList.routeName);
+                },
               ),
             ],
           ),
@@ -54,14 +95,36 @@ class _MainScreenState extends State<MainScreen> {
               )
             ],
           ),
+          Container(
+            width: 500,
+            height: 100,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: taskPlan.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    child: Text(taskPlan[index].plan_name),
+                  );
+                }),
+          ),
+          Container(
+            width: 500,
+            height: 100,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: blogs.length,
+                itemBuilder: (context, index) {
+                  return Container(child: Text(blogs[index].title));
+                }),
+          ),
         ]),
       ),
       Container(
-        //task plans goes here
-      ),
+          //task plans goes here
+          ),
       Container(
-        //mindfullness courses goes here
-      )
+          //mindfullness courses goes here
+          )
     ]));
   }
 }

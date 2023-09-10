@@ -30,7 +30,7 @@ class TaskPlan{
         return res
     }
 
-    async createTaskPlan(plan){
+    async createTaskPlan(plan,userid){
         try{
 
             var res = await task_plan.create({
@@ -42,6 +42,7 @@ class TaskPlan{
                 schedule_time:plan.schedule_time,
                 time:plan.time,
                 remider_status:plan.remider_status,
+                user_id:userid
     
             })
     
@@ -69,6 +70,16 @@ class TaskPlan{
     }
 
     async deleteTaskPlan(planid){
+        try{
+            await task_plan.destroy({
+                where:{
+                    plan_id:planid
+                }
+            })
+        }
+        catch(e){
+            console.log(e)
+        }
         
     }
 

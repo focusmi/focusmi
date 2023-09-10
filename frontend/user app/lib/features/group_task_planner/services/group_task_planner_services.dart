@@ -44,14 +44,30 @@ class GTaskPlannerServices {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      http.Response res =
-          await http.post(Uri.parse('$uri/api/rename-task-plan'),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-                'authorization': 'Bearer ' + token.toString()
-              },
-              body: taskPlan.toJson());
-    } catch (e) {}
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-recent-task-by-user'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+ static Future getRecentTaskPlan() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(Uri.parse('$uri/api/get-recent-task-by-user'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
   }
 
   static void dropTaskPlan() async {
@@ -63,7 +79,9 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   static void addTask() async {
