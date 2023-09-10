@@ -37,8 +37,8 @@ authRouterTherapist.post('/apis/signin', async (req, res) => {
       return res.status(400).json({ msg: 'Invalid password!' });
     }
 
-    const token =  jwt.sign({id:user.user_id}, "passwordKey");
-    res.json({ success: true,token, ...user});
+    const token = jwt.sign({ id: user.user_id }, "passwordKey");
+    res.json({ success: true, token, ...user });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -58,23 +58,23 @@ authRouterTherapist.delete('/apis/user/:id', auth, async (req, res) => {
   }
 });
 
-authRouterTherapist.put('/apis/user/:id',auth, async (req, res) => {
+authRouterTherapist.put('/apis/user/:id', auth, async (req, res) => {
   try {
-    const {full_name ,email,years_of_experience,phone_number,about} = req.body;
+    const { full_name, email, years_of_experience, phone_number, about } = req.body;
     const user = await User.findOneById(req.params.id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
-    const id = {id: req.params.id }.id
-    const updatedUser = await User.updateUser(id, full_name, email, years_of_experience,phone_number,about);
+    const id = { id: req.params.id }.id
+    const updatedUser = await User.updateUser(id, full_name, email, years_of_experience, phone_number, about);
     res.json({ success: true, msg: 'User updated successfully!', user: updatedUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-authRouterTherapist.put('/apis/user/:id/change-password',auth, async (req, res) => {
-  
+authRouterTherapist.put('/apis/user/:id/change-password', auth, async (req, res) => {
+
   try {
     const { currentPassword, newPassword } = req.body;
     const user = await User.findOneById(req.params.id);
@@ -102,13 +102,13 @@ authRouterTherapist.post('/tokenIsValid', async (req, res) => {
   try {
 
     const token = req.header('x-auth-token');
-    if(!token) return res.json(false);
+    if (!token) return res.json(false);
 
-    const verified =  jwt.verify(token, "passwordKey");
-    if(!verified) return res.json(false);
+    const verified = jwt.verify(token, "passwordKey");
+    if (!verified) return res.json(false);
 
     const user = await User.findOneById(verified.id);
-    if(!user) return res.json(false);
+    if (!user) return res.json(false);
 
     res.json(true);
 
@@ -117,9 +117,9 @@ authRouterTherapist.post('/tokenIsValid', async (req, res) => {
   }
 });
 
-authRouterTherapist.get('/', auth, async(req,res)=>{
+authRouterTherapist.get('/', auth, async (req, res) => {
   const user = await User.findOneById(req.user);
-  res.json({...user, token: req.token})
+  res.json({ ...user, token: req.token })
 })
 
 
@@ -144,11 +144,20 @@ authRouterTherapist.post('/apis/upload-profile-pic/:id', auth, upload.single('pr
       return res.status(404).json({ msg: 'User not found!' });
     }
 
-    const profilePicPath = req.file.path; 
-    const id = req.params.id;
-    await User.uploadUserProfilePicture(id,profilePicPath);
+    const profilePicPath = req.file.path;
+    console.log(profilePicPath);
 
-    res.json({ success: true, msg: 'Profile picture uploaded successfully!' });
+    // Extract the path from profilePicPath
+    const parts = profilePicPath.split('\\');
+    const index = parts.indexOf('assets');
+    if (index !== -1) {
+      const path = parts.slice(index).join('/');
+      const id = req.params.id;
+      await User.uploadUserProfilePicture(id, path);
+      res.json({ success: true, msg: 'Profile picture uploaded successfully!' });
+    } else {
+      console.log('Path not found in the input string.');
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -175,32 +184,32 @@ authRouterTherapist.get('/apis/user/profile-picture/:id', auth, async (req, res)
 
 authRouterTherapist.post('/apis/forgot-password-email-verify', async (req, res) => {
   try {
-    const {email} = req.body;
+    const { email } = req.body;
     const user = await User.findOneByEmail(email);
     if (!user) {
       return res.status(400).json({ msg: 'User not found!' });
     }
-    res.json({ success: true});
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 authRouterTherapist.put('/apis/reset-password', async (req, res) => {
-    console.log(req.body)
-    try {
-      const { password, email } = req.body;
-      const user = await User.findOneByEmail(email);
-      if (!user) {
-        return res.status(404).json({ msg: 'User not found!' });
-      }
-      const hashPassword = await bcrypt.hash(password, 8);
-      const updatedUser = await User.updateUserPassword(user['user_id'], hashPassword);
-  
-      res.json({ success: true, msg: 'Password updated successfully!', user: updatedUser });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+  console.log(req.body)
+  try {
+    const { password, email } = req.body;
+    const user = await User.findOneByEmail(email);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
     }
+    const hashPassword = await bcrypt.hash(password, 8);
+    const updatedUser = await User.updateUserPassword(user['user_id'], hashPassword);
+
+    res.json({ success: true, msg: 'Password updated successfully!', user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 authRouterTherapist.put('/apis/user/update-state/:id', async (req, res) => {
@@ -210,7 +219,7 @@ authRouterTherapist.put('/apis/user/update-state/:id', async (req, res) => {
     if (!user) {
       return res.status(404).json({ msg: 'User not found!' });
     }
-    const updateStatus = await User.updateUserStatus(req.params.id,state); 
+    const updateStatus = await User.updateUserStatus(req.params.id, state);
     res.json({ success: true, msg: 'State Updated' });
   } catch (err) {
     res.status(500).json({ error: err.message });
