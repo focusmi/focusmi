@@ -71,6 +71,31 @@ class ApplicationUser {
         }
     }
 
+    static getUserDetail = async()=>{
+        try{
+            var activeresult =  await application_user.findAll({
+                where:{
+                    account_status:'inactive'
+                }
+            });
+
+            var inactiveresult = await application_user.findAll({
+                where:{
+                    account_status:{
+                        [Op.not] : 'inactive'
+                    }
+                }
+            })
+            return {
+                actv_users:activeresult,
+                inactv_users:inactiveresult
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
 }
 
 module.exports = ApplicationUser;

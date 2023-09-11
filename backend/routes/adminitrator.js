@@ -1,9 +1,11 @@
 let express = require('express')
 const { RowDescriptionMessage, CommandCompleteMessage } = require('pg-protocol/dist/messages')
 const { UNSAFE_NavigationContext } = require('react-router-dom')
+const ApplicationUser = require('../models/application_user')
 const User = require('../models/therapist')
 const UserTherapist = require('../models/user-therapist')
 let userTRoutes = express.Router()
+const auth = require('../tokens/auth');
 
 userTRoutes.post('/api/create-therapist', async(req,res,next) => {
     try{
@@ -48,6 +50,19 @@ userTRoutes.get('/api/delet-therapist/:userid',async(req,res,next)=>{
     catch(e){
         console.log(e)
         req.status(400).send(false)
+    }
+    next()
+})
+
+userTRoutes.get('/api/get-app-wide-user-detail',auth,async(req, res, next)=>{
+    if((req.user[0]).user_id != 0){
+        try{
+            var result = ApplicationUser.getUserDetail()
+            res.send(result)
+        }
+        catch(e){
+            console.log(e)
+        }
     }
     next()
 })
