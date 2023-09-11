@@ -42,7 +42,7 @@ userTRoutes.post('/api/update-therapist', async(req, res, next)=>{
     }
 })
 
-userTRoutes.get('/api/delet-therapist/:userid',async(req,res,next)=>{
+userTRoutes.get('/api/delete-therapist/:userid',async(req,res,next)=>{
     try{
         UserTherapist.deleteuser(req.params.userid)
         res.status(400).send(true)
