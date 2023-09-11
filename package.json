@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@headlessui/react": "^1.7.16",
+    "react-icons": "^4.10.1",
+    "tailwindcss-classnames": "^3.1.0"
+  }
+}
