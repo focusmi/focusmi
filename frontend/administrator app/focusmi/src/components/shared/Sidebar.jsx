@@ -10,9 +10,9 @@ const linkClasses = 'flex items-center gap-2 font-light px-5 py-3  hover:bg-neut
 
 function Sidebar() {
   return (
-    <div className='flex flex-col  left-0 top-0 w-[250px] h-full ease-in-out duration-300 bg-[#55a06a] text-white border border-right'>
+    <div className='flex flex-col  left-0 top-0 w-[252px] h-full ease-in-out duration-300 bg-[#55a06a] border-r-2'>
       <div className='flex items-center gap-2 px-2 py-6 h-[100px]'> <img src={logo} alt="focusMi"  className='h-[40px] w-auto mx-auto'/> </div>
-      <div className='flex-1 mx-auto mt-[100px]'>
+      <div className='flex-1 mx-auto mt-[100px] w-[250px] '>
         {DASHBOARD_SIDEBAR_LINKS.map((item) => (
           <SidebarLink key={item.key} item={item}/>
         ))}
@@ -41,8 +41,8 @@ function Sidebar() {
 function SidebarLink({item}){
   const {pathname} = useLocation  ()
   return (
-    <Link to={item.path} className={ classnames(pathname == item.path ? 'bg-neutral-300' : '',linkClasses) }>
-    <span className='text-xl'>{item.icon}</span>
+    <Link  to={item.path} className={classnames(pathname == item.path ? 'bg-neutral-300 text-white no-underline' : 'text-white no-underline',linkClasses) }>
+    <span className='text-xl '>{item.icon}</span>
     {item.lable}
 
     </Link>

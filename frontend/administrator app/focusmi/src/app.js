@@ -16,7 +16,7 @@ import DailyTipsMain from './components/DailyTips/DailyTipsMain';
 
 import Reports from './components/Reports/Reports';
 import IncomeStatement from './components/Reports/IncomeStatement';
-import HelpSupportPage from './components/HelpSupportPage';
+import HelpSupportPage from './components/shared/HelpSupportPage';
 
 
 export default function App(){
@@ -34,20 +34,20 @@ export default function App(){
             <React.Fragment>
                 <BrowserRouter>
                     <Routes>
-                    <Route exact path="/mantee" element={<NavBar user={user}/>} />
-                    <Route exact path="/layout" element={<Layout />}>
-                    <Route path="login/dashboard" element={<Dashboard/>}/>
+                    {/* <Route exact path="/" element={<NavBar user={user}/>} /> */}
+                    <Route path="/" element={<Layout user={user} />}>
+                        <Route path="dashboard" element={<Dashboard/>}/>
                         <Route path="counsellors" element={<Counsellors/>}/>
                         <Route path="add-counsellors" element={<AddCounselors/>}/>
                         <Route path="courses" element={<CoursesPage/>}/>
                         <Route path="add-courses" element={<AddCoursePage/>}/>
                         <Route path="create-courses" element={<CreateCoursePage/>}/>
                         <Route path="edit-levels" element={<LevelContentEditor/>}/>
-                        <Route path="daily-tips" element={<DailyTipsMain/>}/>
+                        <Route path="daily_tips" element={<DailyTipsMain/>}/>
                         <Route path="create-tips" element={<CreateTips/>}/>
                         <Route path="support" element={<HelpSupportPage/>}/>                                
                         <Route path="reports" element={<Reports/>}/>
-                        <Route path="reports/income-statement" element={<IncomeStatement/>}/>
+                        <Route path="income-statement" element={<IncomeStatement/>}/>
                     </Route>
                                        
                         

@@ -5,14 +5,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* navbar */
 
 *{
     font-family: poppins;
-    letter-spacing: 0.15em;
-    color: #606264;
-  
+    letter-spacing: 0.15em;  
   }
+  body{
+    background-color: white;
+    
+  }
+ 
 :root {
     --primary-color:rgb(131, 222, 112);
     --background-color:rgb(255,255,255);
@@ -24,20 +26,3 @@
 
 
 
-
-
-.navbar-style{
-    background-color:var(--primary-color)!important;
-}
-.set-white{
-    background-color: white !important;
-}
-.reverse{
-    display: flex;
-    gap:50px;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-
-}
-
-/* login page */

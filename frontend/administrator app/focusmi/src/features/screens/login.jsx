@@ -59,7 +59,7 @@ export default function LoginPage(props){
                    }
                       
                     
-                    navigate('/mantee')
+                    navigate('/dashboard')
                     
                 }).catch(result=>{
                     setRes(result.response.data.type)

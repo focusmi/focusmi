@@ -10,6 +10,7 @@ module.exports = {
         'poppins': ['Poppins', 'sans-serif'],
         'borel' : ['Borel', 'cursive'],
       },
+      
     },
   },
   plugins: [],

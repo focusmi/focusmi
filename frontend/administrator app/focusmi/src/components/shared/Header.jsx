@@ -21,7 +21,7 @@ function Header() {
             {({ open }) => (
               <>
                 <Popover.Button className= {classnames(open && 'bg-slate-50',"p-2 rounded-sminline-flex items-center focus:outline-none hover:text-opacity-100 active:bg-[#eef2ed]")}>
-                  <FiBell size={20}/>
+                  <FiMessageSquare size={20}/>
                 </Popover.Button>
 
                       <Transition
@@ -34,7 +34,7 @@ function Header() {
                           leaveTo="opacity-0 translate-y-1"
                   >
                 <Popover.Panel className= "absolute right-0 z-10 mt-2.5 w-80">
-                  <div className='bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-4 py-2.5'>
+                  <div className='bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-4 py-2.5 text-black'>
                     <strong className='font-medium'>Messages</strong>
                     <div className='mt-1 py-1 text-sm'>
                       This is messages panel.
@@ -50,7 +50,7 @@ function Header() {
             {({ open }) => (
               <>
                 <Popover.Button className= {classnames(open && 'bg-slate-50',"p-2 rounded-sminline-flex items-center focus:outline-none hover:text-opacity-100 active:bg-[#eef2ed]")}>
-                  <FiMessageSquare size={20}/>
+                <FiBell size={20}/>
                 </Popover.Button>
 
                       <Transition
@@ -63,7 +63,7 @@ function Header() {
                           leaveTo="opacity-0 translate-y-1"
                   >
                 <Popover.Panel className= "absolute right-0 z-10 mt-2.5 w-80">
-                  <div className='bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-4 py-2.5'>
+                  <div className='bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-4 py-2.5 text-black'>
                     <strong className='font-medium'>Notifications</strong>
                     <div className='mt-1 py-1 text-sm'>
                       This is Notifications panel.

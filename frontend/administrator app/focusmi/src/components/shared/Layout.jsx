@@ -4,7 +4,9 @@ import {Outlet} from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 
-function Layout() {
+function Layout(props) {
+  let userdata = window.localStorage.getItem('user')
+  const [user, setUser] = useState(JSON.parse(userdata));
   
   return (
     <div className='flex flex-row h-screen w-screen overflow-hidden'>
@@ -13,7 +15,9 @@ function Layout() {
         </div>
         
         <div className='flex-1'><Header/>
-            <div>ggftgdh</div>
+          
+            {/* <div>{user?user.username:'FocusMi'}</div> */}
+            <div>{<Outlet/>}</div>
         </div>
         
     </div>
