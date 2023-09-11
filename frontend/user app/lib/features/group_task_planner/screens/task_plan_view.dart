@@ -31,22 +31,23 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   late Map<int, double> planHeight;
   int _selectedIndex = 0;
   Task entryTask = new Task(
-      task_id: 0,
-      plan_id: 0,
-      timer_id: 0,
-      duration: 0,
-      task_status: '',
-      priority: 0,
-      created_at: '',
-      created_time: '',
-      completed_date: '',
-      completed_time: '',
-      color: '',
-      description: '',
-      is_text_field: true,
-      task_name: '');
+          task_id: 0,
+          plan_id: 0,
+          timer_id: 0,
+          duration: 0,
+          task_status: '',
+          priority: 0,
+          created_at: '',
+          created_time: '',
+          completed_date: '',
+          completed_time: '',
+          color: '',
+          description: '',
+          is_text_field: true,
+          task_name: ''
+  );
   late TextEditingController taskCreate;
-  List<TaskPlan> taskPlans = List<TaskPlan>.empty(growable: true);
+  late List<TaskPlan> taskPlans;
   Map taskMap = Map();
   List<Task> tasks = List<Task>.empty(growable: true);
   List<SubTask> subTasks = List<SubTask>.empty(growable: true);
@@ -54,6 +55,15 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       List<TextEditingController>.empty(growable: true);
   late var taskPlanEditName;
   late int editplan;
+  void initState() {
+    taskPlanEditName = 0;
+    editplan = 0;
+    planHeight = {};
+    taskCreate = TextEditingController();
+    taskPlans = List<TaskPlan>.empty(growable: true);
+    _getTaskPlan();
+    super.initState();
+  }
 
   void addTaskPlan() async {
     var taskplanid = taskPlans.length + 1;
@@ -121,15 +131,6 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     });
   }
 
-  void initState() {
-    taskPlanEditName = 0;
-    editplan = 0;
-    planHeight = {};
-    taskCreate = TextEditingController();
-    _getTaskPlan();
-    super.initState();
-  }
-
   void _onPressedText(index) {
     setState(() {
       editplan = taskPlans[index].plan_id;
@@ -155,8 +156,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   void _getTaskPlan() async {
     var groupid = widget.group.group_id;
     Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
+    Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
     setState(() {
-      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
       for (var plans in taskPlans) {
         taskMap[plans.plan_id] = List.empty(growable: true);
@@ -234,7 +235,6 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                         onPressed: () {
                                           setState(() {
                                             _addTaskPlanName(index);
-                                            
                                           });
                                         },
                                       ),
