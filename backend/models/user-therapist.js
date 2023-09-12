@@ -25,7 +25,7 @@ class UserTherapist{
                 email:user.email,
                 phone_number:user.phone_number,
                 about:user.about,
-                account_status:user.account_status,
+                account_status:"inactive",
                 years_of_experience:user.years_of_experience,
                 tot_clients:user.tot_clients,
                 password:user.password,
