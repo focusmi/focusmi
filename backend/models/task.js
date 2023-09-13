@@ -22,16 +22,34 @@ class Task{
     
     /* **************************Task methods realted to individual task planner*********************** */
     static async createTask(taskOb){
-        var result = await task.create({
-            plan_id:taskOb.plan_id,
-            task_name:taskOb.task_name,
-            timer_id:taskOb.timer_id,
-            duration:task.duration,
-            task_status:task.task_status,
-            priority: task.priority,
-            description:task.description,
-        })
-        return result
+
+        try{
+            var result = await task.create({
+                plan_id:taskOb.plan_id,
+                task_name:taskOb.task_name,
+                duration:task.duration,
+                task_status:task.task_status,
+                priority: task.priority,
+                description:task.description,
+                color:'nocolor',
+            })
+            return result
+        }
+        catch(e){
+            console.log(e)
+        }
+       
+    }
+
+    static async addColor(taskid,color){
+        var result = await task.update(
+            {color:color},
+            {
+                where:{
+                    task_id:taskid
+                }
+            }
+        )
     }
 
     static async getPlanTask(taskplan){
@@ -72,7 +90,28 @@ class Task{
                 break;
         }
     }
-
+    static async setAttribute(type,taskid,val){
+        try{
+       
+            if(type == 'status'){
+                task.update({task_status:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+            else if(type == 'color'){
+                task.update({color:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
     
     /* **************************Task methods realted to group taks planner**************************** */
     

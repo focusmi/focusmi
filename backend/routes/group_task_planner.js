@@ -131,8 +131,15 @@ gTaskRoutes.get('/api/add-group-member/:userid/:groupid',auth,(req, res, next)=>
 
 gTaskRoutes.post('/api/add-task',auth,async(req, res, next)=>{
    try{
-      Task.createTask(req.body)
-      
+      Task.createTask({
+         plan_id:req.body.plan_id,
+         timer_id:0,
+         duration:0,
+         task_status:'pending',
+         priority:req.body.priority,
+         
+         
+      })     
    }
    catch(e){
       print(e)
@@ -171,6 +178,18 @@ gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res,
    next();
 })
 
+gTaskRoutes.get('/api/get-task-by-plan/:planid',auth,async(req, res, next)=>{
+   const planid = req.params.planid;  
+   try{
+      var task = await Task.getPlanTask(planid)
+      res.send(task)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next();
+})
+
 gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
    try{
       var userID=req.user;
@@ -191,7 +210,6 @@ gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
 gTaskRoutes.post('/api/rename-task-plan',auth,(req , res, next)=>{
    try{
       const taskPlan = new TaskPlan()
-      console.log(req.body.plan_id+"------"+req.body.plan_name)
       taskPlan.renameTaskPlan(req.body.plan_id,req.body.plan_name)
    }
    catch(e){
@@ -295,7 +313,6 @@ gTaskRoutes.get('/api/get-all-blogs',auth, async(req, res, next)=>{
 })
 
 gTaskRoutes.post('/api/create-blog',auth,async(req, res, next)=>{
-   console.log("hit")
    var userID = req.user;
    userID = ((userID)[0]).user_id
    try{
@@ -307,6 +324,31 @@ gTaskRoutes.post('/api/create-blog',auth,async(req, res, next)=>{
       res.send(false)
    }
    next()
+})
+
+gTaskRoutes.post('/api/chanage-task-color', auth, async(req, res, next)=>{
+   var userID = req.user;
+   userID = ((userID)[0]).user_id
+   try{
+      Task.addColor(req.body.task_id, req.body.color)
+      res.send(true)
+   }
+   catch(e){
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next)=>{
+   var userID = req.user;
+   try{
+      Task.setAttribute(req.params.attr,req.params.task,req.params.val)
+      res.send(true)
+   }
+   catch(e){
+      console.log(e)
+   }
 })
 
 module.exports = gTaskRoutes;

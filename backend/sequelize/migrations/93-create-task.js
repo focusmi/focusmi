@@ -27,6 +27,9 @@ module.exports = {
       duration: {
         type: Sequelize.INTEGER
       },
+      color: {
+        type:Sequelize.TEXT
+      },
       task_status: {
         type: Sequelize.TEXT
       },
