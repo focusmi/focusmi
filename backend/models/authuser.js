@@ -6,6 +6,7 @@ const {user_otp} = require("../sequelize/models");
 const { generateOTP } = require("./core/otp");
 const { sendMail } = require("./core/email");
 const { createAccessToken, sendAccessToken } = require("../tokens/tokens");
+const timer = require("../sequelize/models/timer");
 
 
 class AuthUser {
@@ -55,6 +56,13 @@ class AuthUser {
                 }
               }
             )
+            application_user.destroy(
+              {
+                where:{
+                  user_id:user.dataValues.user_id
+                }
+              }
+            )
 
           }
          user =await application_user.create({
@@ -63,6 +71,18 @@ class AuthUser {
             password:this.password,
             account_status:"not verfied"
          })
+        
+
+         timer.create({
+          stopped_time:'',
+          break_duration:5,
+          total_duration:20,
+          status:'not-in-use',
+          turns:1,
+          user_id:user.dataValues.user_id
+
+         })
+
          //generate OTP
           let otp = generateOTP();
           user_otp.create({

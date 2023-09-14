@@ -8,6 +8,7 @@ const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
 const Task = require('../models/task');
 const {task_plan} = require('../sequelize/models');
+const {task} = require('../sequelize/models');
 const pool = require('../database/dbconnection');
 const Blog = require('../models/blog');
 let gTaskRoutes = express.Router();
@@ -342,6 +343,7 @@ gTaskRoutes.post('/api/chanage-task-color', auth, async(req, res, next)=>{
 
 gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next)=>{
    var userID = req.user;
+   console.log(req.params.attr+"-"+req.params.task+"-"+req.params.val)
    try{
       Task.setAttribute(req.params.attr,req.params.task,req.params.val)
       res.send(true)
@@ -349,6 +351,27 @@ gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next
    catch(e){
       console.log(e)
    }
+   next()
 })
+
+gTaskRoutes.get('/api/get-task-attr/:task/:attr/',auth, async(req, res, next)=>{
+   var userID = req.user; 
+   try{
+      var val = await task.findOne(
+         {
+            where:{
+               task_id:req.params.task
+            }
+         });
+      val =  val[`${req.params.attr}`]
+      res.send({value:val})
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+
 
 module.exports = gTaskRoutes;

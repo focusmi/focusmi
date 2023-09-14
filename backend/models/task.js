@@ -101,6 +101,7 @@ class Task{
                 })
             }
             else if(type == 'color'){
+                console.log(taskid)
                 task.update({color:val},{
                     where:{
                         task_id:taskid
