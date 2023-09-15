@@ -16,7 +16,7 @@ class _CreateBlogState extends State<CreateBlog> {
   File? selectedImage;
 
   bool _isLoading = false;
-  CrudMethods crudMethods = new CrudMethods();
+  BlogService crudMethods = new BlogService();
 
   Future getImage() async {
     final pickedImage =
