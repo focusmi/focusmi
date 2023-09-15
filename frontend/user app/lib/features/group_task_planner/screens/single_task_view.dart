@@ -2,6 +2,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/models/groupmembers.dart';
 import 'package:focusmi/models/subtask.dart';
@@ -69,7 +70,31 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     showDateTime = null;
     showTime = null;
     nowtime = TimeOfDay.now();
-    label = Colors.white;
+    label = Color.fromARGB(255, 255, 255, 255);
+    refreshColor(widget.task.task_id);
+  }
+
+  void chanageColorApi(taskid, color) {
+    try {
+      GTaskPlannerServices.setTaskAttr('color', taskid, color);
+      setState(() {});
+    } catch (e) {}
+  }
+
+  void refreshColor(taskid) async {
+    var val = await GTaskPlannerServices.getColor(widget.task.task_id);
+    if (val == 'nocolor') {
+      val = Color.fromARGB(255, 255, 255, 255);
+    } else {
+      val = val.split(':');
+      int blue = int.parse(val[0]);
+      int red = int.parse(val[1]);
+      int green = int.parse(val[2]);
+      val = Color.fromARGB(255, red, green, blue);
+    }
+    setState(() {
+      label = val;
+    });
   }
 
   void searchMember(text) {
@@ -103,12 +128,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void addSubTask(taskname, taskid) {
     setState(() {
       subTasks.add(SubTask(
-      stack_id: subTasks.length + 1,
-      task_id: taskid,
-      sub_priority: 0,
-      sub_label: taskname,
-      sub_status: 'pending',
-      created_at: ''));
+          stack_id: subTasks.length + 1,
+          task_id: taskid,
+          sub_priority: 0,
+          sub_label: taskname,
+          sub_status: 'pending',
+          created_at: ''));
       _subTaskAllocation[subTasks.length] = [];
     });
   }
@@ -119,29 +144,33 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     });
   }
 
-  Future<DateTime?> pickDate() => showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(now.year-1, now.month, now.day), lastDate: DateTime(now.year+1, now.month, now.day));
-  Future<TimeOfDay?> pickTime() => showTimePicker(context: context, initialTime: nowtime);
-  void setSchedule()async{
+  Future<DateTime?> pickDate() => showDatePicker(
+      context: context,
+      initialDate: dateTime,
+      firstDate: DateTime(now.year - 1, now.month, now.day),
+      lastDate: DateTime(now.year + 1, now.month, now.day));
+  Future<TimeOfDay?> pickTime() =>
+      showTimePicker(context: context, initialTime: nowtime);
+  void setSchedule() async {
     DateTime? resultDate = await pickDate();
-    if(resultDate!=null){
+    if (resultDate != null) {
       TimeOfDay? resultTime = await pickTime();
       setState(() {
         showDateTime = resultDate;
       });
-      if(resultDate!=null){
+      if (resultDate != null) {
         setState(() {
           showTime = resultTime;
         });
       }
     }
-
   }
 
   Widget _buildAddMemberPopup(BuildContext context, subtaskid) {
     return AlertDialog(
-      title:const Text("Add Member"),
+      title: const Text("Add Member"),
       content: StatefulBuilder(
-        builder: (BuildContext , StateSetter setState) {
+        builder: (BuildContext, StateSetter setState) {
           return Container(
             width: 200,
             child: Column(
@@ -209,56 +238,56 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:18.0,vertical: 20),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 18.0, vertical: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Container(
-                       width: MediaQuery.of(context).size.width,
-                        child: Text(
-                          widget.task.task_name,
-                          style:TextStyle(
-                            fontSize: 24,
-                            color: GlobalVariables.greyFontColor
-                          ) 
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Text(widget.task.task_name,
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    color: GlobalVariables.greyFontColor)),
                           ),
-                      ),
-                      (widget.task.description != '')
-                          ? Text("Description" + widget.task.description)
-                          : SizedBox(
-                              width: 0,
-                              height: 0,
-                            ),
-                      Container(
-                          width:MediaQuery.of(context).size.width,
-                          child: Text("Created On :" + widget.task.created_at,style: TextStyle(
-                            color: GlobalVariables.greyFontColor
-                          ),)
-                        ),
-                      Container(
-                        height: 10,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: label
-                        ),
-                      ),
-                    ]),
+                          (widget.task.description != '')
+                              ? Text("Description" + (widget.task.description??''))
+                              : SizedBox(
+                                  width: 0,
+                                  height: 0,
+                                ),
+                          Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Text(
+                                "Created On :" + (widget.task.created_at??''),
+                                style: TextStyle(
+                                    color: GlobalVariables.greyFontColor),
+                              )),
+                          Container(
+                            height: 10,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(color: label),
+                          ),
+                        ]),
                   ),
-                  SizedBox(height: 20,),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
                     height: 85,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      border: Border.all(
-                        color: GlobalVariables.textFieldBgColor,
-                        
-                      )
-                    ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                          color: GlobalVariables.textFieldBgColor,
+                        )),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:8.0, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 10),
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -268,150 +297,245 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               child: const Column(
                                 children: [
                                   CircleAvatar(
-                                    
-                                   backgroundColor: Color.fromARGB(255, 123, 17, 211),
-                                    child: Icon(Icons.format_list_bulleted,color: Colors.white,)
-                                  ),
-                                  Text("Change Taskplan",style: TextStyle(color: GlobalVariables.greyFontColor, fontSize:12),)
+                                      backgroundColor:
+                                          Color.fromARGB(255, 123, 17, 211),
+                                      child: Icon(
+                                        Icons.format_list_bulleted,
+                                        color: Colors.white,
+                                      )),
+                                  Text(
+                                    "Change Taskplan",
+                                    style: TextStyle(
+                                        color: GlobalVariables.greyFontColor,
+                                        fontSize: 12),
+                                  )
                                 ],
                               ),
-                      
                             ),
-                            const SizedBox(width: 30,),
-                            
+                            const SizedBox(
+                              width: 30,
+                            ),
                             Container(
                               child: const Column(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: Colors.amber,
-                                   child:Icon(Icons.move_to_inbox,color: Colors.white,)
-                                  ),
-                                  Text("Add to My Tasks",style: TextStyle(color: GlobalVariables.greyFontColor, fontSize:12),)
+                                      backgroundColor: Colors.amber,
+                                      child: Icon(
+                                        Icons.move_to_inbox,
+                                        color: Colors.white,
+                                      )),
+                                  Text(
+                                    "Add to My Tasks",
+                                    style: TextStyle(
+                                        color: GlobalVariables.greyFontColor,
+                                        fontSize: 12),
+                                  )
                                 ],
                               ),
-                      
                             )
-                      
                           ],
                         ),
                       ),
                     ),
-                  )
-                  ,
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
                   Container(
                     height: 60,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: GlobalVariables.textFieldBgColor,
-                        
-                      )
-                    ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: GlobalVariables.textFieldBgColor,
+                        )),
                     child: Padding(
                       padding: const EdgeInsets.all(0.0),
                       child: Row(
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.label,color: GlobalVariables.greyFontColor,),
-                              SizedBox(width: 5,),
-                              Text("Label :",style:TextStyle(color:GlobalVariables.greyFontColor)),
-                              SizedBox(width: 20,),
+                              Icon(
+                                Icons.label,
+                                color: GlobalVariables.greyFontColor,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text("Label :",
+                                  style: TextStyle(
+                                      color: GlobalVariables.greyFontColor)),
+                              SizedBox(
+                                width: 20,
+                              ),
                               Container(
                                 width: 220,
-                                child: BlockPicker(onColorChanged: (color){
-                                  setState(() {
-                                    label= color;
-                                  });
-                                },pickerColor: Colors.white,),
+                                child: BlockPicker(
+                                  onColorChanged: (color) {
+                                    setState(() {
+                                      label = color;
+                                      int? blue = label?.blue;
+                                      int? red = label?.green;
+                                      int? green = label?.green;
+                                      double? opacity = label?.opacity;
+                                      String strcolor =
+                                          '${blue}:${red}:${green}:${opacity}';
+                                      GTaskPlannerServices.setTaskAttr('color',
+                                          widget.task.task_id, strcolor);
+                                    });
+                                  },
+                                  pickerColor: Colors.white,
+                                ),
                               )
                             ],
                           ),
                           SizedBox(),
-                          Container(width: 15,height: 5,)
+                          Container(
+                            width: 15,
+                            height: 5,
+                          )
                         ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,)
-                  ,
-                   Container(
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
                     height: 120,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: GlobalVariables.textFieldBgColor,
-                        
-                      )
-                    ),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: GlobalVariables.textFieldBgColor,
+                        )),
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Column(
                         children: [
-                          SizedBox(height: 10,),
-                          (showDateTime!=null)?
-                          Row(
-                                children: [
-                                  Icon(Icons.schedule,color: GlobalVariables.greyFontColor,),
-                                  SizedBox(width: 5,),
-                                  Text("Edit Deadline",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                    
-                                  ],
-                                ):SizedBox(width: 0,height: 0,) ,
-                          SizedBox(height:5),
-                          Row(
-                            
-                            children:[
-                              SizedBox(width: 5,),
-                              (showDateTime!=null)? CustomText.normalText('Date :'):SizedBox(width: 0,height: 0,),
-                               (showDateTime!=null)? CustomText.normalText("${showDateTime?.year}-${(showDateTime?.month).toString().padLeft(2,'0')}-${(showDateTime?.day).toString().padLeft(2,'0')}"):SizedBox(width: 0,height: 0,),
-                              (showDateTime!=null)?const SizedBox(width: 20,):SizedBox(width: 0,height: 0,),
-                              (showTime!=null)?CustomText.normalText('Time :'):SizedBox(width: 0,height: 0,),
-                              (showTime!=null)?CustomText.normalText("${(showTime?.hour)?.toString().padLeft(2,'0')}:${(showTime?.minute)?.toString().padLeft(2,'0')}"):SizedBox(width: 0,height: 0,),
-                    
-                              (showDateTime==null)?Row(
-                              children:[
-                              SizedBox(width: 5,),
-                              GestureDetector(
-                              onTap: (){
-                                setSchedule();
-                              }, child:Row(
-                                children: [
-                                  Icon(Icons.schedule,color: GlobalVariables.greyFontColor,),
-                                  SizedBox(width: 5,),
-                                  CustomText.normalText("Set Deadline"),
-                    
-                                  ],
-                                ) 
-                              ),]
-                              ):SizedBox(width: 0,height: 0,),
-                            SizedBox(width: 5,),
-                    
-                            ],
+                          SizedBox(
+                            height: 10,
                           ),
-                          SizedBox(height: 14,),
+                          (showDateTime != null)
+                              ? Row(
+                                  children: [
+                                    Icon(
+                                      Icons.schedule,
+                                      color: GlobalVariables.greyFontColor,
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      "Edit Deadline",
+                                      style: TextStyle(
+                                          color: GlobalVariables.greyFontColor),
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(
+                                  width: 0,
+                                  height: 0,
+                                ),
+                          SizedBox(height: 5),
                           Row(
                             children: [
-                              SizedBox(width:0),
-                              Icon(Icons.add_location,color: GlobalVariables.greyFontColor,),
-                              SizedBox(width: 5,),
-                              Text("Add Location",style: TextStyle(
-                                color: GlobalVariables.greyFontColor
-                              ),)
+                              SizedBox(
+                                width: 5,
+                              ),
+                              (showDateTime != null)
+                                  ? CustomText.normalText('Date :')
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              (showDateTime != null)
+                                  ? CustomText.normalText(
+                                      "${showDateTime?.year}-${(showDateTime?.month).toString().padLeft(2, '0')}-${(showDateTime?.day).toString().padLeft(2, '0')}")
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              (showDateTime != null)
+                                  ? const SizedBox(
+                                      width: 20,
+                                    )
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              (showTime != null)
+                                  ? CustomText.normalText('Time :')
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              (showTime != null)
+                                  ? CustomText.normalText(
+                                      "${(showTime?.hour)?.toString().padLeft(2, '0')}:${(showTime?.minute)?.toString().padLeft(2, '0')}")
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              (showDateTime == null)
+                                  ? Row(children: [
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      GestureDetector(
+                                          onTap: () {
+                                            setSchedule();
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.schedule,
+                                                color: GlobalVariables
+                                                    .greyFontColor,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              CustomText.normalText(
+                                                  "Set Deadline"),
+                                            ],
+                                          )),
+                                    ])
+                                  : SizedBox(
+                                      width: 0,
+                                      height: 0,
+                                    ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 14,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(width: 0),
+                              Icon(
+                                Icons.add_location,
+                                color: GlobalVariables.greyFontColor,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Add Location",
+                                style: TextStyle(
+                                    color: GlobalVariables.greyFontColor),
+                              )
                             ],
                           )
                         ],
                       ),
                     ),
-                   ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -420,90 +544,114 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical:4),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: GlobalVariables.textFieldBgColor,
-                              
-                                     )
-                                   ),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                        color: GlobalVariables.textFieldBgColor,
+                                      )),
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           height: 32,
                                           child: Row(
                                             children: [
                                               Container(
-                                                child: CustomText.normalText(subTasks[index].sub_label),
+                                                child: CustomText.normalText(
+                                                    subTasks[index].sub_label),
                                                 width: 315,
                                               ),
                                               Container(
-                                                    child: GestureDetector(
+                                                child: GestureDetector(
                                                     onTap: () {
                                                       showDialog(
                                                         context: context,
-                                                        builder: (BuildContext context) =>
+                                                        builder: (BuildContext
+                                                                context) =>
                                                             _buildAddMemberPopup(
                                                                 context,
-                                                                subTasks[index].stack_id),
+                                                                subTasks[index]
+                                                                    .stack_id),
                                                       );
                                                     },
                                                     child: Container(
-                                                      decoration: const BoxDecoration(
-                                                        color: Colors.white
-                                                      ),
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              color:
+                                                                  Colors.white),
                                                       child: const Center(
                                                         child: Icon(
                                                           Icons.add,
-                                                          color: GlobalVariables.primaryColor,
+                                                          color: GlobalVariables
+                                                              .primaryColor,
                                                         ),
                                                       ),
-                                                    )
-                                                    ),
-                                                  )
-                                              
+                                                    )),
+                                              )
                                             ],
                                           ),
                                         ),
-                                        (_subTaskAllocation[subTasks[index].stack_id]?.length!=0)?Container(
-                                          height: 60,
-                                          decoration: const BoxDecoration(
-                                            border: Border(
-                                              top:BorderSide(
-                                                color: GlobalVariables.textFieldBgColor
-                                              )
-                                            )
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
-                                            child: Row(
-                                                                              
-                                              children: [
-                                                Center(
-                                                  child: Container(
-                                                    width: 330,
-                                                    child: ListView.builder(
-                                                        shrinkWrap: true,
-                                                        scrollDirection: Axis.horizontal,
-                                                        itemCount:_subTaskAllocation[subTasks[index].task_id]?.length,
-                                                        itemBuilder: (context, subindex) {
-                                                          return Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                            child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??''),
-                                                          );
-                                                        }),
+                                        (_subTaskAllocation[subTasks[index]
+                                                        .stack_id]
+                                                    ?.length !=
+                                                0)
+                                            ? Container(
+                                                height: 60,
+                                                decoration: const BoxDecoration(
+                                                    border: Border(
+                                                        top: BorderSide(
+                                                            color: GlobalVariables
+                                                                .textFieldBgColor))),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      vertical: 20,
+                                                      horizontal: 5),
+                                                  child: Row(
+                                                    children: [
+                                                      Center(
+                                                        child: Container(
+                                                          width: 330,
+                                                          child:
+                                                              ListView.builder(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  scrollDirection:
+                                                                      Axis
+                                                                          .horizontal,
+                                                                  itemCount: _subTaskAllocation[
+                                                                          subTasks[index]
+                                                                              .task_id]
+                                                                      ?.length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          subindex) {
+                                                                    return Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                          horizontal:
+                                                                              5),
+                                                                      child: CustomText.normalText(
+                                                                          ((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??
+                                                                              ''),
+                                                                    );
+                                                                  }),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                    
-                                              ],
-                                            ),
-                                          ),
-                                        ):SizedBox(width: 0,height: 0,)
+                                              )
+                                            : SizedBox(
+                                                width: 0,
+                                                height: 0,
+                                              )
                                       ],
                                     ),
                                   ),
@@ -512,17 +660,19 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             }),
                         (toggleInput)
                             ? Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: GlobalVariables.textFieldBgColor
-                                )
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical:8.0, horizontal:5),
-                                child: Row(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color:
+                                            GlobalVariables.textFieldBgColor)),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 5),
+                                  child: Row(
                                     children: [
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.7,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
                                         child: TextField(
                                           controller: _subtaskValue,
                                         ),
@@ -537,32 +687,38 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                           },
                                           child: Container(
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: const Text("Add",style: TextStyle(
-                                                color:Colors.white
-                                              ),),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: const Text(
+                                                "Add",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
-                                            
                                             decoration: BoxDecoration(
-                                              color: GlobalVariables.primaryColor,
-                                              borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(
-                                                  color: GlobalVariables.textFieldBgColor
-                                              )
-                                            ),
+                                                color: GlobalVariables
+                                                    .primaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                border: Border.all(
+                                                    color: GlobalVariables
+                                                        .textFieldBgColor)),
                                           ))
-
                                     ],
                                   ),
-                              ),
-                            )
+                                ),
+                              )
                             : GestureDetector(
                                 child: Container(
                                   height: 50,
                                   width: MediaQuery.of(context).size.width,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: const Text("+Add Sub Task",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                    child: const Text(
+                                      "+Add Sub Task",
+                                      style: TextStyle(
+                                          color: GlobalVariables.greyFontColor),
+                                    ),
                                   ),
                                 ),
                                 onTap: () {

@@ -1,6 +1,7 @@
 import 'dart:convert';
-
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -35,31 +36,63 @@ class GTaskPlannerServices {
             'authorization': 'Bearer ' + token.toString()
           });
       return res;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   static void renameTaskPlan(TaskPlan taskPlan) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      http.Response res = await http.get(
-          Uri.parse('$uri/api/get-recent-task-by-user'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-            'authorization': 'Bearer ' + token.toString()
-          });
+      http.Response res =
+          await http.post(Uri.parse('$uri/api/rename-task-plan'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + token.toString()
+              },
+              body: taskPlan.toJson());
     } catch (e) {
       print(e);
     }
   }
 
- static Future getRecentTaskPlan() async {
+  static void setTaskAttr(attr, task, val) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      http.Response res = await http.get(Uri.parse('$uri/api/get-recent-task-by-user'),
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/set-task-attr/${task}/${attr}/${val}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': 'Bearer ' + token.toString()
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future getTaskByPlan(taskplanid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-by-plan/${taskplanid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future getRecentTaskPlan() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-recent-task-by-user'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
@@ -84,16 +117,62 @@ class GTaskPlannerServices {
     }
   }
 
-  static void addTask() async {
+  static void addTask(Task task) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      http.Response res = await http.post(
-          Uri.parse('$uri/api/create-task-plan'),
+      http.Response res = await http.post(Uri.parse('$uri/api/create-task'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          },
+          body: task.toJson());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future addTaskColor(task_id, color) async {
+    try {
+      Task taskplan = Task(
+          task_id: task_id,
+          plan_id: 0,
+          timer_id: 0,
+          task_name: '',
+          duration: 0,
+          task_status: '',
+          priority: 0,
+          created_at: '',
+          color: color,
+          description: '',
+          is_text_field: false);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res =
+          await http.post(Uri.parse('$uri/api/change-task-color'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                'authorization': 'Bearer ' + token.toString()
+              },
+              body: taskplan.toJson());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future getColor(taskid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-attr/${taskid}/color'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-    } catch (e) {}
+      print(res);
+    } catch (e) {
+      print(e);
+    }
   }
 }

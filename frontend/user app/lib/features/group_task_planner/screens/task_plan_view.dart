@@ -31,21 +31,17 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   late Map<int, double> planHeight;
   int _selectedIndex = 0;
   Task entryTask = new Task(
-          task_id: 0,
-          plan_id: 0,
-          timer_id: 0,
-          duration: 0,
-          task_status: '',
-          priority: 0,
-          created_at: '',
-          created_time: '',
-          completed_date: '',
-          completed_time: '',
-          color: '',
-          description: '',
-          is_text_field: true,
-          task_name: ''
-  );
+      task_id: 0,
+      plan_id: 0,
+      timer_id: 0,
+      duration: 0,
+      task_status: '',
+      priority: 0,
+      created_at: '',
+      color: '',
+      description: '',
+      is_text_field: true,
+      task_name: '');
   late TextEditingController taskCreate;
   late List<TaskPlan> taskPlans;
   Map taskMap = Map();
@@ -63,6 +59,20 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     taskPlans = List<TaskPlan>.empty(growable: true);
     _getTaskPlan();
     super.initState();
+  }
+
+  void refreshTaskAllocation() async {
+    taskPlans.forEach((element) async {
+      //get the tasks
+      var result = await GTaskPlannerServices.getTaskByPlan(element.plan_id);
+      //run the loop to create the list
+      Iterable list = json.decode(result.body).cast<Map<String, dynamic>>();
+      tasks = list.map((model) => Task.fromJson(model)).toList();
+      //assign the loop in the set state
+      setState(() {
+        taskMap[element.plan_id] = tasks;
+      });
+    });
   }
 
   void addTaskPlan() async {
@@ -90,26 +100,28 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
 
   void addTask() {
     var taskid = taskMap[entryTask.plan_id].length + 1;
+    Task newtask = Task(
+        task_id: taskid,
+        plan_id: entryTask.plan_id,
+        timer_id: 0,
+        duration: 0,
+        task_status: 'pending',
+        priority: 0,
+        created_at: '2012-03-04',
+        color: '',
+        description: '',
+        is_text_field: false,
+        task_name: taskCreate.text);
+    GTaskPlannerServices.addTask(newtask);
     setState(() {
-      taskMap[entryTask.plan_id].add(Task(
-          task_id: taskid,
-          plan_id: entryTask.plan_id,
-          timer_id: 0,
-          duration: 0,
-          task_status: 'pending',
-          priority: 0,
-          created_at: '2012-03-04',
-          created_time: '',
-          completed_date: '',
-          completed_time: '',
-          color: '',
-          description: '',
-          is_text_field: false,
-          task_name: taskCreate.text));
+      taskMap[entryTask.plan_id].add(newtask);
       entryTask.plan_id = 0;
     });
     setState(() {
       planHeight[entryTask.plan_id] = 0;
+    });
+    setState(() {
+      refreshTaskAllocation();
     });
   }
 
@@ -142,14 +154,20 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     var groupid = widget.group.group_id;
     Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
     setState(() {
-      editplan = 0;
       taskPlans[index].plan_name = taskPlanControllers[index].text;
+      print(taskPlans[index].plan_name);
+    });
+    setState(() {
+      editplan = 0;
       GTaskPlannerServices.renameTaskPlan(taskPlans[index]);
       Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
       for (var plans in taskPlans) {
         taskMap[plans.plan_id] = List.empty(growable: true);
       }
+      setState(() {
+        taskPlans[index].plan_name = taskPlanControllers[index].text;
+      });
     });
   }
 
@@ -159,9 +177,11 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
     setState(() {
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+      print(taskPlans);
       for (var plans in taskPlans) {
         taskMap[plans.plan_id] = List.empty(growable: true);
       }
+      refreshTaskAllocation();
     });
   }
 
