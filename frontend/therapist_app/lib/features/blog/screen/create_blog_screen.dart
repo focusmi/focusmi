@@ -76,7 +76,8 @@ class _CreateBlogState extends State<CreateBlog> {
             },
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Icon(Icons.file_upload)),
+                child: Text("")
+                ),
           )
         ],
       ),
