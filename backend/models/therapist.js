@@ -109,6 +109,16 @@ const User = {
     }
   },
 
+  deleteBlog: async (user_id,blog_id) => {
+    try {
+      const query = `DELETE FROM blog WHERE "blog_id" = '${blog_id}' and user_id = '${user_id}'`;
+      console.log(query)
+      const blogs = await pool.cQuery(query);
+    } catch (error) {
+      throw new Error('Error deleting blogs:', error);
+    }
+  },
+
 
 
 };
