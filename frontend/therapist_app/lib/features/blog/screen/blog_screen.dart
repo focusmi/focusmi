@@ -28,10 +28,12 @@ class _BlogScreenState extends State<BlogScreen> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
+                    print(blogsData[index]);
                     return BlogsTile(
                         authorName: blogsData[index]['authorName'] ?? 'Unknown',
                         title: blogsData[index]['title'],
                         description: blogsData[index]['description'],
+                        blogId: blogsData[index]['blog_id'],
                         imgUrl: '${uri}/${blogsData[index]['image']}',
                         onLongPress: () {
                           // Toggle the toolbar visibility on blog tile tap
@@ -85,7 +87,6 @@ class _BlogScreenState extends State<BlogScreen> {
       isToolbarVisible = false;
     });
   }
-  
 
   Future<void> fetchBlogs() async {
     try {
@@ -107,8 +108,8 @@ class _BlogScreenState extends State<BlogScreen> {
           SliverAppBar(
             pinned: true,
             elevation: 0,
-            expandedHeight: 90,
-            backgroundColor: _showFlexibleSpaceTitle
+            expandedHeight: isToolbarVisible ? 0 : 90,
+            backgroundColor: _showFlexibleSpaceTitle || isToolbarVisible
                 ? GlobalVariables.primaryText
                 : Colors.white,
             flexibleSpace: FlexibleSpaceBar(
@@ -118,7 +119,9 @@ class _BlogScreenState extends State<BlogScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: _showFlexibleSpaceTitle ? Colors.white : Colors.black,
+                  color: _showFlexibleSpaceTitle || isToolbarVisible
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
             ),
@@ -162,6 +165,7 @@ class _BlogScreenState extends State<BlogScreen> {
 
 class BlogsTile extends StatefulWidget {
   final String imgUrl, title, description, authorName;
+  final int blogId;
   final VoidCallback? onLongPress;
   final VoidCallback? onTap;
 
@@ -170,8 +174,9 @@ class BlogsTile extends StatefulWidget {
     required this.title,
     required this.description,
     required this.authorName,
+    required this.blogId,
     this.onLongPress,
-    this.onTap,
+    this.onTap, 
   });
 
   @override
@@ -272,7 +277,7 @@ class _BlogsTileState extends State<BlogsTile> {
   }
 }
 
-class TopToolbar extends StatelessWidget {
+class TopToolbar extends StatelessWidget  {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -283,13 +288,13 @@ class TopToolbar extends StatelessWidget {
             onPressed: () {
               // Handle edit button tap
             },
-            icon: Icon(Icons.edit),
+            icon: Icon(Icons.edit, color: Colors.white, size: 30.0),
           ),
           IconButton(
             onPressed: () {
               // Handle delete button tap
             },
-            icon: Icon(Icons.delete),
+            icon: Icon(Icons.delete, color: Colors.white, size: 30.0),
           ),
         ],
       ),
