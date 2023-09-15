@@ -14,6 +14,7 @@ class _BlogScreenState extends State<BlogScreen> {
   ScrollController _scrollController = ScrollController();
   bool _showFlexibleSpaceTitle = false;
   bool isToolbarVisible = false; // Track toolbar visibility
+  int selectedBlogId = -1; // Store the selected blog ID
 
   List blogsData = [];
 
@@ -30,19 +31,21 @@ class _BlogScreenState extends State<BlogScreen> {
                   itemBuilder: (context, index) {
                     print(blogsData[index]);
                     return BlogsTile(
-                        authorName: blogsData[index]['authorName'] ?? 'Unknown',
-                        title: blogsData[index]['title'],
-                        description: blogsData[index]['description'],
-                        blogId: blogsData[index]['blog_id'],
-                        imgUrl: '${uri}/${blogsData[index]['image']}',
-                        onLongPress: () {
-                          // Toggle the toolbar visibility on blog tile tap
-                          toggleToolbarVisibility();
-                        },
-                        onTap: () {
-                          hideToolbar();
-                        });
-                    // NetworkImage(uri + '/' + _profilePictureUrl!)
+                      authorName: blogsData[index]['authorName'] ?? 'Unknown',
+                      title: blogsData[index]['title'],
+                      description: blogsData[index]['description'],
+                      blogId: blogsData[index]['blog_id'],
+                      imgUrl: '${uri}/${blogsData[index]['image']}',
+                      onLongPress: () {
+                        // Toggle the toolbar visibility on blog tile tap
+                        toggleToolbarVisibility();
+                        // Set the selected blog ID when a blog tile is long-pressed
+                        setSelectedBlogId(blogsData[index]['blog_id']);
+                      },
+                      onTap: () {
+                        hideToolbar();
+                      },
+                    );
                   },
                 ),
               ],
@@ -88,6 +91,13 @@ class _BlogScreenState extends State<BlogScreen> {
     });
   }
 
+  // Function to set the selected blog ID
+  void setSelectedBlogId(int blogId) {
+    setState(() {
+      selectedBlogId = blogId;
+    });
+  }
+
   Future<void> fetchBlogs() async {
     try {
       List data = await CrudMethods.getData(context);
@@ -115,7 +125,7 @@ class _BlogScreenState extends State<BlogScreen> {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
-                "Blogs",
+                'Blogs',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -126,7 +136,29 @@ class _BlogScreenState extends State<BlogScreen> {
               ),
             ),
             actions: [
-              if (isToolbarVisible) TopToolbar(),
+              if (isToolbarVisible)
+                Container(
+                  padding: EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          // Handle edit button tap
+                        },
+                        icon: Icon(Icons.edit, color: Colors.white, size: 30.0),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          print(selectedBlogId != -1
+                              ? 'Blog ID: $selectedBlogId'
+                              : 'Not selected');
+                        },
+                        icon:
+                            Icon(Icons.delete, color: Colors.white, size: 30.0),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
           SliverPadding(
@@ -176,7 +208,7 @@ class BlogsTile extends StatefulWidget {
     required this.authorName,
     required this.blogId,
     this.onLongPress,
-    this.onTap, 
+    this.onTap,
   });
 
   @override
@@ -263,7 +295,7 @@ class _BlogsTileState extends State<BlogsTile> {
                       height: 4,
                     ),
                     Text(
-                      widget.authorName,
+                      "${widget.blogId}",
                       style: TextStyle(color: Colors.white),
                     )
                   ],
@@ -272,31 +304,6 @@ class _BlogsTileState extends State<BlogsTile> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class TopToolbar extends StatelessWidget  {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: () {
-              // Handle edit button tap
-            },
-            icon: Icon(Icons.edit, color: Colors.white, size: 30.0),
-          ),
-          IconButton(
-            onPressed: () {
-              // Handle delete button tap
-            },
-            icon: Icon(Icons.delete, color: Colors.white, size: 30.0),
-          ),
-        ],
       ),
     );
   }
