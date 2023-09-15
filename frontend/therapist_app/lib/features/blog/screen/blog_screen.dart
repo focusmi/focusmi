@@ -10,7 +10,7 @@ class BlogScreen extends StatefulWidget {
 }
 
 class _BlogScreenState extends State<BlogScreen> {
-  CrudMethods crudMethods = new CrudMethods();
+  BlogService crudMethods = new BlogService();
   ScrollController _scrollController = ScrollController();
   bool _showFlexibleSpaceTitle = false;
   bool isToolbarVisible = false; // Track toolbar visibility
@@ -81,7 +81,7 @@ class _BlogScreenState extends State<BlogScreen> {
   // Function to show/hide the top toolbar
   void toggleToolbarVisibility() {
     setState(() {
-      isToolbarVisible = !isToolbarVisible;
+      isToolbarVisible = true;
     });
   }
 
@@ -100,7 +100,7 @@ class _BlogScreenState extends State<BlogScreen> {
 
   Future<void> fetchBlogs() async {
     try {
-      List data = await CrudMethods.getData(context);
+      List data = await BlogService.getData(context);
       setState(() {
         blogsData = data;
       });
@@ -148,10 +148,13 @@ class _BlogScreenState extends State<BlogScreen> {
                         icon: Icon(Icons.edit, color: Colors.white, size: 30.0),
                       ),
                       IconButton(
-                        onPressed: () {
-                          print(selectedBlogId != -1
-                              ? 'Blog ID: $selectedBlogId'
-                              : 'Not selected');
+                        onPressed: () async {
+                          if (await BlogService.deleteBlog(
+                              context: context, blog_id: selectedBlogId)) {
+                            fetchBlogs();
+                            hideToolbar();
+                          }
+                          ;
                         },
                         icon:
                             Icon(Icons.delete, color: Colors.white, size: 30.0),
@@ -256,7 +259,7 @@ class _BlogsTileState extends State<BlogsTile> {
             Container(
               height: 170,
               decoration: BoxDecoration(
-                color: isLongPressed
+                color: isLongPressed && !isOnTap
                     ? Color.fromARGB(255, 77, 228, 87).withOpacity(0.3)
                     : Colors.black45.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(6),
@@ -294,10 +297,6 @@ class _BlogsTileState extends State<BlogsTile> {
                     SizedBox(
                       height: 4,
                     ),
-                    Text(
-                      "${widget.blogId}",
-                      style: TextStyle(color: Colors.white),
-                    )
                   ],
                 ),
               ),
