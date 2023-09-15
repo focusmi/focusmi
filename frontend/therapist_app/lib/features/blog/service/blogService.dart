@@ -7,8 +7,7 @@ import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 import 'package:http/http.dart' as http;
 
-class CrudMethods {
-
+class BlogService {
   Future<void> addBlogDataAndImage(Map<String, dynamic> blogData,
       BuildContext context, File imageFile) async {
     try {
@@ -62,6 +61,37 @@ class CrudMethods {
       }
     } catch (e) {
       throw Exception('Error fetching blogs data: $e');
+    }
+  }
+
+  static Future<bool> deleteBlog({
+    required int blog_id,
+    required BuildContext context,
+  }) async {
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final user = userProvider.user;
+
+      final response = await http.delete(
+        Uri.parse('$uri/apis/user/${user.id}/delete-blog/${blog_id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': user.token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+         showSnackBar(context, "Blog deleted");
+        return true;
+      } else {
+        final errorBody = jsonDecode(response.body);
+        final errorMessage = errorBody['error'] ?? 'Failed to delete blog';
+        showSnackBar(context, errorMessage);
+        return false;
+      }
+    } catch (error) {
+      print('Error deleting blog: $error');
+      return false;
     }
   }
 }
