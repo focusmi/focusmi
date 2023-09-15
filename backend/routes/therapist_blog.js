@@ -55,6 +55,19 @@ blogRouterTherapist.get('/apis/user/fetch-blog/:id', auth, async (req, res) => {
   }
 });
 
+blogRouterTherapist.delete('/apis/user/:id/delete-blog/:blog', auth, async (req, res) => {
+  try {
+    console.log(req.params)
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found!' });
+    }
+    await User.deleteBlog(req.params.id,req.params.blog);
+    res.status(200).json({ message: 'Blog deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 
