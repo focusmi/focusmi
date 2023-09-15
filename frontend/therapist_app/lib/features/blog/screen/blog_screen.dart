@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/blog/screen/create_blog_screen.dart';
+import 'package:therapist_app/features/blog/screen/edit_blog_screen.dart';
 import 'package:therapist_app/features/blog/service/blogService.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -29,32 +31,66 @@ class _BlogScreenState extends State<BlogScreen> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    print(blogsData[index]);
-                    return BlogsTile(
-                      authorName: blogsData[index]['authorName'] ?? 'Unknown',
-                      title: blogsData[index]['title'],
-                      description: blogsData[index]['description'],
-                      blogId: blogsData[index]['blog_id'],
-                      imgUrl: '${uri}/${blogsData[index]['image']}',
-                      onLongPress: () {
-                        // Toggle the toolbar visibility on blog tile tap
-                        toggleToolbarVisibility();
-                        // Set the selected blog ID when a blog tile is long-pressed
-                        setSelectedBlogId(blogsData[index]['blog_id']);
-                      },
-                      onTap: () {
-                        hideToolbar();
-                      },
+                    return Dismissible(
+                      key: Key(index.toString()),
+                      direction: DismissDirection.startToEnd,
+                      background: Container(
+                        margin: EdgeInsets.only(bottom: 20, top: 5),
+                        decoration: BoxDecoration(
+                          color:
+                              Color.fromARGB(255, 77, 228, 87).withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisAlignment:MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 80,
+                              child: Lottie.asset(
+                                  'assets/images/whnYa9wCTG.json',
+                                  fit: BoxFit.fitHeight),
+                            ),
+                            Text(
+                              'Archive Blog',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: BlogsTile(
+                        authorName: blogsData[index]['authorName'] ?? 'Unknown',
+                        title: blogsData[index]['title'],
+                        description: blogsData[index]['description'],
+                        blogId: blogsData[index]['blog_id'],
+                        imgUrl: '${uri}/${blogsData[index]['image']}',
+                        onLongPress: () {
+                          // Toggle the toolbar visibility on blog tile tap
+                          toggleToolbarVisibility();
+                          // Set the selected blog ID when a blog tile is long-pressed
+                          setSelectedBlogId(blogsData[index]['blog_id']);
+                        },
+                        onTap: () {
+                          hideToolbar();
+                        },
+                      ),
                     );
                   },
                 ),
               ],
             ),
           )
-        : Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
-          );
+        // : Container(
+        //     alignment: Alignment.center,
+        //     child: CircularProgressIndicator(),
+        //   );
+        : Center(
+            child: Container(
+            height: 200,
+            margin: const EdgeInsets.only(top: 200),
+            child: Lottie.asset('assets/images/AxbbZeTUvO.json',
+                fit: BoxFit.cover),
+          ));
   }
 
   @override
@@ -142,8 +178,16 @@ class _BlogScreenState extends State<BlogScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        onPressed: () {
-                          // Handle edit button tap
+                        onPressed: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditBlog(),
+                            ),
+                          );
+                          if (result == true) {
+                            fetchBlogs();
+                          }
                         },
                         icon: Icon(Icons.edit, color: Colors.white, size: 30.0),
                       ),
@@ -245,7 +289,7 @@ class _BlogsTileState extends State<BlogsTile> {
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16),
-        height: 150,
+        height: 170,
         child: Stack(
           children: <Widget>[
             ClipRRect(
