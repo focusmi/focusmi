@@ -183,10 +183,10 @@ class _BlogScreenState extends State<BlogScreen> {
                     children: [
                       IconButton(
                         onPressed: () async {
-                          final result = await Navigator.push(
+                                                final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditBlog(),
+                              builder: (context) => EditBlog(blogID:selectedBlogId),
                             ),
                           );
                           if (result == true) {
