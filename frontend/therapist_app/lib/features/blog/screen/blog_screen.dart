@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:therapist_app/constants/global_variables.dart';
+import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/features/blog/screen/create_blog_screen.dart';
 import 'package:therapist_app/features/blog/screen/edit_blog_screen.dart';
 import 'package:therapist_app/features/blog/service/blogService.dart';
@@ -74,6 +75,9 @@ class _BlogScreenState extends State<BlogScreen> {
                           hideToolbar();
                         },
                       ),
+                      onDismissed: (direction) => {
+                       showSnackBar(context,'Archived')
+                      },
                     );
                   },
                 ),
