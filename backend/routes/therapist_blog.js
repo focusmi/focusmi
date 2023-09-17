@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 
 blogRouterTherapist.post('/apis/user/add-blog/:id',upload.single('blog_image'), async (req, res) => {
   try {
-    const { title, description, authorName} = req.body;
+    const { title, description, sub_title} = req.body;
 
     const user = await User.findOneById(req.params.id);
     if (!user) {
@@ -30,7 +30,7 @@ blogRouterTherapist.post('/apis/user/add-blog/:id',upload.single('blog_image'), 
     const index = parts.indexOf('assets');
     if (index !== -1) {
       const path = parts.slice(index).join('/');
-      await User.addBlog(req.params.id, title, description, path);
+      await User.addBlog(req.params.id, title, sub_title, description, path);
 
     } else {
       console.log('Path not found in the input string.');
