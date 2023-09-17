@@ -43,7 +43,7 @@ class _BlogScreenState extends State<BlogScreen> {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Row(
-                          mainAxisAlignment:MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
                               height: 80,
@@ -54,13 +54,15 @@ class _BlogScreenState extends State<BlogScreen> {
                             Text(
                               'Archive Blog',
                               style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                           ],
                         ),
                       ),
                       child: BlogsTile(
-                        authorName: blogsData[index]['authorName'] ?? 'Unknown',
+                        subTitle: blogsData[index]['subtitle'] ?? 'null',
                         title: blogsData[index]['title'],
                         description: blogsData[index]['description'],
                         blogId: blogsData[index]['blog_id'],
@@ -75,9 +77,8 @@ class _BlogScreenState extends State<BlogScreen> {
                           hideToolbar();
                         },
                       ),
-                      onDismissed: (direction) => {
-                       showSnackBar(context,'Archived')
-                      },
+                      onDismissed: (direction) =>
+                          {showSnackBar(context, 'Archived')},
                     );
                   },
                 ),
@@ -183,10 +184,11 @@ class _BlogScreenState extends State<BlogScreen> {
                     children: [
                       IconButton(
                         onPressed: () async {
-                                                final result = await Navigator.push(
+                          final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EditBlog(blogID:selectedBlogId),
+                              builder: (context) =>
+                                  EditBlog(blogID: selectedBlogId),
                             ),
                           );
                           if (result == true) {
@@ -247,7 +249,7 @@ class _BlogScreenState extends State<BlogScreen> {
 }
 
 class BlogsTile extends StatefulWidget {
-  final String imgUrl, title, description, authorName;
+  final String imgUrl, title, description, subTitle;
   final int blogId;
   final VoidCallback? onLongPress;
   final VoidCallback? onTap;
@@ -256,7 +258,7 @@ class BlogsTile extends StatefulWidget {
     required this.imgUrl,
     required this.title,
     required this.description,
-    required this.authorName,
+    required this.subTitle,
     required this.blogId,
     this.onLongPress,
     this.onTap,
@@ -272,7 +274,6 @@ class _BlogsTileState extends State<BlogsTile> {
 
   @override
   Widget build(BuildContext context) {
-    print(isLongPressed);
     return GestureDetector(
       onLongPress: () {
         setState(() {
@@ -330,6 +331,19 @@ class _BlogsTileState extends State<BlogsTile> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    widget.subTitle != 'null' ?
+                    Text(
+                      widget.subTitle,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ): SizedBox(height: 0,),
                     SizedBox(
                       height: 4,
                     ),
