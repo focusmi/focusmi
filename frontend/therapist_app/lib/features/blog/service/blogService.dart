@@ -23,7 +23,7 @@ class BlogService {
       // Add blog data fields
       request.fields['title'] = blogData['title'];
       request.fields['description'] = blogData['desc'];
-      request.fields['authorName'] = blogData['authorName'];
+      request.fields['sub_title'] = blogData['sub_title'];
 
       // Add the image file
       request.files
