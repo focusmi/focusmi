@@ -12,7 +12,7 @@ class CreateBlog extends StatefulWidget {
 }
 
 class _CreateBlogState extends State<CreateBlog> {
-  late String authorName, title, desc;
+  late String subTitle, title, desc;
   File? selectedImage;
 
   bool _isLoading = false;
@@ -20,7 +20,7 @@ class _CreateBlogState extends State<CreateBlog> {
 
   Future getImage() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.camera);
 
     setState(() {
       if (pickedImage != null) {
@@ -36,8 +36,8 @@ class _CreateBlogState extends State<CreateBlog> {
       });
 
       Map<String, String> blogMap = {
-        "authorName": authorName,
         "title": title,
+        "sub_title": subTitle,
         "desc": desc
       };
       crudMethods
@@ -75,9 +75,7 @@ class _CreateBlogState extends State<CreateBlog> {
               uploadBlog();
             },
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text("")
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 16), child: Text("")),
           )
         ],
       ),
@@ -121,28 +119,27 @@ class _CreateBlogState extends State<CreateBlog> {
                                     fit: BoxFit.contain),
                               )),
                     SizedBox(
-                      height: 8,
+                      height: 4,
                     ),
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
                         children: <Widget>[
                           TextField(
-                            decoration:
-                                InputDecoration(hintText: "Author Name"),
-                            onChanged: (val) {
-                              authorName = val;
-                            },
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          TextField(
                             decoration: InputDecoration(hintText: "Title"),
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             onChanged: (val) {
                               title = val;
+                            },
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          TextField(
+                            decoration: InputDecoration(hintText: "Sub Title"),
+                            onChanged: (val) {
+                              subTitle = val;
                             },
                           ),
                           SizedBox(
