@@ -22,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.INTEGER,
       primaryKey:true
     } ,
+    
+    
   }, {
     sequelize,
     modelName: 'level_user',

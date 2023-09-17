@@ -1,17 +1,21 @@
+const { Op } = require("sequelize");
 const pool =  require("../database/dbconnection");
 const {task} = require("../sequelize/models");
 
 
 class Task{
     
-    constructor(task_id, plan_id, timer_id, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description){
+    constructor(task_id, plan_id, timer_id, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description,deadline_date,deadline_time){
         this.task_id = task_id;
         this.plan_id = plan_id;
         this.timer_id =  timer_id;
         this.duration = duration;
         this.task_status = task_status;
+        this.task_type=task_type;
         this.priority = priority;
         this.created_date = created_date;
+        this.deadline_date=deadline_date;
+        this.deadline_time = deadline_time;
         this.created_time = created_time;
         this.completed_date = completed_date;
         this.completed_time = completed_time
@@ -28,10 +32,13 @@ class Task{
                 plan_id:taskOb.plan_id,
                 task_name:taskOb.task_name,
                 duration:task.duration,
-                task_status:task.task_status,
+                task_status:'pending',
                 priority: task.priority,
                 description:task.description,
                 color:'nocolor',
+                task_type:task.task_type,
+                
+                
             })
             return result
         }
@@ -56,11 +63,25 @@ class Task{
  
         var result = await task.findAll({
             where:{
-                plan_id:taskplan
+                plan_id:taskplan,
+                task_status:{
+                    [Op.not]:'completed'
+                }
             }
         })
         return result
     }
+
+    static async getCompletedGroupTasks(){
+        var result = await task.findAll({
+            where:{
+                task_status:'completed',
+                task_type:'group'
+            }
+        })
+        return result
+    }
+
 
     static async updateTask(taskid, attribute, value){
         switch (attribute) {
@@ -91,6 +112,7 @@ class Task{
         }
     }
     static async setAttribute(type,taskid,val){
+        console.log(`${type}-${taskid}-${val}`)
         try{
        
             if(type == 'status'){
@@ -108,12 +130,44 @@ class Task{
                     }
                 })
             }
+            else if(type == 'task_type'){
+           
+                task.update({task_type:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+            else if(type == 'task_name'){
+           
+                task.update({task_name:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+            else if(type == 'deadline_date'){
+           
+                task.update({deadline_date:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+            else if(type == 'deadline_time'){
+           
+                task.update({deadline_time:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
         }
         catch(e){
             console.log(e)
         }
     }
-    
+  
     /* **************************Task methods realted to group taks planner**************************** */
     
     

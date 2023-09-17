@@ -343,8 +343,8 @@ gTaskRoutes.post('/api/chanage-task-color', auth, async(req, res, next)=>{
 
 gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next)=>{
    var userID = req.user;
-   console.log(req.params.attr+"-"+req.params.task+"-"+req.params.val)
    try{
+      
       Task.setAttribute(req.params.attr,req.params.task,req.params.val)
       res.send(true)
    }
@@ -354,8 +354,9 @@ gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next
    next()
 })
 
-gTaskRoutes.get('/api/get-task-attr/:task/:attr/',auth, async(req, res, next)=>{
+gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
    var userID = req.user; 
+   console.log(req.params.attr)
    try{
       var val = await task.findOne(
          {

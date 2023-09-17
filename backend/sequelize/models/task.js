@@ -34,7 +34,9 @@ module.exports = (sequelize, DataTypes) => {
     priority: DataTypes.INTEGER,
     color: DataTypes.TEXT,
     description:DataTypes.TEXT,
-    created_at:DataTypes.DATE
+    created_at:DataTypes.DATE,
+    deadline_time:DataTypes.STRING,
+    deadline_date:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'task',
