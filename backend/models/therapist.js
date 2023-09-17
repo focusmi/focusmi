@@ -88,12 +88,10 @@ const User = {
     }
   },
 
-  addBlog: async (user_id, title, description, filePath) => {
+  addBlog: async (user_id, title,subTitle, description, filePath) => {
     try {
-      const query = `INSERT INTO  blog(user_id,title, description, image) VALUES('${user_id}', '${title}', '${description}','${filePath}')`;
-      console.log(query)
+      const query = `INSERT INTO  blog(user_id,title,subtitle,description,image) VALUES('${user_id}', '${title}','${subTitle}','${description}','${filePath}')`;
       await pool.cQuery(query);
-      console.log('Blog upload successfully');
     } catch (error) {
       throw new Error('Error adding blog:', error);
     }
@@ -112,7 +110,6 @@ const User = {
   deleteBlog: async (user_id,blog_id) => {
     try {
       const query = `DELETE FROM blog WHERE "blog_id" = '${blog_id}' and user_id = '${user_id}'`;
-      console.log(query)
       const blogs = await pool.cQuery(query);
     } catch (error) {
       throw new Error('Error deleting blogs:', error);
