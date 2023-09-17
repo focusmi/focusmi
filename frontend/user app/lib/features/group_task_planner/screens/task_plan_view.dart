@@ -39,6 +39,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       priority: 0,
       created_at: '',
       color: '',
+      task_type: 'group',
       description: '',
       is_text_field: true,
       task_name: '');
@@ -59,6 +60,15 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     taskPlans = List<TaskPlan>.empty(growable: true);
     _getTaskPlan();
     super.initState();
+  }
+
+  void completeTask(task_id) async {
+    try {
+      GTaskPlannerServices.setTaskAttr('status', task_id, 'completed');
+      refreshTaskAllocation();
+    } catch (e) {
+      print(e);
+    }
   }
 
   void refreshTaskAllocation() async {
@@ -105,6 +115,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
         plan_id: entryTask.plan_id,
         timer_id: 0,
         duration: 0,
+        task_type: 'group',
         task_status: 'pending',
         priority: 0,
         created_at: '2012-03-04',
@@ -119,9 +130,6 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     });
     setState(() {
       planHeight[entryTask.plan_id] = 0;
-    });
-    setState(() {
-      refreshTaskAllocation();
     });
   }
 
@@ -273,75 +281,86 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                   taskMap[taskPlans[index].plan_id].length,
                               itemBuilder: (context, subindex) {
                                 return ((taskMap[taskPlans[index].plan_id])[
-                                                subindex]
-                                            .task_name !=
-                                        '')
-                                    ? Container(
-                                        width: planWidth,
-                                        constraints: const BoxConstraints(
-                                          minHeight: 70,
-                                        ),
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            bottom: BorderSide(
-                                                color: GlobalVariables
-                                                    .textFieldBgColor),
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.pushNamed(context,
-                                                  SingleTaskView.routeName,
-                                                  arguments: (taskMap[
-                                                      taskPlans[index]
-                                                          .plan_id][subindex]));
-                                            },
-                                            child: Container(
-                                                width: planWidth,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          0, 5, 0, 0),
-                                                  child: Row(
-                                                    children: [
-                                                      Radio(
-                                                          value: taskMap[taskPlans[
-                                                                          index]
-                                                                      .plan_id]
-                                                                  [subindex]
-                                                              .task_id,
-                                                          groupValue: "",
-                                                          onChanged: (value) {
-                                                            setState(() {
-                                                              taskMap[taskPlans[
-                                                                          index]
-                                                                      .plan_id]
-                                                                  .removeWhere(
-                                                                      (element) =>
-                                                                          element
-                                                                              .task_id ==
-                                                                          value);
-                                                            });
-                                                          }),
-                                                      Container(
-                                                        child: Text(
-                                                          (taskMap[taskPlans[
-                                                                          index]
-                                                                      .plan_id])[
-                                                                  subindex]
-                                                              .task_name,
-                                                          style: const TextStyle(
-                                                              color: GlobalVariables
-                                                                  .greyFontColor),
-                                                        ),
+                                                    subindex]
+                                                .task_status !=
+                                            'completed' ||
+                                        (taskMap[taskPlans[index].plan_id])[
+                                                    subindex]
+                                                .task_status ==
+                                            null)
+                                    ? (((taskMap[taskPlans[index].plan_id])[
+                                                    subindex]
+                                                .task_name !=
+                                            '')
+                                        ? Container(
+                                            width: planWidth,
+                                            constraints: const BoxConstraints(
+                                              minHeight: 70,
+                                            ),
+                                            decoration: const BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                    color: GlobalVariables
+                                                        .textFieldBgColor),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pushNamed(context,
+                                                      SingleTaskView.routeName,
+                                                      arguments: (taskMap[
+                                                              taskPlans[index]
+                                                                  .plan_id]
+                                                          [subindex]));
+                                                },
+                                                child: Container(
+                                                    width: planWidth,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(0, 5, 0, 0),
+                                                      child: Row(
+                                                        children: [
+                                                          Radio(
+                                                              value: taskMap[taskPlans[
+                                                                              index]
+                                                                          .plan_id]
+                                                                      [subindex]
+                                                                  .task_id,
+                                                              groupValue: "",
+                                                              onChanged:
+                                                                  (value) {
+                                                                completeTask(
+                                                                  taskMap[taskPlans[index]
+                                                                              .plan_id]
+                                                                          [
+                                                                          subindex]
+                                                                      .task_id,
+                                                                );
+                                                              }),
+                                                          Container(
+                                                            child: Text(
+                                                              (taskMap[taskPlans[
+                                                                              index]
+                                                                          .plan_id])[
+                                                                      subindex]
+                                                                  .task_name,
+                                                              style: const TextStyle(
+                                                                  color: GlobalVariables
+                                                                      .greyFontColor),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
-                                                )),
-                                          ),
-                                        ))
+                                                    )),
+                                              ),
+                                            ))
+                                        : SizedBox(
+                                            width: 0,
+                                            height: 0,
+                                          ))
                                     : SizedBox(
                                         width: 0,
                                         height: 0,
@@ -407,9 +426,10 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                             backgroundColor:
                                                 GlobalVariables.primaryColor),
                                         onPressed: () {
-                                          setState(() {
                                             addTask();
-                                          });
+                                      
+                                          
+                                          
                                         },
                                         child: const Icon(
                                           Icons.add,

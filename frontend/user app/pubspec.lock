@@ -493,6 +493,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.9"
+  tap_canvas:
+    dependency: "direct main"
+    description:
+      name: tap_canvas
+      sha256: b5287b04f1efca06f0169a3591f30a8f556df3d39a7638638d7f4a24e0fa24f9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.5"
   term_glyph:
     dependency: transitive
     description:

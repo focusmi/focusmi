@@ -71,6 +71,25 @@ class GTaskPlannerServices {
     }
   }
 
+  static Future getTaskAttr(attr, task) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/get-task-attr/${task}/${attr}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': 'Bearer ' + token.toString()
+        },
+      );
+      return res;
+    } catch (e) {
+      print("error");
+      print(e);
+      print("error");
+    }
+  }
+
   static Future getTaskByPlan(taskplanid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -139,6 +158,7 @@ class GTaskPlannerServices {
           plan_id: 0,
           timer_id: 0,
           task_name: '',
+          task_type: '',
           duration: 0,
           task_status: '',
           priority: 0,
