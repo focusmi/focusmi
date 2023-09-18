@@ -16,7 +16,7 @@ module.exports = {
       break_duration: {
         type: Sequelize.INTEGER
       },
-      total_dutatoin: {
+      total_duration: {
         type: Sequelize.INTEGER
       },
       status: {

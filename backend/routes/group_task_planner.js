@@ -11,6 +11,7 @@ const {task_plan} = require('../sequelize/models');
 const {task} = require('../sequelize/models');
 const pool = require('../database/dbconnection');
 const Blog = require('../models/blog');
+const PomodoroTimer = require('../models/pomodoro_timer');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -371,6 +372,48 @@ gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
       console.log(e)
    }
    next()
+})
+
+gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:timer', auth ,async(req, res, next)=>{
+   console.log("inside")
+   try{
+      PomodoroTimer.attrSetter(req.params.attr, req.params.value, req.params.timer)
+   }
+   catch(e){
+      console.log("Route Error - set timer attributes")
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/create-timer', auth, async(req, res, next)=>{
+
+   try{
+      PomodoroTimer.createTimer(req.body)
+
+   }
+   catch(e){
+      console.log("Route Error - create timer")
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-timer-attr/:timer/:attr', auth, async(req, res, next)=>{
+   try{
+      var result = await PomodoroTimer.attrGetter(req.params.attr, req.params.timer)
+      res.send({'value':result})
+   }
+   catch(e){
+
+      console.log("Route Error - get timer attribute")
+      console.log(e)
+   }
+
+   next()
+
 })
 
 
