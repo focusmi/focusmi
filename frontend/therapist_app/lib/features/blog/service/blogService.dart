@@ -81,7 +81,7 @@ class BlogService {
       );
 
       if (response.statusCode == 200) {
-         showSnackBar(context, "Blog deleted");
+        showSnackBar(context, "Blog deleted");
         return true;
       } else {
         final errorBody = jsonDecode(response.body);
@@ -92,6 +92,40 @@ class BlogService {
     } catch (error) {
       print('Error deleting blog: $error');
       return false;
+    }
+  }
+
+  Future<void> updateBlogDataAndImage(Map<String, dynamic> blogData,
+      BuildContext context, File imageFile) async {
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final user = userProvider.user;
+      print('$uri/apis/user/${user.id}/edit-blog/${blogData['blogID']}');
+      var request = http.MultipartRequest(
+        'PUT',
+        Uri.parse('$uri/apis/user/${user.id}/edit-blog/${blogData['blogID']}'),
+      );
+      request.headers['x-auth-token'] = user.token;
+
+      // Add blog data fields
+      request.fields['title'] = blogData['title'];
+      request.fields['description'] = blogData['desc'];
+      request.fields['sub_title'] = blogData['sub_title'];
+
+      // Add the image file
+      request.files
+          .add(await http.MultipartFile.fromPath('blog_image', imageFile.path));
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        showSnackBar(context, 'Blog data updated successfully');
+      } else {
+        final errorBody = await response.stream.bytesToString();
+        final errorMessage =
+            jsonDecode(errorBody)['error'] ?? 'Failed to update blog';
+        showSnackBar(context, errorMessage);
+      }
+    } catch (error) {
+      print('Error updating blog data and image: $error');
     }
   }
 }
