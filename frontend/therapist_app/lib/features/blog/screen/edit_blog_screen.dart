@@ -14,12 +14,13 @@ class EditBlog extends StatefulWidget {
 }
 
 class _EditBlogState extends State<EditBlog> {
-  late String authorName, title, desc;
+  late String title, subTitle, desc;
   File? selectedImage;
   bool _isLoading = false;
   BlogService crudMethods = new BlogService();
   TextEditingController titleController = TextEditingController(text: '');
   TextEditingController desController = TextEditingController(text: '');
+  TextEditingController subTitleController = TextEditingController(text: '');
 
   Future getImage() async {
     final pickedImage =
@@ -33,8 +34,28 @@ class _EditBlogState extends State<EditBlog> {
   }
 
   updateBlog() async {
-    print(title);
+    if (selectedImage != null) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      Map<String, String> blogMap = {
+        "title": title,
+        "sub_title": subTitle,
+        "desc": desc,
+        "blogID": widget.blogID.toString(),
+      };
+
+      crudMethods
+           .updateBlogDataAndImage(blogMap, context, selectedImage!)
+           .then((result) {
+         Navigator.pop(context, true);
+       });
+    } else {
+
+    }
   }
+
   @override
   void initState() {
     super.initState();
@@ -51,8 +72,8 @@ class _EditBlogState extends State<EditBlog> {
         setState(() {
           titleController.text = desiredBlog['title'];
           desController.text = desiredBlog['description'];
+          subTitleController.text = desiredBlog['subtitle'];
         });
-        
       } else {
         print('Blog not found.');
       }
@@ -88,8 +109,7 @@ class _EditBlogState extends State<EditBlog> {
               updateBlog();
             },
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text("")),
+                padding: EdgeInsets.symmetric(horizontal: 16), child: Text("")),
           )
         ],
       ),
@@ -140,22 +160,24 @@ class _EditBlogState extends State<EditBlog> {
                       child: Column(
                         children: <Widget>[
                           TextField(
-                            decoration:
-                                InputDecoration(hintText: "Author Name"),
-                            onChanged: (val) {
-                              authorName = val;
-                            },
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          TextField(
                             controller: titleController,
                             decoration: InputDecoration(hintText: "Title"),
                             keyboardType: TextInputType.multiline,
                             maxLines: null,
                             onChanged: (val) {
                               title = val;
+                            },
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          TextField(
+                            controller: subTitleController,
+                            decoration: InputDecoration(hintText: "Subtitle"),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            onChanged: (val) {
+                              subTitle = val;
                             },
                           ),
                           SizedBox(
