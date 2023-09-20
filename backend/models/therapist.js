@@ -116,6 +116,15 @@ const User = {
     }
   },
 
+  updateBlog: async (user_id, title,subTitle, description, filePath, blog) => {
+    try {
+      const query = `UPDATE  blog SET title = '${title}',subtitle = '${subTitle}', description = '${description}', image = '${filePath}'   WHERE "blog_id" = '${blog}' and user_id = '${user_id}'`;
+      await pool.cQuery(query);
+      console.log('Blog updated successfully');
+    } catch (error) {
+      throw new Error('Error updating blog:', error);
+    }
+  },
 
 
 };
