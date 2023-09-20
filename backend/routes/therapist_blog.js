@@ -69,6 +69,31 @@ blogRouterTherapist.delete('/apis/user/:id/delete-blog/:blog', auth, async (req,
   }
 });
 
+blogRouterTherapist.put('/apis/user/:id/edit-blog/:blog',upload.single('blog_image'), async (req, res) => {
+  try {
+    const { title, description, sub_title} = req.body;
+
+    const user = await User.findOneById(req.params.id);
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found!' });
+    }
+    const filePath = req.file.path;
+    const parts = filePath.split('\\');
+    const index = parts.indexOf('assets');
+    if (index !== -1) {
+      const path = parts.slice(index).join('/');
+      await User.updateBlog(req.params.id, title, sub_title, description, path, req.params.blog);
+
+    } else {
+      console.log('Path not found in the input string.');
+    }
+   
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 
 module.exports = blogRouterTherapist;
