@@ -17,7 +17,7 @@ class _PomodoroTimerScreenState extends State<PomodoroTimerScreen> {
           
         ],
       ) ,
-      "Pomodoro Timer",
+      "Pomodoro Timer ",
       context);
   }
 }
