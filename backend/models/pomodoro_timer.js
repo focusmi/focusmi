@@ -26,11 +26,11 @@ class PomodoroTimer{
         }
     }
 
-    static async attrGetter(attr, timer_id){
+    static async attrGetter(attr, user_id){
         try{
             var result =  await timer.findAll({
                 where:{
-                    timer_id:timer_id
+                    user_id:user_id
                 }
             })
             console.log(result)
@@ -44,13 +44,13 @@ class PomodoroTimer{
         }
     }
 
-    static async attrSetter(attr, value, timer_id){
+    static async attrSetter(attr, value, user_id){
         try{
             switch(attr){
                 case 'status':{
                     timer.update({status:value},{
                         where:{
-                            timer_id:timer_id 
+                            user_id:user_id 
                         }
                     })
                 }

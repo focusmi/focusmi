@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
+import 'package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart';
 import 'package:focusmi/layouts/task_planner_layout.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
@@ -215,20 +216,34 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                           child: (taskPlans[index].plan_id != null &&
                                   taskPlans[index].plan_id != editplan)
                               ? GestureDetector(
-                                  child: Container(
-                                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                    height: 40,
-                                    decoration: const BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: GlobalVariables
-                                                    .textFieldBgColor))),
-                                    child: Text(
-                                      taskPlans[index].plan_name,
-                                      style: const TextStyle(
-                                          fontSize: 24,
-                                          color: GlobalVariables.greyFontColor),
-                                    ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                        height: 40,
+                                        decoration: const BoxDecoration(
+                                            border: Border(
+                                                bottom: BorderSide(
+                                                    color: GlobalVariables
+                                                        .textFieldBgColor))),
+                                        child: Text(
+                                          taskPlans[index].plan_name,
+                                          style: const TextStyle(
+                                              fontSize: 24,
+                                              color: GlobalVariables
+                                                  .greyFontColor),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              PomodoroTimerScreen.routeName, 
+                                              arguments: taskPlans[index] );
+                                          },
+                                          child: Icon(Icons.play_arrow))
+                                    ],
                                   ),
                                   onTap: () {
                                     setState(() {
@@ -426,10 +441,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                             backgroundColor:
                                                 GlobalVariables.primaryColor),
                                         onPressed: () {
-                                            addTask();
-                                      
-                                          
-                                          
+                                          addTask();
                                         },
                                         child: const Icon(
                                           Icons.add,

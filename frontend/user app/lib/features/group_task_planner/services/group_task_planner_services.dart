@@ -106,6 +106,22 @@ class GTaskPlannerServices {
     }
   }
 
+   static Future getTaskByPlanFilterByUser(taskplanid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-by-plan-user/${taskplanid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static Future getRecentTaskPlan() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

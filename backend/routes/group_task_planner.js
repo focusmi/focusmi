@@ -233,6 +233,19 @@ gTaskRoutes.get('/api/get-plan-task/:planid',auth,async(req,res,next)=>{
    next()
 })
 
+
+gTaskRoutes.get('/api/get-task-by-plan-user/:planid',auth,async(req,res,next)=>{
+   var user = (req.user)[0];
+   try{
+      var result = await Task.getPlanTaskByUser(req.params.planid,user.user_id)
+      res.status(200).send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.send(400).send({})
+   }
+   next()
+})
 gTaskRoutes.post('/api/update-task-name/',auth,async(req,res,next)=>{
    try{
       var result =await Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
@@ -374,7 +387,7 @@ gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:timer', auth ,async(req, res, next)=>{
+gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:user', auth ,async(req, res, next)=>{
    console.log("inside")
    try{
       PomodoroTimer.attrSetter(req.params.attr, req.params.value, req.params.timer)
@@ -401,9 +414,10 @@ gTaskRoutes.post('/api/create-timer', auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/get-timer-attr/:timer/:attr', auth, async(req, res, next)=>{
+gTaskRoutes.get('/api/get-timer-attr/:user/:attr', auth, async(req, res, next)=>{
    try{
-      var result = await PomodoroTimer.attrGetter(req.params.attr, req.params.timer)
+      console.log("inside the routes");
+      var result = await PomodoroTimer.attrGetter(req.params.attr, req.params.user)
       res.send({'value':result})
    }
    catch(e){
@@ -414,6 +428,15 @@ gTaskRoutes.get('/api/get-timer-attr/:timer/:attr', auth, async(req, res, next)=
 
    next()
 
+})
+
+gTaskRoutes.post('/api/create-subtask-attr', auth, async(req, res, next)=>{
+   try{
+      
+   }
+   catch(e){
+
+   }
 })
 
 

@@ -71,6 +71,12 @@ class Task{
         })
         return result
     }
+    static async getPlanTaskByUser(taskplan,user){
+ 
+        var result = await pool.cQuery(`Select * from user_task left join task on task.task_id=user_task.task_id where task.plan_id=${taskplan} and user_task.user_id=${user}`)
+        console.log(result)
+        return result
+    }
 
     static async getCompletedGroupTasks(){
         var result = await task.findAll({

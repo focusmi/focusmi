@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsToMany(models.course_level,{through:models.level_user})
       this.belongsToMany(models.task,{through:models.user_create_task})
       this.belongsToMany(models.task,{through:models.user_task})
+      this.belongsToMany(models.sub_task,{through:models.user_subtask})
     }
   }
   application_user.init({
