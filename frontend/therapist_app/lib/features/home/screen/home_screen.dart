@@ -231,7 +231,7 @@ class BarChartSample extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color.fromARGB(255, 187, 250, 195)
+          color: Color.fromARGB(255, 239, 251, 241)
         ),
         child: Center(
           child: Padding(
@@ -298,7 +298,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 4, // Value for Sunday
-            colors: Colors.primaries,
+            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -307,7 +307,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 6, // Value for Monday
-            // color: Colors.green,
+            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -316,7 +316,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 8, // Value for Tuesday
-            // color: Colors.orange,
+           colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -325,7 +325,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 5, // Value for Wednesday
-            //color: Colors.red,
+            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -334,7 +334,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 9, // Value for Thursday
-            // color: Colors.purple,
+           colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -343,7 +343,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 7, // Value for Friday
-            // color: Colors.teal,
+            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
@@ -352,7 +352,7 @@ class BarChartSample extends StatelessWidget {
         barRods: [
           BarChartRodData(
             y: 3, // Value for Saturday
-            // color: Colors.amber,
+            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
           ),
         ],
       ),
