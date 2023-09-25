@@ -45,6 +45,7 @@ dependencies:
   mailer: ^6.0.1
   zego_uikit_prebuilt_video_conference: ^2.4.0
   page_transition: ^2.0.9
+  fl_chart: ^0.40.0
 
 dev_dependencies:
   flutter_test:
