@@ -8,10 +8,11 @@ const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
 const Task = require('../models/task');
 const {task_plan} = require('../sequelize/models');
-const {task} = require('../sequelize/models');
+const {task, sub_task} = require('../sequelize/models');
 const pool = require('../database/dbconnection');
 const Blog = require('../models/blog');
 const PomodoroTimer = require('../models/pomodoro_timer');
+const SubTask = require('../models/sub_task');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -430,13 +431,58 @@ gTaskRoutes.get('/api/get-timer-attr/:user/:attr', auth, async(req, res, next)=>
 
 })
 
-gTaskRoutes.post('/api/create-subtask-attr', auth, async(req, res, next)=>{
+gTaskRoutes.post('/api/create-subtask', auth, async(req, res, next)=>{
+   console.log("inside create subtask")
    try{
-      
+      SubTask.createSubTask(req.body) 
    }
    catch(e){
-
+      console.log("creating sub task")
+      console.log(e)
    }
+   next();
+})
+
+gTaskRoutes.get('/api/set-subtask-attr/:type/:staskid/:value', auth , async(req, res, next)=>{
+   try{     
+      SubTask.setSubTaskAttr(req.params.type, req.params.staskid, req.params.value)
+   }
+   catch(e){
+      console.log("task attribute")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-stask-attr/:task/:attr',auth, async(req, res, next)=>{
+   var userID = req.user; 
+   console.log(req.params.attr)
+   try{
+      var val = await task.findOne(
+         {
+            where:{
+               stask_id:req.params.task
+            }
+         });
+      val =  val[`${req.params.attr}`]
+      res.send({value:val})
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
+   try{
+      var subtask=await pool.cQuery(`Select * from sub_task where task_id=${req.params.taskid}`);
+      
+      var result = subtask
+      res.send(result)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
 })
 
 
