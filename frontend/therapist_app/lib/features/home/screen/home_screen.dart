@@ -1,3 +1,4 @@
+import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/features/home/screen/charts.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -70,15 +71,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context) {
                                       return Container(
                                         height: 200,
-                                        // color: Colors.white,
-                                        child: Center(
-                                          child: Text(
-                                            'This is the bottom sheet 1',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
+                                        child: Column(
+                                          children: [
+                                            Center(
+                                              child: Text(
+                                                'Total Upcoming Appointments',
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                'The total upcoming appointments. Helps you stay organized and manage your time effectively.',
+                                                style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: CustomButton(
+                                                text: 'Goto Appointment',
+                                                onTap: () {
+                                                  
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     },
@@ -148,15 +177,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (context) {
                                       return Container(
                                         height: 200,
-                                        // color: Colors.white,
-                                        child: Center(
-                                          child: Text(
-                                            'This is the bottom sheet 2',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
+                                        child: Column(
+                                          children: [
+                                            Center(
+                                              child: Text(
+                                                'Estimated available balance',
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                'The amount of funds in your account that you can currently use for transactions or withdrawals',
+                                                style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: CustomButton(
+                                                text: 'Got It',
+                                                onTap: () {
+                                                  
+                                                },
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       );
                                     },
