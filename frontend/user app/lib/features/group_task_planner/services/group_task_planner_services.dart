@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
+import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,7 +107,7 @@ class GTaskPlannerServices {
     }
   }
 
-   static Future getTaskByPlanFilterByUser(taskplanid) async {
+  static Future getTaskByPlanFilterByUser(taskplanid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -207,6 +208,38 @@ class GTaskPlannerServices {
             'authorization': 'Bearer ' + token.toString()
           });
       print(res);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // subtask functions
+  static Future createSubTask(SubTask stask) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.post(Uri.parse('$uri/api/create-subtask'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          },
+          body: stask.toJson());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future getAllSubTask(taskid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-all-sub-task/${taskid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
     } catch (e) {
       print(e);
     }

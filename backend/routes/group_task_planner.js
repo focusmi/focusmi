@@ -485,6 +485,27 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
    next()
 })
 
+gTaskRoutes.post('/api/allocate-task-user',auth ,async(req, res, next)=>{
+   try{
+      SubTask.allocateTaskUser(req.body.task_id, req.body.user_id)
+
+   }
+   catch(e){
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-task-users/:taskid', auth , async(req, res, next)=>{
+   try{
+      var result = await SubTask.getAllocatedUsers(req.params.taskid)
+   
+   }
+   catch(e){
+
+   }
+   next()
+})
 
 
 module.exports = gTaskRoutes;

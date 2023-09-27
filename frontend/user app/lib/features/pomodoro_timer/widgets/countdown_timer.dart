@@ -156,40 +156,46 @@ class _CountdownTimerState extends State<CountdownTimer> {
                 ),
                 SizedBox(height: 20),
                 // Step 9
-                ElevatedButton(
-                  onPressed: startTimer,
-                  child: Text(
-                    'Start',
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-                // Step 10
-                ElevatedButton(
-                  onPressed: () {
-                    if (countdownTimer == null || countdownTimer!.isActive) {
-                      stopTimer();
-                    }
-                  },
-                  child: Text(
-                    'Stop',
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                ),
-                // Step 11
-                ElevatedButton(
-                    onPressed: () {
-                      resetTimer();
-                    },
-                    child: Text(
-                      'Reset',
-                      style: TextStyle(
-                        fontSize: 30,
+                Center(
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: startTimer,
+                        child: Text(
+                          'Start',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
                       ),
-                    ))
+                      // Step 10
+                      ElevatedButton(
+                        onPressed: () {
+                          if (countdownTimer == null || countdownTimer!.isActive) {
+                            stopTimer();
+                          }
+                        },
+                        child: Text(
+                          'Stop',
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
+                      ),
+                      // Step 11
+                      ElevatedButton(
+                          onPressed: () {
+                            resetTimer();
+                          },
+                          child: Text(
+                            'Reset',
+                            style: TextStyle(
+                              fontSize: 30,
+                            ),
+                          )),
+                    ],
+                  ),
+                )
               ],
             ),
           ),

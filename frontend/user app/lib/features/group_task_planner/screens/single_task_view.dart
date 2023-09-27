@@ -49,7 +49,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    subTasks = List<SubTask>.empty(growable: true);
+    subTasks = [];
     subTaskAllocation = {};
     GroupMember dummyMember = GroupMember(
         1, 'Morgan Stern', 'stern@county.com', 'active', 'profile.jpg');
@@ -81,6 +81,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     refreshColor(widget.task.task_id);
     refreshTaskName(widget.task.task_id);
     refreshDeadline(widget.task.task_id);
+    refreshTaskList();
     changeTitle = false;
   }
 
@@ -122,11 +123,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void refreshDeadline(task_id) async {
     var date = await GTaskPlannerServices.getTaskAttr('dealine_date', task_id);
     var time = await GTaskPlannerServices.getTaskAttr('deadline_time', task_id);
-    setState(() {
-      print(date.body);
-      showDateTime = date.body['value'];
-      showTime = time.body['value'];
-    });
+    if (date != null && time != null) {
+      setState(() {
+        showDateTime = date.body['value'];
+        showTime = time.body['value'];
+      });
+    }
   }
 
   void refreshColor(taskid) async {
@@ -177,14 +179,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
 
   void addSubTask(taskname, taskid) {
     setState(() {
-      subTasks.add(SubTask(
+      SubTask stask = SubTask(
           stack_id: subTasks.length + 1,
           task_id: taskid,
-          sub_priority: 0,
+          sub_priority: '0',
           sub_label: taskname,
           sub_status: 'pending',
-          created_at: ''));
-      _subTaskAllocation[subTasks.length] = [];
+          created_at: '');
+      subTasks.add(stask);
+      GTaskPlannerServices.createSubTask(stask);
+      refreshTaskList();
     });
   }
 
@@ -192,6 +196,25 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     setState(() {
       _subTaskAllocation[subtask]?.add(member);
     });
+  }
+
+  void refreshTaskList() async {
+    try {
+      var result =
+          await GTaskPlannerServices.getAllSubTask(widget.task.task_id);
+      setState(() {
+        Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+        subTasks = list.map((model) => SubTask.fromJson(model)).toList();
+        for (SubTask task in subTasks) {
+          _subTaskAllocation[task.stack_id??0] = [];
+        }
+        print("----------------");
+        print(subTasks);
+      });
+    } catch (e) {
+      print("----------");
+      print(e);
+    }
   }
 
   Future<DateTime?> pickDate() => showDatePicker(
@@ -676,9 +699,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                             child: Row(
                                               children: [
                                                 Container(
-                                                  child: CustomText.normalText(
-                                                      subTasks[index]
-                                                          .sub_label),
+                                                  child: CustomText.normalText(subTasks[index].sub_label ??''),
                                                   width: 315,
                                                 ),
                                                 Container(
@@ -690,9 +711,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                                   context) =>
                                                               _buildAddMemberPopup(
                                                                   context,
-                                                                  subTasks[
-                                                                          index]
-                                                                      .stack_id),
+                                                                  subTasks[index].stack_id),
                                                         );
                                                       },
                                                       child: Container(
@@ -712,20 +731,15 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                               ],
                                             ),
                                           ),
-                                          (_subTaskAllocation[subTasks[index]
-                                                          .stack_id]
-                                                      ?.length !=
-                                                  0)
+                                          (_subTaskAllocation[subTasks[index].stack_id]?.length !=0)
                                               ? Container(
                                                   height: 60,
                                                   decoration: const BoxDecoration(
                                                       border: Border(
                                                           top: BorderSide(
-                                                              color: GlobalVariables
-                                                                  .textFieldBgColor))),
+                                                              color: GlobalVariables.textFieldBgColor))),
                                                   child: Padding(
-                                                    padding: const EdgeInsets
-                                                            .symmetric(
+                                                    padding: const EdgeInsets.symmetric(
                                                         vertical: 20,
                                                         horizontal: 5),
                                                     child: Row(
@@ -733,24 +747,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                         Center(
                                                           child: Container(
                                                             width: 330,
-                                                            child: ListView
-                                                                .builder(
-                                                                    shrinkWrap:
-                                                                        true,
-                                                                    scrollDirection:
-                                                                        Axis
-                                                                            .horizontal,
-                                                                    itemCount: _subTaskAllocation[subTasks[index]
-                                                                            .task_id]
-                                                                        ?.length,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            subindex) {
+                                                            child: ListView.builder(
+                                                                    shrinkWrap:true,
+                                                                    scrollDirection:Axis.horizontal,
+                                                                    itemCount: _subTaskAllocation[subTasks[index].task_id]?.length,
+                                                                    itemBuilder:(context,subindex) {
                                                                       return Padding(
-                                                                        padding:
-                                                                            const EdgeInsets.symmetric(horizontal: 5),
-                                                                        child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??
-                                                                            ''),
+                                                                        padding:const EdgeInsets.symmetric(horizontal: 5),
+                                                                        child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??''),
                                                                       );
                                                                     }),
                                                           ),
@@ -792,7 +796,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                       GestureDetector(
                                           onTap: () {
                                             setState(() {
-                                              addSubTask(_subtaskValue.text, 1);
+                                              addSubTask(_subtaskValue.text,
+                                                  widget.task.task_id);
                                               _subtaskValue.text = '';
                                               toggleInput = false;
                                             });

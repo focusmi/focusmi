@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const pool =  require("../database/dbconnection");
 const {sub_task} = require("../sequelize/models");
+const user_task = require("../sequelize/models/user_task");
 
 
 class SubTask{ 
@@ -45,6 +46,30 @@ class SubTask{
                 break;
             default:
                 break;
+        }
+    }
+
+    static async allocateTaskUser(taskid, userid){
+        try{
+            var result =  await user_task.create({
+                user_id:userid,
+                task_id:taskid,
+
+            })
+        }
+        catch(e){
+            console.log("allocate task user")
+            console.log(e)
+        }
+    }
+
+    static async getAllocatedUsers(taskid){
+        try{
+            var result = await pool.cQuery(`Select * from user_task left join task on task.task_id=user_task.task_id where user_task.task_id = ${taskid}`);
+            return result
+        }
+        catch(e){
+            console.log(e)
         }
     }
 

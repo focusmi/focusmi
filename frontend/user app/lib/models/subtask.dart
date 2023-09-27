@@ -2,12 +2,12 @@
 import 'dart:convert';
 
 class SubTask {
-  final int stack_id;
-  final int task_id;
-  final int sub_priority;
-  final String sub_label;
-  final String sub_status;
-  final String created_at;
+  final int? stack_id;
+  final int? task_id;
+  final String? sub_priority;
+  final String? sub_label;
+  final String? sub_status;
+  final String? created_at;
 
   SubTask({
     required this.stack_id, 
@@ -34,18 +34,19 @@ class SubTask {
 
   factory SubTask.fromMap(Map<String, dynamic> map) {
     return SubTask(
-      stack_id: map['stack_id'] as int,
-      task_id: map['task_id'] as int,
-      sub_priority: map['sub_priority'] as int,
-      sub_label: map['sub_label'] as String,
-      sub_status: map['sub_status'] as String,
-      created_at: map['created_at'] as String,
+      stack_id: map['stack_id'] != null ? map['stack_id'] as int : null,
+      task_id: map['task_id'] != null ? map['task_id'] as int : null,
+      sub_priority: map['sub_priority'] != null ? map['sub_priority'] as String : null,
+      sub_label: map['sub_label'] != null ? map['sub_label'] as String : null,
+      sub_status: map['sub_status'] != null ? map['sub_status'] as String : null,
+      created_at: map['created_at'] != null ? map['created_at'] as String : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SubTask.fromJson(String source) => SubTask.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory SubTask.fromJson(Map<String, dynamic> source) =>SubTask.fromMap(source as Map<String, dynamic>);
+
 }
 
 
