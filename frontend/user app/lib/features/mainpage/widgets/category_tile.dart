@@ -6,26 +6,26 @@ import 'package:focusmi/constants/global_variables.dart';
 class MainPageCatTile {
   static greenPageTile(String text, double width) {
     return Container(
-      width: width*1.2,
-      height: 70,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(),
-            SizedBox(),
-            Text(text,style: TextStyle(
-              color: GlobalVariables.primaryColor
-            ),)
-          ],
-        ),
-      ),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(2),
-          border: Border.all(
-            color: GlobalVariables.primaryColor,
-            width: 2
-            )),
+        borderRadius: BorderRadius.circular(8),
+        color: const Color.fromARGB(255, 117, 199, 101)
+      ),
+      width: width,
+      height: 60,
+      child: Column(
+        mainAxisAlignment:MainAxisAlignment.center,
+        crossAxisAlignment:CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              child: Text(text,style: TextStyle(
+                color: Colors.white
+              ),),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -112,4 +112,5 @@ flutter:
     - assets/images/success.gif
     - assets/images/kite.gif
     - assets/images/choose-task.gif
-    - assets/images/wal.jpg
+    - assets/images/wal.png
+    - assets/images/down.png

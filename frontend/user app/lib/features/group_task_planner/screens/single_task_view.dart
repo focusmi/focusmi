@@ -269,12 +269,15 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       print(e);
     }
   }
-    void editDescription() {
+
+  void editDescription() {
     print("Tapped");
     setState(() {
+      description.text = descriptionval??'';
       setdescription = true;
     });
   }
+
   void refreshTaskDescription() async {
     try {
       var result = await GTaskPlannerServices.getTaskAttr(
@@ -490,20 +493,17 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           SizedBox(
                             height: 10,
                           ),
-                          ((descriptionval != null ||
-                                      descriptionval!= '') ||
+                          ((descriptionval != null && descriptionval != '') &&
                                   setdescription == false)
                               ? GestureDetector(
                                   onTap: () {
                                     setState(() {
                                       editDescription();
-                                      
                                     });
                                   },
                                   child: Container(
                                     alignment: Alignment.topLeft,
-                                    child:
-                                        Text((descriptionval ?? '')),
+                                    child: Text((descriptionval ?? '')),
                                   ),
                                 )
                               : Row(
@@ -1013,6 +1013,4 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         ),
         "Edit Task");
   }
-  
-
 }
