@@ -18,10 +18,12 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
         })
+        console.log(req.filename)
     }
     catch(e){
         console.log("create course")
     }
+    next()
 })
 
 mRouter.get('/api/get-all-courses/:category',imageUpload.single('image'),async(req, res, next)=>{
@@ -36,6 +38,7 @@ mRouter.get('/api/get-all-courses/:category',imageUpload.single('image'),async(r
     catch(e){
         console.log("get courses by category")
     }
+    next()
 })
 
 module.exports = mRouter
