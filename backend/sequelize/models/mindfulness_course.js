@@ -27,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     duration: DataTypes.INTEGER,
     ratings: DataTypes.INTEGER,
     image: DataTypes.TEXT,
+    course_status:DataTypes.TEXT,
+    subscription_type:DataTypes.TEXT,
+    course_type:DataTypes.TEXT
   
     
   }, {
