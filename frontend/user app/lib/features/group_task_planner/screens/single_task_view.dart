@@ -44,6 +44,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late bool changeTitle;
   late TextEditingController _titleName;
   late String title;
+  late TextEditingController description;
+  late String? descriptionval;
+  late bool setdescription;
 
   @override
   void initState() {
@@ -69,19 +72,22 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     _searchValue = TextEditingController();
     _subtaskValue = TextEditingController();
     _titleName = TextEditingController();
-
+    description = TextEditingController();
+    setdescription = false;
     // fixed the date to taday\
     now = DateTime.now();
     dateTime = DateTime(now.year, now.month, now.day);
     showDateTime = null;
     showTime = null;
     nowtime = TimeOfDay.now();
+    descriptionval = '';
     label = Color.fromARGB(255, 255, 255, 255);
     title = '';
     refreshColor(widget.task.task_id);
     refreshTaskName(widget.task.task_id);
     refreshDeadline(widget.task.task_id);
     refreshTaskList();
+    refreshTaskDescription();
     changeTitle = false;
   }
 
@@ -206,13 +212,22 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
         subTasks = list.map((model) => SubTask.fromJson(model)).toList();
         for (SubTask task in subTasks) {
-          _subTaskAllocation[task.stack_id??0] = [];
+          _subTaskAllocation[task.stack_id ?? 0] = [];
         }
         print("----------------");
         print(subTasks);
       });
     } catch (e) {
       print("----------");
+      print(e);
+    }
+  }
+
+  void moveTask(int mplanid) async {
+    try {
+      GTaskPlannerServices.setTaskAttr('plan_id', widget.task.task_id, mplanid);
+    } catch (e) {
+      print("move task");
       print(e);
     }
   }
@@ -242,6 +257,96 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         });
       }
     }
+  }
+
+  void changeTaskDescription() async {
+    try {
+      print("------------");
+      print(description.text);
+      GTaskPlannerServices.setTaskAttr(
+          'description', widget.task.task_id, description.text);
+    } catch (e) {
+      print(e);
+    }
+  }
+    void editDescription() {
+    print("Tapped");
+    setState(() {
+      setdescription = true;
+    });
+  }
+  void refreshTaskDescription() async {
+    try {
+      var result = await GTaskPlannerServices.getTaskAttr(
+          'description', widget.task.task_id);
+      result = json.decode(result.body);
+      setState(() {
+        descriptionval = result['value'];
+      });
+    } catch (e) {}
+  }
+
+  Widget _moveTaskPopup(BuildContext context, subtaskid) {
+    return AlertDialog(
+      title: const Text("Move Task"),
+      content: StatefulBuilder(
+        builder: (BuildContext, StateSetter setState) {
+          return Container(
+            width: 200,
+            child: Column(
+              children: [
+                TextField(
+                  controller: _searchValue,
+                  onChanged: (text) {
+                    setState(() {
+                      showMemeberList.clear();
+                    });
+                    String val = text.toLowerCase();
+                    for (var member in memberList) {
+                      if (val != '') {
+                        var re = RegExp('^[a-zA-z]*${val}[a-zA-Z0-9]*');
+                        if (re.hasMatch(member.email.toLowerCase()) ||
+                            re.hasMatch(member.username.toLowerCase())) {
+                          setState(() {
+                            showMemeberList.add(member);
+                          });
+                        }
+                      } else {
+                        setState(() {
+                          showMemeberList.clear();
+                        });
+                      }
+                    }
+                  },
+                ),
+                //member list
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: showMemeberList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          allocateMember(showMemeberList[index], subtaskid);
+                        },
+                        child: Row(
+                          children: [
+                            //Image.network('$uri/api/assets/image/user-profs/team.png'),
+                            Column(
+                              children: [
+                                Text(showMemeberList[index].username),
+                                Text(showMemeberList[index].email),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    })
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildAddMemberPopup(BuildContext context, subtaskid) {
@@ -382,20 +487,53 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                 GlobalVariables.greyFontColor)),
                                   ),
                           ),
-                          (widget.task.description != '')
-                              ? Text("Description" +
-                                  (widget.task.description ?? ''))
-                              : SizedBox(
-                                  width: 0,
-                                  height: 0,
+                          SizedBox(
+                            height: 10,
+                          ),
+                          ((descriptionval != null ||
+                                      descriptionval!= '') ||
+                                  setdescription == false)
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      editDescription();
+                                      
+                                    });
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.topLeft,
+                                    child:
+                                        Text((descriptionval ?? '')),
+                                  ),
+                                )
+                              : Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: Icon(Icons.line_weight_sharp),
+                                    ),
+                                    SizedBox(width: 10),
+                                    Container(
+                                      width: planWidth * 0.8,
+                                      height: 60,
+                                      alignment: Alignment.topLeft,
+                                      child: TextField(
+                                        controller: description,
+                                        onChanged: (val) {
+                                          changeTaskDescription();
+                                        },
+                                        maxLines: 4,
+                                        style: TextStyle(fontSize: 14),
+                                        decoration: InputDecoration(
+                                            hintText: "Add Description Here",
+                                            hintStyle: TextStyle(fontSize: 14)),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Text(
-                                "Created On :" + (widget.task.created_at ?? ''),
-                                style: TextStyle(
-                                    color: GlobalVariables.greyFontColor),
-                              )),
+                          SizedBox(
+                            height: 10,
+                          ),
                           Container(
                             height: 10,
                             width: MediaQuery.of(context).size.width,
@@ -670,6 +808,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                         ListView.builder(
                             itemCount: subTasks.length,
                             shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
                             itemBuilder: (context, index) {
                               return TapOutsideDetectorWidget(
                                 onTappedOutside: () {
@@ -699,7 +838,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                             child: Row(
                                               children: [
                                                 Container(
-                                                  child: CustomText.normalText(subTasks[index].sub_label ??''),
+                                                  child: CustomText.normalText(
+                                                      subTasks[index]
+                                                              .sub_label ??
+                                                          ''),
                                                   width: 315,
                                                 ),
                                                 Container(
@@ -711,7 +853,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                                   context) =>
                                                               _buildAddMemberPopup(
                                                                   context,
-                                                                  subTasks[index].stack_id),
+                                                                  subTasks[
+                                                                          index]
+                                                                      .stack_id),
                                                         );
                                                       },
                                                       child: Container(
@@ -731,15 +875,20 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                               ],
                                             ),
                                           ),
-                                          (_subTaskAllocation[subTasks[index].stack_id]?.length !=0)
+                                          (_subTaskAllocation[subTasks[index]
+                                                          .stack_id]
+                                                      ?.length !=
+                                                  0)
                                               ? Container(
                                                   height: 60,
                                                   decoration: const BoxDecoration(
                                                       border: Border(
                                                           top: BorderSide(
-                                                              color: GlobalVariables.textFieldBgColor))),
+                                                              color: GlobalVariables
+                                                                  .textFieldBgColor))),
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
                                                         vertical: 20,
                                                         horizontal: 5),
                                                     child: Row(
@@ -747,14 +896,24 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                         Center(
                                                           child: Container(
                                                             width: 330,
-                                                            child: ListView.builder(
-                                                                    shrinkWrap:true,
-                                                                    scrollDirection:Axis.horizontal,
-                                                                    itemCount: _subTaskAllocation[subTasks[index].task_id]?.length,
-                                                                    itemBuilder:(context,subindex) {
+                                                            child: ListView
+                                                                .builder(
+                                                                    shrinkWrap:
+                                                                        true,
+                                                                    scrollDirection:
+                                                                        Axis
+                                                                            .horizontal,
+                                                                    itemCount: _subTaskAllocation[subTasks[index]
+                                                                            .task_id]
+                                                                        ?.length,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            subindex) {
                                                                       return Padding(
-                                                                        padding:const EdgeInsets.symmetric(horizontal: 5),
-                                                                        child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??''),
+                                                                        padding:
+                                                                            const EdgeInsets.symmetric(horizontal: 5),
+                                                                        child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ??
+                                                                            ''),
                                                                       );
                                                                     }),
                                                           ),
@@ -854,4 +1013,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         ),
         "Edit Task");
   }
+  
+
 }

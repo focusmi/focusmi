@@ -1,11 +1,25 @@
 let express = require('express')
+const imageUpload = require('../middleware/multer')
+
 let mRouter = express.Router()
 
-router.get('/person/:name', (req,res) => {
-    res.send(`You have been served ${req.params.name}`)
+
+mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>{
+    try{
+
+    }
+    catch(e){
+
+    }
 })
 
-router.get('/error',(req,res)=>{
-    throw new Error("This is a forced error")
+mRouter.post('/api/get-all-courses',imageUpload.single('image'),(req, res, next)=>{
+    try{
+        
+    }
+    catch(e){
+
+    }
 })
+
 module.exports = mRouter

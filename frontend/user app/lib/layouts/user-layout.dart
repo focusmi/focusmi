@@ -28,6 +28,12 @@ class LayOut{
         body: widget
       );
   }
+    Widget mainLayoutPage(Widget widget){
+    return Scaffold(
+        
+        body: widget
+      );
+  }
 
   Widget mainLayoutWithDrawer(context,Widget widget,appbarname){
     var user = Provider.of<UserProvider>(context,listen: false).user;

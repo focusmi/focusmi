@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
 const pool =  require("../database/dbconnection");
-const {task} = require("../sequelize/models");
+const {user_task,task} = require("../sequelize/models");
 
 
 class Task{
@@ -168,6 +168,33 @@ class Task{
                     }
                 })
             }
+            else if(type == 'description'){
+                task.update({description:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
+    static async allocateTaskUser(taskid, userid){
+        try{
+            pool.cQuery(`insert into user_task (user_id, task_id) values(${userid},${taskid})`)
+        }
+        catch(e){
+            console.log("allocate task user")
+            console.log(e)
+        }
+    }
+
+    static async getAllocatedUsers(taskid){
+        try{
+            var result = await pool.cQuery(`Select * from user_task left join task on task.task_id=user_task.task_id where user_task.task_id = ${taskid}`);
+            return result
         }
         catch(e){
             console.log(e)

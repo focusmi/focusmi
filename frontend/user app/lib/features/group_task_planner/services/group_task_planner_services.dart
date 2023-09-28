@@ -106,7 +106,6 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-
   static Future getTaskByPlanFilterByUser(taskplanid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

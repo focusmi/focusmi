@@ -485,12 +485,38 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.post('/api/allocate-task-user',auth ,async(req, res, next)=>{
+gTaskRoutes.post('/api/allocate-subtask-user',auth ,async(req, res, next)=>{
    try{
       SubTask.allocateTaskUser(req.body.task_id, req.body.user_id)
 
    }
    catch(e){
+      console.log(e)
+      console.log("allocate sub task user error")
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-subtask-users/:taskid', auth , async(req, res, next)=>{
+   try{
+      var result = await SubTask.getAllocatedUsers(req.params.taskid)
+      res.send({'value':result});
+   }
+   catch(e){
+      console.log(e)
+      console.log("get sub task users")
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/allocate-task-user',auth ,async(req, res, next)=>{
+   try{
+      Task.allocateTaskUser(req.body.task_id, req.body.user_id)
+   }
+   catch(e){
+      console.log(e)
+      console.log("allocate sub task user error")
 
    }
    next()
@@ -498,11 +524,12 @@ gTaskRoutes.post('/api/allocate-task-user',auth ,async(req, res, next)=>{
 
 gTaskRoutes.get('/api/get-task-users/:taskid', auth , async(req, res, next)=>{
    try{
-      var result = await SubTask.getAllocatedUsers(req.params.taskid)
-   
+      var result = await Task.getAllocatedUsers(req.params.taskid)
+      res.send({'value':result});
    }
    catch(e){
-
+      console.log(e)
+      console.log("get sub task users")
    }
    next()
 })

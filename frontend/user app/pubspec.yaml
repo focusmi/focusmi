@@ -52,6 +52,8 @@ dependencies:
   table_calendar: ^3.0.9
   flutter_colorpicker: ^1.0.3
   tap_canvas: ^0.9.5
+  photo_view: ^0.14.0
+   
 
 dev_dependencies:
   flutter_test:
@@ -110,3 +112,4 @@ flutter:
     - assets/images/success.gif
     - assets/images/kite.gif
     - assets/images/choose-task.gif
+    - assets/images/wal.jpg
