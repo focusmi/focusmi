@@ -3,8 +3,10 @@ const imageUpload = require('../middleware/multer')
 const {mindfulness_course} = require('../sequelize/models')
 
 let mRouter = express.Router()
-
-
+/* ----------------------------------------*/
+//course-types meditation, stress relief, sleep well, focus, realtionship, applied mindfulness
+//subscribe_type free, paid
+//course status published, drafted
 mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>{
     try{
         mindfulness_course.create({
@@ -26,6 +28,7 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
     next()
 })
 
+//get courses by category if -> localhost/api/get-all-courses/meditation will give all the courses with type meditation
 mRouter.get('/api/get-all-courses/:category',imageUpload.single('image'),async(req, res, next)=>{
     try{
         var course = await mindfulness_course.findAll({
