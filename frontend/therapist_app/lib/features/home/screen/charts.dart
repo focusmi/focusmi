@@ -1,140 +1,158 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:therapist_app/features/schedule/service/set_time_schedule_service.dart';
 
-
-class BarChartSample extends StatelessWidget {
+class BarChartSample extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Color.fromARGB(255, 239, 251, 241)
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: 12, // Adjust the maximum y-axis value as needed
-                gridData: FlGridData(
-                  show: false,
-                ),
-                backgroundColor: Color.fromARGB(0, 255, 255, 255),
-                barTouchData: BarTouchData(
-                  touchTooltipData: BarTouchTooltipData(
-                    tooltipBgColor: Colors.white,
-                    tooltipRoundedRadius: 10,
+  State<BarChartSample> createState() => _BarChartSampleState();
+}
+
+class _BarChartSampleState extends State<BarChartSample> {
+  Future<Map<String, int>> _fetchSchedules() async {
+    try {
+      List<Schedule> schedules =
+          await SetTimeScheduleService.fetchSchedules(context);
+
+      // Initialize a map to store the count of time slots for each day
+      Map<String, int> timeSlotsPerDay = {
+        'Sun': 0,
+        'Mon': 0,
+        'Tue': 0,
+        'Wed': 0,
+        'Thu': 0,
+        'Fri': 0,
+        'Sat': 0,
+      };
+
+      for (Schedule schedule in schedules) {
+        String? weekday = DateFormat('E', 'en_US').format(schedule.start);
+        if (weekday != null) {
+          // Increment the count for the respective day
+          timeSlotsPerDay[weekday] = (timeSlotsPerDay[weekday] ?? 0) + 1;
+        }
+      }
+
+      // Print the count of time slots for each day
+      print(timeSlotsPerDay);
+
+      return timeSlotsPerDay;
+    } catch (error) {
+      // Handle error if needed
+      print('Error fetching schedules: $error');
+      return {};
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchSchedules();
+  }
+
+  @override
+Widget build(BuildContext context) {
+  return FutureBuilder<List<BarChartGroupData>>(
+    future: getBarGroups(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else if (!snapshot.hasData) {
+        return Center(child: Text('No data available.'));
+      } else {
+        List<BarChartGroupData> barGroups = snapshot.data!;
+
+        return Scaffold(
+          body: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(255, 239, 251, 241)),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: 12, // Adjust the maximum y-axis value as needed
+                    gridData: FlGridData(
+                      show: false,
+                    ),
+                    backgroundColor: Color.fromARGB(0, 255, 255, 255),
+                    barTouchData: BarTouchData(
+                      touchTooltipData: BarTouchTooltipData(
+                        tooltipBgColor: Colors.white,
+                        tooltipRoundedRadius: 10,
+                      ),
+                    ),
+                    titlesData: FlTitlesData(
+                      leftTitles: SideTitles(showTitles: false),
+                      rightTitles: SideTitles(showTitles: false),
+                      topTitles: SideTitles(showTitles: false),
+                      bottomTitles: SideTitles(
+                        showTitles: true,
+                        margin: 10,
+                        getTitles: (double value) {
+                          switch (value.toInt()) {
+                            case 0:
+                              return 'Sun';
+                            case 1:
+                              return 'Mon';
+                            case 2:
+                              return 'Tue';
+                            case 3:
+                              return 'Wed';
+                            case 4:
+                              return 'Thu';
+                            case 5:
+                              return 'Fri';
+                            case 6:
+                              return 'Sat';
+                            default:
+                              return '';
+                          }
+                        },
+                      ),
+                    ),
+                    borderData: FlBorderData(show: false),
+                    axisTitleData: FlAxisTitleData(show: false),
+
+                    barGroups: barGroups,
                   ),
                 ),
-                titlesData: FlTitlesData(
-                  leftTitles: SideTitles(showTitles: false),
-                  rightTitles: SideTitles(showTitles: false),
-                  topTitles: SideTitles(showTitles: false),
-                  bottomTitles: SideTitles(
-                    showTitles: true,
-                    margin: 10,
-                    getTitles: (double value) {
-                      switch (value.toInt()) {
-                        case 0:
-                          return 'Sun';
-                        case 1:
-                          return 'Mon';
-                        case 2:
-                          return 'Tue';
-                        case 3:
-                          return 'Wed';
-                        case 4:
-                          return 'Thu';
-                        case 5:
-                          return 'Fri';
-                        case 6:
-                          return 'Sat';
-                        default:
-                          return '';
-                      }
-                    },
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                axisTitleData: FlAxisTitleData(show: false),
-      
-                barGroups: getBarGroups(),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
+        );
+      }
+    },
+  );
+}
 
-  List<BarChartGroupData> getBarGroups() {
-    return [
-      BarChartGroupData(
-        x: 0,
+
+  Future<List<BarChartGroupData>> getBarGroups() async {
+    // Call the function to fetch schedules and get the count of time slots per day
+    Map<String, int> timeSlotsPerDay = await _fetchSchedules();
+
+    // Define the order of days in a week
+    List<String> daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    return List.generate(7, (index) {
+      String day = daysOfWeek[index];
+      int timeSlotsCount = timeSlotsPerDay[day] ?? 0;
+
+      return BarChartGroupData(
+        x: index,
         barRods: [
           BarChartRodData(
-            y: 4, // Value for Sunday
-            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
+            y: timeSlotsCount.toDouble(),
+            colors: [Color.fromARGB(255, 95, 204, 78)],
           ),
         ],
-      ),
-      BarChartGroupData(
-        x: 1,
-        barRods: [
-          BarChartRodData(
-            y: 6, // Value for Monday
-            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-      BarChartGroupData(
-        x: 2,
-        barRods: [
-          BarChartRodData(
-            y: 8, // Value for Tuesday
-           colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-      BarChartGroupData(
-        x: 3,
-        barRods: [
-          BarChartRodData(
-            y: 5, // Value for Wednesday
-            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-      BarChartGroupData(
-        x: 4,
-        barRods: [
-          BarChartRodData(
-            y: 9, // Value for Thursday
-           colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-      BarChartGroupData(
-        x: 5,
-        barRods: [
-          BarChartRodData(
-            y: 7, // Value for Friday
-            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-      BarChartGroupData(
-        x: 6,
-        barRods: [
-          BarChartRodData(
-            y: 3, // Value for Saturday
-            colors: Color.fromARGB(255, 121, 235, 109)!= null ? [Color.fromARGB(255, 95, 204, 78)!] : null,
-          ),
-        ],
-      ),
-    ];
+      );
+    });
   }
 }
 
@@ -153,8 +171,7 @@ class PieChart2State extends State {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Color.fromARGB(255, 239, 251, 241)
-        ),
+          color: Color.fromARGB(255, 239, 251, 241)),
       child: AspectRatio(
         aspectRatio: 1.3,
         child: Row(
@@ -191,7 +208,7 @@ class PieChart2State extends State {
                 ),
               ),
             ),
-             Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
