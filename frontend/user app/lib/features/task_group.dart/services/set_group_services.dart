@@ -55,6 +55,17 @@ class GroupService{
       return members;
   }
 
+ 
+  static Future  getGroupMemberByTaskID(taskID)async{
+      SharedPreferences prefs =await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token'); 
+      http.Response members = await http.get(Uri.parse('$uri/api/get-group-members-by-task/$taskID'), headers:<String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'authorization':'Bearer '+token.toString()
+      });
+      return members;
+  }
+
     static Future addGroupMember(groupID,userID)async{
       SharedPreferences prefs =await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token'); 

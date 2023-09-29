@@ -1,9 +1,24 @@
-/* navbar */
+@import url('https://fonts.googleapis.com/css2?family=Borel&family=Poppins:wght@100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+    font-family: poppins;
+    letter-spacing: 0.15em;  
+  }
+  body{
+    background-color: white;
+    
+  }
+ 
 :root {
     --primary-color:rgb(131, 222, 112);
     --background-color:rgb(255,255,255);
-    --font-color-grey:rgba(119, 119, 119, 0.792);
+    --font-color-grey:hsla(0, 0%, 47%, 0.792);
     --font-color-black:rgb(0,0,0);
     --border-color:rgb(235, 231, 231);
 }
@@ -11,18 +26,3 @@
 
 
 
-.navbar-style{
-    background-color:var(--primary-color)!important;
-}
-.set-white{
-    background-color: white !important;
-}
-.reverse{
-    display: flex;
-    gap:50px;
-    justify-content: space-between;
-    flex-direction: row-reverse;
-
-}
-
-/* login page */

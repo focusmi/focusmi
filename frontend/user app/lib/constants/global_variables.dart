@@ -5,7 +5,7 @@ String uri = 'http://192.168.185.55:3001';
 
 class GlobalVariables {
   // COLORS
-  static const primaryColor = Color.fromRGBO(131, 222, 112, 1);
+  static const primaryColor = Color.fromARGB(255, 131, 222, 112);
   static const textFieldBgColor = Color.fromRGBO(235, 231, 231, 1);
   static const textFieldHintColor = Color.fromRGBO(235, 231, 231, 0.795);
   static const greyFontColor = Color.fromRGBO(85, 85, 85, 0.941);

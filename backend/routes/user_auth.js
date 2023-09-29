@@ -37,7 +37,6 @@ authRoutes.post('/api/admin-signin',async(req,res,next)=>{
     let User = new AuthUser(email, password, '');
     var result = await User.checkAdminUser();
     if(result=='nouser'){
-        console.log("exist")
         res.status(400);
         res.send({msg:"Wrong Email or Password",type:1});
     }

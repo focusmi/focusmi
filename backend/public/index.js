@@ -19,6 +19,7 @@ const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
 const appointmentRouter = require("../routes/appointment"); 
 const userTRoutes = require("../routes/adminitrator");
+const mRouter = require("../routes/mindfulness_courses");
 
 dotenv.config()
 
@@ -42,6 +43,7 @@ app.use(authRouterTherapist)
 app.use(ScheduleRouter)
 app.use(appointmentRouter)
 app.use(userTRoutes)
+app.use(mRouter)
 
 
 

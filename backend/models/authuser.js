@@ -48,7 +48,7 @@ class AuthUser {
             }
   
             )
-            application_user.destroy(
+            timer.destroy(
               {
                 where:{
                   email:this.email,

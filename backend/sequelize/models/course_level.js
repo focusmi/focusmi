@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     level_name: DataTypes.TEXT,
     level_description: DataTypes.TEXT,
     reference: DataTypes.TEXT,
-    media_type: DataTypes.TEXT
+    media_type: DataTypes.TEXT,
+    content_location:DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'course_level',

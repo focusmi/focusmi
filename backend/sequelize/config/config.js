@@ -1,9 +1,6 @@
 const dotenv = require('dotenv')
 dotenv.config();
 
-
-
-
 module.exports = {
     development: {
       username: "fouser",

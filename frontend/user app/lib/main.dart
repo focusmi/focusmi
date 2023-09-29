@@ -39,8 +39,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
-      //home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const MainScreen():const LandingPage(),
-      home:CountdownTimer()
+      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const MainScreen():const LandingPage(),
      
     );
   }
