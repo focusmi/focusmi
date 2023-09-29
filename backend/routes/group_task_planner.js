@@ -8,11 +8,12 @@ const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
 const Task = require('../models/task');
 const {task_plan} = require('../sequelize/models');
-const {task, sub_task} = require('../sequelize/models');
+const {task, sub_task, application_user} = require('../sequelize/models');
 const pool = require('../database/dbconnection');
 const Blog = require('../models/blog');
 const PomodoroTimer = require('../models/pomodoro_timer');
 const SubTask = require('../models/sub_task');
+const { runInNewContext } = require('vm');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -108,6 +109,22 @@ gTaskRoutes.get('/api/get-group-members/:groupID',auth,async(req,res,next)=>{
       console.log(result)
       res.status(200).send(result);
 
+   }
+   catch(e){
+      console.log(e);
+      res.send({})
+   }
+})
+
+gTaskRoutes.get('/api/get-group-members-by-task/:taskID',auth,async(req,res,next)=>{
+   var id = (req.user)[0]
+   id = id.user_id;
+   try{
+      var result = await task.findOne({task_id:req.params.taskID});
+      result = await task_plan.findOne({plan_id:result.dataValues.plan_id})
+      result = await pool.cQuery(`Select * from application_user left join group_user on group_user.user_id=application_user.user_id where group_id=${result.dataValues.group_id} and application_user.user_id<>${id}`)
+      console.log(result)
+      res.send(result)
    }
    catch(e){
       console.log(e);

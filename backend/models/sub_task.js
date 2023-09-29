@@ -60,7 +60,8 @@ class SubTask{
 
     static async getAllocatedUsers(taskid){
         try{
-            var result = await pool.cQuery(`Select * from user_subtask left join task on sub_task.stask_id=user_subtask.stask_id where user_subtask.stask_id = ${taskid}`);
+            var result = await pool.cQuery(`Select * from user_subtask left join sub_task on sub_task.stask_id=user_subtask.stask_id where user_subtask.stask_id = ${taskid}`);
+            console.log(result)
             return result
         }
         catch(e){
