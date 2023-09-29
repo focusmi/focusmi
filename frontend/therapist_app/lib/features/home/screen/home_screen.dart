@@ -253,22 +253,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                     // color: Color.fromARGB(255, 255, 216, 216),
                     ),
-                child: ListView(scrollDirection: Axis.horizontal, children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BarChartSample(),
-                    ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BarChartSample(),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PieChartSample2(),
-                    ),
-                  ),
-                ]),
+                ),
               ),
             ),
           ],
