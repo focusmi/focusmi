@@ -69,11 +69,11 @@ class _MainScreenState extends State<MainScreen> {
     bval = 0;
     getTaskPlanApi();
     getBlogs();
-
     controller.addListener(onScroll);
     // TODO: implement initState
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
