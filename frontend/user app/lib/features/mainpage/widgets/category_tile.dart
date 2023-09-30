@@ -28,4 +28,25 @@ class MainPageCatTile {
       ),
     );
   }
+
+    static greenPageTileSubTask(Widget widget, double width) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: const Color.fromARGB(255, 117, 199, 101)
+      ),
+      width: width,
+      height: 70,
+      child: Column(
+        mainAxisAlignment:MainAxisAlignment.center,
+        crossAxisAlignment:CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widget
+          ),
+        ],
+      ),
+    );
+  }
 }

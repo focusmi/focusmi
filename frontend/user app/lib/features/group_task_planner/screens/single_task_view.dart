@@ -48,7 +48,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late TextEditingController description;
   late String? descriptionval;
   late bool setdescription;
-  late Map<int,bool>? subAllocated;
+  late Map<int, bool> subAllocated;
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     showTime = null;
     nowtime = '';
     descriptionval = '';
-    subAllocated=null;
+    subAllocated = {};
     label = Color.fromARGB(255, 255, 255, 255);
     title = '';
     refreshColor(widget.task.task_id);
@@ -82,6 +82,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     refreshDeadline(widget.task.task_id);
     refreshTaskList();
     refreshTaskDescription();
+    checkSubTaskUser();
     changeTitle = false;
     refreshGroupUsers();
   }
@@ -183,7 +184,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void addSubTask(taskname, taskid) {
     setState(() {
       SubTask stask = SubTask(
-          stack_id: subTasks.length + 1,
+          stask_id: subTasks.length + 1,
           task_id: taskid,
           sub_priority: '0',
           sub_label: taskname,
@@ -209,12 +210,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
         subTasks = list.map((model) => SubTask.fromJson(model)).toList();
         for (SubTask task in subTasks) {
-          subAllocated?[task.stack_id??0]=false;
-          _subTaskAllocation[task.stack_id ?? 0] = [];
+          subAllocated?[task.stask_id ?? 0] = false;
+          _subTaskAllocation[task.stask_id ?? 0] = [];
         }
         checkSubTaskUser();
-        print("----------------");
-        print(subTasks);
+        print("-----+++----------");
+        print(subAllocated);
       });
     } catch (e) {
       print("----------");
@@ -299,19 +300,17 @@ class _SingleTaskViewState extends State<SingleTaskView> {
 
   Future checkSubTaskUser() async {
     try {
-      for(SubTask sub in subTasks){
-      var result = await GTaskPlannerServices.getSubTaskUser(sub.stack_id);
-      setState(() {
-        if (json.decode(result.body)['value'] == 0) {
-          
-          subAllocated?[sub.stack_id??0]=false;
-        } else {
-          subAllocated?[sub.stack_id??0]=true;
-        }
-        
-      });
+      for (SubTask sub in subTasks) {
+        var result = await GTaskPlannerServices.getSubTaskUser(sub.stask_id);
+        print(sub.sub_label);
+        setState(() {
+          if (json.decode(result.body)['value'] == 0) {
+            subAllocated[sub.stask_id ?? 0] = false;
+          } else {
+            subAllocated[sub.stask_id ?? 0] = true;
+          }
+        });
       }
-      
     } catch (e) {}
   }
 
@@ -852,130 +851,131 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     subTasks.removeLast();
                                   });
                                 },
-                                child:
-                                    (subAllocated?[index] ==
-                                            false)
-                                        ? Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4),
-                                            child: Container(
-                                              child: Text(
-                                                  subTasks[index].sub_label ??
-                                                      ''),
-                                            ),
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 4),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  border: Border.all(
-                                                    color: GlobalVariables
-                                                        .textFieldBgColor,
-                                                  )),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      height: 32,
-                                                      child: Row(
-                                                        children: [
-                                                          Container(
-                                                            child: CustomText
-                                                                .normalText(
-                                                                    subTasks[index]
-                                                                            .sub_label ??
-                                                                        ''),
-                                                            width: 315,
-                                                          ),
-                                                          Container(
-                                                            child:
-                                                                GestureDetector(
-                                                                    onTap: () {
-                                                                      showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder: (BuildContext context) => _buildAddMemberPopup(
-                                                                            context,
-                                                                            subTasks[index].stack_id),
-                                                                      );
-                                                                    },
-                                                                    child:
-                                                                        Container(
-                                                                      decoration:
-                                                                          const BoxDecoration(
-                                                                              color: Colors.white),
-                                                                      child:
-                                                                          const Center(
-                                                                        child:
-                                                                            Icon(
-                                                                          Icons
-                                                                              .add,
-                                                                          color:
-                                                                              GlobalVariables.primaryColor,
-                                                                        ),
-                                                                      ),
-                                                                    )),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    (_subTaskAllocation[subTasks[
+                                child: (subAllocated?[index] == false)
+                                    ? Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
+                                        child: Container(
+                                          child: Text(
+                                              subTasks[index].sub_label ?? ''),
+                                        ),
+                                      )
+                                    : Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              border: Border.all(
+                                                color: GlobalVariables
+                                                    .textFieldBgColor,
+                                              )),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  height: 32,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        child: CustomText
+                                                            .normalText(subTasks[
                                                                         index]
-                                                                    .stack_id]
-                                                                ?.length !=
-                                                            0)
-                                                        ? Container(
-                                                            height: 60,
-                                                            decoration: const BoxDecoration(
-                                                                border: Border(
-                                                                    top: BorderSide(
-                                                                        color: GlobalVariables
-                                                                            .textFieldBgColor))),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
+                                                                    .sub_label ??
+                                                                ''),
+                                                        width: 315,
+                                                      ),
+                                                      Container(
+                                                        child: GestureDetector(
+                                                            onTap: () {
+                                                              showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (BuildContext
+                                                                        context) =>
+                                                                    _buildAddMemberPopup(
+                                                                        context,
+                                                                        subTasks[index]
+                                                                            .stask_id),
+                                                              );
+                                                            },
+                                                            child: Container(
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                      color: Colors
+                                                                          .white),
+                                                              child:
+                                                                  const Center(
+                                                                child: Icon(
+                                                                  Icons.add,
+                                                                  color: GlobalVariables
+                                                                      .primaryColor,
+                                                                ),
+                                                              ),
+                                                            )),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                (_subTaskAllocation[
+                                                                subTasks[index]
+                                                                    .stask_id]
+                                                            ?.length !=
+                                                        0)
+                                                    ? Container(
+                                                        height: 60,
+                                                        decoration: const BoxDecoration(
+                                                            border: Border(
+                                                                top: BorderSide(
+                                                                    color: GlobalVariables
+                                                                        .textFieldBgColor))),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
                                                                       .symmetric(
                                                                   vertical: 20,
                                                                   horizontal:
                                                                       5),
-                                                              child: Row(
-                                                                children: [
-                                                                  Center(
-                                                                    child:
-                                                                        Container(
-                                                                      width:
-                                                                          330,
-                                                                      child: ListView.builder(
-                                                                          shrinkWrap: true,
-                                                                          scrollDirection: Axis.horizontal,
-                                                                          itemCount: _subTaskAllocation[subTasks[index].task_id]?.length,
-                                                                          itemBuilder: (context, subindex) {
+                                                          child: Row(
+                                                            children: [
+                                                              Center(
+                                                                child:
+                                                                    Container(
+                                                                  width: 330,
+                                                                  child: ListView
+                                                                      .builder(
+                                                                          shrinkWrap:
+                                                                              true,
+                                                                          scrollDirection: Axis
+                                                                              .horizontal,
+                                                                          itemCount: _subTaskAllocation[subTasks[index].task_id]
+                                                                              ?.length,
+                                                                          itemBuilder:
+                                                                              (context, subindex) {
                                                                             return Padding(
                                                                               padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                              child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stack_id])?[subindex])?.username ?? ''),
+                                                                              child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stask_id])?[subindex])?.username ?? ''),
                                                                             );
                                                                           }),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                          )
-                                                        : SizedBox(
-                                                            width: 0,
-                                                            height: 0,
-                                                          )
-                                                  ],
-                                                ),
-                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : SizedBox(
+                                                        width: 0,
+                                                        height: 0,
+                                                      )
+                                              ],
                                             ),
                                           ),
+                                        ),
+                                      ),
                               );
                             }),
                         (toggleInput)

@@ -150,7 +150,9 @@ class _MainScreenState extends State<MainScreen> {
                               height: 10,
                             ),
                             Container(
-                              alignment: Alignment.topLeft,
+                              
+                              height: 40,
+                              alignment: Alignment.bottomLeft,
                               child: Text(
                                 "Recent Task Plans",
                                 style: TextStyle(
@@ -158,21 +160,29 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
+                              alignment:Alignment.topLeft,
                               width: 500,
-                              height: 500,
+                              height: 180,
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: 2,
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(4.0),
-                                      child: CustomContainer.normalContainer(
-                                          CustomText.normalText(
-                                              taskPlan[index].plan_name),
-                                          70,
-                                          width * 0.1),
+                                      child: MainPageCatTile.greenPageTile(
+                                              taskPlan[index].plan_name,width * 0.1),
                                     );
                                   }),
+                            ),
+                             Container(
+                              
+                              height: 40,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Featured",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              ),
                             ),
                             Container(
                               width: 500,

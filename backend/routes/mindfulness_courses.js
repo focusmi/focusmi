@@ -15,12 +15,12 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
           skill:req.body.skill,
           duration:req.body.duration,
           rating:req.body.rating,
-          image:req.body.image,
+          image:req.file.filename,
           course_status:req.body.course_status,
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
         })
-        console.log(req.filename)
+   
     }
     catch(e){
         console.log("create course")

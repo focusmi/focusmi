@@ -9,24 +9,6 @@ class PomodoroTimerLayout{
   static Widget mainLayout(Widget widget,appBarName,context){
     var user = Provider.of<UserProvider>(context,listen: false).user;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title:  Row(
-          children: [
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              appBarName,
-              style: const TextStyle(
-                color:Colors.white,
-                fontSize: 18
-              ),
-            )
-          ],
-        ),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      ),
       body:widget,
       drawer: Drawer(
           child: ListView(
