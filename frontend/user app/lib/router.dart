@@ -3,7 +3,9 @@ import "package:focusmi/features/authentication/screens/auth-otp-insert.dart";
 import "package:focusmi/features/authentication/screens/auth_choic_screen.dart";
 import "package:focusmi/features/authentication/screens/auth_screen.dart";
 import "package:focusmi/features/authentication/screens/choose-package.dart";
+import "package:focusmi/features/authentication/screens/packages_page.dart";
 import "package:focusmi/features/authentication/screens/sigin_screen.dart";
+import "package:focusmi/features/authentication/widgets/packages_widget.dart";
 import "package:focusmi/features/group_task_planner/screens/single_task_view.dart";
 import "package:focusmi/features/group_task_planner/screens/task_plan_view.dart";
 import "package:focusmi/features/mainpage/screens/main_page.dart";
@@ -88,6 +90,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (context) => PomodoroTimerScreen(task:args),
+      );
+      case SubscriptionPackagesPage.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => SubscriptionPackagesPage(),
       );
     default:
       return MaterialPageRoute(

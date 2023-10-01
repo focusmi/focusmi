@@ -35,7 +35,7 @@ class SubscriptionPackageWidget extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
-        width: 100.0,
+        width: 125.0,
         height: 110.0,
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF83DE70) : Colors.white,
@@ -63,7 +63,7 @@ class SubscriptionPackageWidget extends StatelessWidget {
               package.name,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 12.0,
+                fontSize: 11.0,
               ),
             ),
             SizedBox(height: 10.0),

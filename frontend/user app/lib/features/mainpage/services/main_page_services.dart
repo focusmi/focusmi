@@ -20,5 +20,23 @@ class MainPageServices {
     }
   }
 
+    static Future getCoursesFeatured() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(Uri.parse('$uri/api/get-all-featured-courses'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+  
+
   
 }

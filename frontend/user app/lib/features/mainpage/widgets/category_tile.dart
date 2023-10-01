@@ -8,7 +8,7 @@ class MainPageCatTile {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: const Color.fromARGB(255, 117, 199, 101)
+        color: Color.fromARGB(255, 108, 182, 93)
       ),
       width: width,
       height: 60,
@@ -33,7 +33,7 @@ class MainPageCatTile {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: const Color.fromARGB(255, 117, 199, 101)
+        color:  Color.fromARGB(255, 108, 182, 93)
       ),
       width: width,
       height: 70,

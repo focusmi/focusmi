@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusmi/features/authentication/widgets/packages_widget.dart';
 
 class SubscriptionPackagesPage extends StatefulWidget {
+  static const String routeName = '/packages_page';
   @override
   _SubscriptionPackagesPageState createState() =>
       _SubscriptionPackagesPageState();
@@ -32,8 +33,8 @@ List<SubscriptionPackage> packages = [
     price: 9.99,
     subtitle:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent non purus tristique, faucibus justo ac, semper nunc. Praesent sit amet.",
-    features: ["Feature 1", "Feature 2", "Feature 3", "Feature 4"],
-    glow: 200.0,
+    features: ["Feature 1", "Feature 2", "Feature 3"],
+    glow: 500.0,
   ),
 ];
 
@@ -49,12 +50,10 @@ class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Subscription Packages'),
-      // ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AnimatedContainer(
@@ -96,7 +95,7 @@ class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
                       fontSize: 11.0,
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 15.0),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -169,7 +168,16 @@ class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
                     ))
                 .toList(),
           ),
-        ],
+       Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+            child: Container(
+              alignment: FractionalOffset.topCenter,
+              child: Text("Choose a package",
+                style: TextStyle(
+                  fontSize: 23
+              )),
+            ),
+          ) ],
       ),
     );
   }

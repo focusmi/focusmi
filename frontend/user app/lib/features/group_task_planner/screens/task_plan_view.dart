@@ -5,6 +5,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_util.dart';
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart';
@@ -99,6 +100,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     setState(() {
       Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+      //fix here
       for (var plans in taskPlans) {
         taskMap[plans.plan_id] = List.empty(growable: true);
       }
@@ -366,7 +368,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                               (((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date!=null)?
                                                               Container(
                                                                 child: Text(
-                                                                    ((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date??'',
+                                                                    DateFormat('MMM/d').format(DateTime.parse((((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date).split(' ')[0]))??'',
                                                                     style: TextStyle(
                                                                       color: Colors.red,
                                                                       fontSize: 12

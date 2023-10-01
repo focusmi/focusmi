@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
@@ -20,6 +21,7 @@ class CountdownTimer extends StatefulWidget {
 }
 
 class _CountdownTimerState extends State<CountdownTimer> {
+  int _selectedValue = 1;
   // Step 2
   Timer? countdownTimer;
   late List<SubTask> subtasks;
@@ -155,12 +157,8 @@ class _CountdownTimerState extends State<CountdownTimer> {
     final seconds = strDigits(myDuration.inSeconds.remainder(60));
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(image: 
-          AssetImage("assets/images/stars.jpg"),
-          fit: BoxFit.cover
-        )
-        
-      ),
+          image: DecorationImage(
+              image: AssetImage("assets/images/stars.jpg"), fit: BoxFit.cover)),
       child: Column(
         children: [
           Center(
@@ -170,12 +168,39 @@ class _CountdownTimerState extends State<CountdownTimer> {
                   height: 100,
                 ),
                 // Step 8
-                Text(
-                  '$minutes:$seconds',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      fontSize: 50),
+                GestureDetector(
+                  child: Text(
+                    '$minutes:$seconds',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 50),
+                  ),
+                  onTap: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (_) => SizedBox(
+                              width: double.infinity,
+                              height: 250,
+                              child: CupertinoPicker(
+                                backgroundColor: Colors.white,
+                                itemExtent: 30,
+                                scrollController:
+                                    FixedExtentScrollController(initialItem: 1),
+                                children: [
+                                  Text('0'),
+                                  Text('1'),
+                                  Text('2')
+                                ],
+                                onSelectedItemChanged: (int value) {
+                                  print(value);
+                                  setState(() {
+                                    _selectedValue = value;
+                                  });
+                                },
+                              ),
+                            ));
+                  },
                 ),
                 SizedBox(height: 0),
                 // Step 9
@@ -232,53 +257,57 @@ class _CountdownTimerState extends State<CountdownTimer> {
               ],
             ),
           ),
-          SizedBox(height: 20,)
-          ,
+          SizedBox(
+            height: 20,
+          ),
           Container(
-            width: planWidth*0.9,
-            alignment:Alignment.centerLeft,
-            child: Text("Task :"+widget.task.task_name,style:TextStyle(
-              color: const Color.fromARGB(255, 255, 255, 255),
-              fontSize: 23
-            ),),
-          )
-          ,
+            width: planWidth * 0.9,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Task :" + widget.task.task_name,
+              style: TextStyle(
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 23),
+            ),
+          ),
           Center(
             child: Container(
               height: 350,
               child: ListView.builder(
                   itemCount: subtasks.length,
                   itemBuilder: (context, index) {
-                    return Column(children:[
-                      SizedBox(height: 10,)
-                      ,
+                    return Column(children: [
+                      SizedBox(
+                        height: 10,
+                      ),
                       MainPageCatTile.greenPageTileSubTask(
-                       Container(
-                            width: planWidth*0.9,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                              child: Row(
-                                children: [
-                                  Radio(
-                                    activeColor: Colors.white,
-                                      value: subtasks[index].task_id,
-                                      groupValue: "",
-                                      onChanged: (value) {
-                                        completeTask(
-                                          subtasks[index].task_id,
-                                        );
-                                      }),
-                                  Container(
-                                    child: Text(
-                                      subtasks[index].sub_label ?? '',
-                                      style: const TextStyle(
-                                          color: Colors.white),
+                          Container(
+                              width: planWidth * 0.9,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: Row(
+                                  children: [
+                                    Radio(
+                                        activeColor: Colors.white,
+                                        value: subtasks[index].task_id,
+                                        groupValue: "",
+                                        onChanged: (value) {
+                                          completeTask(
+                                            subtasks[index].task_id,
+                                          );
+                                        }),
+                                    Container(
+                                      child: Text(
+                                        subtasks[index].sub_label ?? '',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )),planWidth*0.9)]);
+                                  ],
+                                ),
+                              )),
+                          planWidth * 0.9)
+                    ]);
                   }),
             ),
           )

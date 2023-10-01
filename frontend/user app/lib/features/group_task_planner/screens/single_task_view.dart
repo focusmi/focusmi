@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -586,6 +587,61 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
+                              child: GestureDetector(
+                                 onTap: () {
+                                          Navigator.pushNamed(
+                                              context,
+                                              SubscriptionPackagesPage
+                                                  .routeName);
+                                        },
+                                child: Column(
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 21, 211, 218),
+                                        child: Icon(
+                                          Icons.alarm,
+                                          color: Colors.white,
+                                        )),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: const Color.fromARGB(
+                                                  255, 224, 170, 6)),
+                                          height: 13,
+                                          width: 17,
+                                          child: Center(
+                                            child: Text(
+                                              "Pro",
+                                              style: TextStyle(
+                                                  fontSize: 8,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 4,
+                                        ),
+                                        Text(
+                                          "Set Reminder",
+                                          style: TextStyle(
+                                              color:
+                                                  GlobalVariables.greyFontColor,
+                                              fontSize: 12),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 21,
+                            ),
+                            Container(
                               child: const Column(
                                 children: [
                                   CircleAvatar(
@@ -599,13 +655,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     "Change Taskplan",
                                     style: TextStyle(
                                         color: GlobalVariables.greyFontColor,
-                                        fontSize: 12),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold),
                                   )
                                 ],
                               ),
                             ),
                             const SizedBox(
-                              width: 30,
+                              width: 21,
                             ),
                             Container(
                               child: const Column(

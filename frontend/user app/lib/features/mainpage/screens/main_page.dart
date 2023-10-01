@@ -6,9 +6,12 @@ import 'package:flutter/scheduler.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
+import 'package:focusmi/features/mindfulness_courses/services/mindfulness_main_page_services.dart';
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/models/blog.dart';
+import 'package:focusmi/models/mindfulnesscourses.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:focusmi/widgets/containers.dart';
@@ -29,6 +32,7 @@ class _MainScreenState extends State<MainScreen> {
   late List<Blog> blogs;
   late double bval;
   late ScrollController controller = ScrollController();
+  late List<MindfulnessCourse> featuredCourse;
   void getTaskPlanApi() async {
     try {
       Response response = await GTaskPlannerServices.getRecentTaskPlan();
@@ -62,18 +66,31 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void getFeatured() async {
+    try {
+      var result = await MainPageServices.getCoursesFeatured();
+      setState(() {
+        Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+        featuredCourse =
+            list.map((model) => MindfulnessCourse.fromJson(model)).toList();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   void initState() {
     taskPlan = List<TaskPlan>.empty(growable: true);
     blogs = List<Blog>.empty(growable: true);
+    featuredCourse = [];
     bval = 0;
     getTaskPlanApi();
-    getBlogs();
+    getFeatured();
     controller.addListener(onScroll);
     // TODO: implement initState
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +134,6 @@ class _MainScreenState extends State<MainScreen> {
                   controller: controller,
                   child: Container(
                     child: Column(children: [
-                      Container(),
                       SizedBox(
                         height: 250,
                       ),
@@ -134,6 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                                     "        Task Planner", screenWidth * 0.45),
                                 SizedBox(
                                   width: 5,
+                                  height: 0,
                                 ),
                                 GestureDetector(
                                   child: MainPageCatTile.greenPageTile(
@@ -148,10 +165,11 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                             SizedBox(
                               height: 10,
+                              width: 0,
                             ),
                             Container(
-                              
                               height: 40,
+                              width: width,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 "Recent Task Plans",
@@ -160,23 +178,25 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
-                              alignment:Alignment.topLeft,
+                              alignment: Alignment.topLeft,
                               width: 500,
                               height: 180,
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: 2,
+                                  physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(4.0),
                                       child: MainPageCatTile.greenPageTile(
-                                              taskPlan[index].plan_name,width * 0.1),
+                                          taskPlan[index].plan_name,
+                                          width * 0.1),
                                     );
                                   }),
                             ),
-                             Container(
-                              
+                            Container(
                               height: 40,
+                              width: width,
                               alignment: Alignment.bottomLeft,
                               child: Text(
                                 "Featured",
@@ -185,15 +205,43 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
-                              width: 500,
-                              height: 100,
+                              width: width*0.9,
+                              height: 300,
                               child: ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: blogs.length,
+                                  itemCount: featuredCourse.length,
+                                  physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return Container(
-                                        child: CustomText.normalText(
-                                            blogs[index].title));
+                                      
+                                      width: width*0.9,
+                                      height: 200,
+                                        decoration: BoxDecoration(
+                                          borderRadius:BorderRadius.circular(12) ,
+                                            image: DecorationImage(
+                                              
+                                                image: NetworkImage(
+                                                    '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'
+                                                    ),
+                                                    fit: BoxFit.cover
+                                                    )
+                                                    
+                                                    ),
+                                                    
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                                          child: Container(
+                                            alignment:Alignment.bottomLeft,
+                                            child: Text(
+                                                
+                                                featuredCourse[index].title ?? '',style: TextStyle(
+                                                
+                                                  color: Colors.white,fontSize: 23
+                                                ),),
+                                          ),
+                                        )
+                                            
+                                            );
                                   }),
                             ),
                           ]),

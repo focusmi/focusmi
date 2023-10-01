@@ -1,4 +1,5 @@
 let express = require('express')
+const pool = require('../database/dbconnection')
 const imageUpload = require('../middleware/multer')
 const {mindfulness_course} = require('../sequelize/models')
 
@@ -29,14 +30,26 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
 })
 
 //get courses by category if -> localhost/api/get-all-courses/meditation will give all the courses with type meditation
-mRouter.get('/api/get-all-courses/:category',imageUpload.single('image'),async(req, res, next)=>{
+mRouter.get('/api/get-all-courses/:category',async(req, res, next)=>{
     try{
         var course = await mindfulness_course.findAll({
             where:{
                 course_type:req.params.category
             }
         })
-        return course
+        res.send(course)
+    }
+    catch(e){
+        console.log("get courses by category")
+    }
+    next()
+})
+
+mRouter.get('/api/get-all-featured-courses',async(req, res, next)=>{
+    try{
+        var course =await pool.cQuery("Select * from mindfulness_course where course_status='published' order by ratings desc")
+        res.send([course[0]])
+
     }
     catch(e){
         console.log("get courses by category")

@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskplan.dart';
+import 'package:focusmi/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:focusmi/constants/global_variables.dart';
@@ -262,4 +264,22 @@ class GTaskPlannerServices {
       print(e);
     }
   }
+  
+  static Future setTimerAttr(attr, value, context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      var user = Provider.of<UserProvider>(context,listen: false).user;
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/set-timer-attr/${attr}/${value}/${user.user_id}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
 }
