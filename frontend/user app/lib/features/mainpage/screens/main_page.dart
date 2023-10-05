@@ -10,6 +10,7 @@ import 'package:focusmi/features/mindfulness_courses/services/mindfulness_main_p
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
 import 'package:focusmi/layouts/user-layout.dart';
+import 'package:focusmi/models/administrative_user.dart';
 import 'package:focusmi/models/blog.dart';
 import 'package:focusmi/models/mindfulnesscourses.dart';
 import 'package:focusmi/models/taskplan.dart';
@@ -33,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   late double bval;
   late ScrollController controller = ScrollController();
   late List<MindfulnessCourse> featuredCourse;
-  late List<Administra
+  late List<AdministrativeUser> therapists;
   void getTaskPlanApi() async {
     try {
       Response response = await GTaskPlannerServices.getRecentTaskPlan();
@@ -84,7 +85,8 @@ class _MainScreenState extends State<MainScreen> {
     try {
       var result = await MindFMainPageServices.getTherapists();
       Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
-      featuredCourse = list.map((model) => MindfulnessCourse.fromJson(model)).toList();
+      featuredCourse =
+          list.map((model) => MindfulnessCourse.fromJson(model)).toList();
     } catch (e) {
       print(e);
     }
@@ -94,6 +96,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     taskPlan = List<TaskPlan>.empty(growable: true);
     blogs = List<Blog>.empty(growable: true);
+    therapists = [];
     featuredCourse = [];
     bval = 0;
     getTaskPlanApi();

@@ -73,6 +73,6 @@ class AdministrativeUser {
 
   String toJson() => json.encode(toMap());
 
-  factory AdministrativeUser.fromJson(Map<String, dynamic> source) => AdministrativeUser.fromMap(json.decode(source) as Map<String, dynamic>);
-  factory Task.fromJson(Map<String, dynamic> source) =>Task.fromMap(source as Map<String, dynamic>);
+
+  factory  AdministrativeUser.fromJson(Map<String, dynamic> source) => AdministrativeUser.fromMap(source as Map<String, dynamic>);
 }
