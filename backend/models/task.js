@@ -175,6 +175,13 @@ class Task{
                     }
                 })
             }
+            else if(type == 'plan_id'){
+                task.update({plan_id:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
         }
         catch(e){
             console.log(e)

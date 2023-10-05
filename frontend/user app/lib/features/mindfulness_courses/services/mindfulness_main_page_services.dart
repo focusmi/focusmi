@@ -1,4 +1,7 @@
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/models/mindfulnesscourses.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class MindFMainPageServices {
   static Future getFeaturedContent() async {
@@ -37,7 +40,7 @@ class MindFMainPageServices {
     return course;
   }
 
-   static Future getOnGoingContent() async {
+  static Future getOnGoingContent() async {
     List<MindfulnessCourse> course = [
       MindfulnessCourse(
           course_id: 2,
@@ -55,7 +58,7 @@ class MindFMainPageServices {
     return course;
   }
 
-    static Future getForYouContent() async {
+  static Future getForYouContent() async {
     List<MindfulnessCourse> course = [
       MindfulnessCourse(
           course_id: 2,
@@ -71,5 +74,22 @@ class MindFMainPageServices {
           title: 'Free It Now')
     ];
     return course;
+  }
+
+  static Future getTherapists() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+        Uri.parse('$uri/api/get-therapist'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': 'Bearer ' + token.toString()
+        },
+      );
+      return res;
+    } catch (e) {
+      print(e);
+    }
   }
 }

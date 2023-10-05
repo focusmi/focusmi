@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'package:focusmi/features/authentication/screens/packages_page.dart';
+import 'package:focusmi/features/group_task_planner/widget/dropdown.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 import 'package:dotted_border/dotted_border.dart';
@@ -224,15 +225,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     }
   }
 
-  void moveTask(int mplanid) async {
-    try {
-      GTaskPlannerServices.setTaskAttr('plan_id', widget.task.task_id, mplanid);
-    } catch (e) {
-      print("move task");
-      print(e);
-    }
-  }
-
   Future<DateTime?> pickDate() => showDatePicker(
       context: context,
       initialDate: dateTime,
@@ -242,7 +234,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   Future<TimeOfDay?> pickTime() =>
       showTimePicker(context: context, initialTime: TimeOfDay.now());
 
-  void setSchedule() async {
+  void setDeadline() async {
     DateTime? resultDate = await pickDate();
     if (resultDate != null) {
       TimeOfDay? resultTime = await pickTime();
@@ -256,6 +248,29 @@ class _SingleTaskViewState extends State<SingleTaskView> {
               widget.task.task_id, resultTime?.format(context), showDateTime);
         });
       }
+    }
+  }
+
+  void setReminder() async {
+    DateTime? resultDate = await pickDate();
+    if (resultDate != null) {
+      TimeOfDay? resultTime = await pickTime();
+      setState(() {
+        showDateTime = resultDate.toString();
+      });
+      if (resultDate != null) {
+        setState(() {
+          showTime = resultTime?.format(context);
+        });
+      }
+    }
+  }
+
+  void changeTaskPlan(taskid, val) async {
+    try {
+      GTaskPlannerServices.setTaskAttr('plan_id', taskid, val);
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -315,72 +330,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     } catch (e) {}
   }
 
-  Widget _moveTaskPopup(BuildContext context, subtaskid) {
-    return AlertDialog(
-      title: const Text("Move Task"),
-      content: StatefulBuilder(
-        builder: (BuildContext, StateSetter setState) {
-          return Container(
-            width: 200,
-            child: Column(
-              children: [
-                TextField(
-                  controller: _searchValue,
-                  onChanged: (text) {
-                    setState(() {
-                      showMemeberList.clear();
-                    });
-                    String val = text.toLowerCase();
-                    for (var member in memberList) {
-                      if (val != '') {
-                        var re = RegExp('^[a-zA-z]*${val}[a-zA-Z0-9]*');
-                        if (re.hasMatch(member.email.toLowerCase()) ||
-                            re.hasMatch(member.username.toLowerCase())) {
-                          setState(() {
-                            showMemeberList.add(member);
-                          });
-                        }
-                      } else {
-                        setState(() {
-                          showMemeberList.clear();
-                        });
-                      }
-                    }
-                  },
-                ),
-                //member list
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: showMemeberList.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          allocateMember(showMemeberList[index], subtaskid);
-                        },
-                        child: Row(
-                          children: [
-                            //Image.network('$uri/api/assets/image/user-profs/team.png'),
-                            Column(
-                              children: [
-                                Text(showMemeberList[index].username),
-                                Text(showMemeberList[index].email),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    })
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildAddMemberPopup(BuildContext context, subtaskid) {
     return AlertDialog(
-      backgroundColor: Colors.white,
       title: const Text("Add Member"),
       content: StatefulBuilder(
         builder: (BuildContext, StateSetter setState) {
@@ -442,6 +393,21 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     );
   }
 
+  Widget _changePlanPopup(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      title: const Text("Move Task"),
+      content: StatefulBuilder(
+        builder: (BuildContext, StateSetter setState) {
+          return DropDownList(
+              items: [1,2,3],
+              taskplanid: widget.task.plan_id,
+              taskid: widget.task.task_id);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double planWidth = MediaQuery.of(context).size.width;
@@ -468,7 +434,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                 ? Row(
                                     children: [
                                       Container(
-                                          width: planWidth * 0.8,
+                                          width: planWidth * 0.7,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 20),
@@ -588,53 +554,56 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                           children: [
                             Container(
                               child: GestureDetector(
-                                 onTap: () {
-                                          Navigator.pushNamed(
-                                              context,
-                                              SubscriptionPackagesPage
-                                                  .routeName);
-                                        },
-                                child: Column(
-                                  children: [
-                                    CircleAvatar(
-                                        backgroundColor:
-                                            Color.fromARGB(255, 21, 211, 218),
-                                        child: Icon(
-                                          Icons.alarm,
-                                          color: Colors.white,
-                                        )),
-                                    Row(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: const Color.fromARGB(
-                                                  255, 224, 170, 6)),
-                                          height: 13,
-                                          width: 17,
-                                          child: Center(
-                                            child: Text(
-                                              "Pro",
-                                              style: TextStyle(
-                                                  fontSize: 8,
-                                                  color: Colors.white),
+                                onTap: () {
+                                  Navigator.pushNamed(context,
+                                      SubscriptionPackagesPage.routeName);
+                                },
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setReminder();
+                                  },
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                          backgroundColor:
+                                              Color.fromARGB(255, 21, 211, 218),
+                                          child: Icon(
+                                            Icons.alarm,
+                                            color: Colors.white,
+                                          )),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: const Color.fromARGB(
+                                                    255, 224, 170, 6)),
+                                            height: 13,
+                                            width: 17,
+                                            child: Center(
+                                              child: Text(
+                                                "Pro",
+                                                style: TextStyle(
+                                                    fontSize: 8,
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          width: 4,
-                                        ),
-                                        Text(
-                                          "Set Reminder",
-                                          style: TextStyle(
-                                              color:
-                                                  GlobalVariables.greyFontColor,
-                                              fontSize: 12),
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            "Set Reminder",
+                                            style: TextStyle(
+                                                color: GlobalVariables
+                                                    .greyFontColor,
+                                                fontSize: 12),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -642,23 +611,31 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               width: 21,
                             ),
                             Container(
-                              child: const Column(
-                                children: [
-                                  CircleAvatar(
-                                      backgroundColor:
-                                          Color.fromARGB(255, 123, 17, 211),
-                                      child: Icon(
-                                        Icons.format_list_bulleted,
-                                        color: Colors.white,
-                                      )),
-                                  Text(
-                                    "Change Taskplan",
-                                    style: TextStyle(
-                                        color: GlobalVariables.greyFontColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
+                              child: GestureDetector(
+                                onTap: () {
+                                   showDialog(
+                                      context:
+                                        context,
+                                        builder: (BuildContext context) =>_changePlanPopup(context));
+                                },
+                                child: const Column(
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 123, 17, 211),
+                                        child: Icon(
+                                          Icons.format_list_bulleted,
+                                          color: Colors.white,
+                                        )),
+                                    Text(
+                                      "Change Taskplan",
+                                      style: TextStyle(
+                                          color: GlobalVariables.greyFontColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -829,7 +806,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                       ),
                                       GestureDetector(
                                           onTap: () {
-                                            setSchedule();
+                                            setDeadline();
                                           },
                                           child: Row(
                                             children: [

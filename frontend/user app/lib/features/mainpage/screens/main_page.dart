@@ -33,6 +33,7 @@ class _MainScreenState extends State<MainScreen> {
   late double bval;
   late ScrollController controller = ScrollController();
   late List<MindfulnessCourse> featuredCourse;
+  late List<Administra
   void getTaskPlanApi() async {
     try {
       Response response = await GTaskPlannerServices.getRecentTaskPlan();
@@ -74,6 +75,16 @@ class _MainScreenState extends State<MainScreen> {
         featuredCourse =
             list.map((model) => MindfulnessCourse.fromJson(model)).toList();
       });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getTherapist() async {
+    try {
+      var result = await MindFMainPageServices.getTherapists();
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+      featuredCourse = list.map((model) => MindfulnessCourse.fromJson(model)).toList();
     } catch (e) {
       print(e);
     }
@@ -183,7 +194,7 @@ class _MainScreenState extends State<MainScreen> {
                               height: 180,
                               child: ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: 2,
+                                  itemCount: taskPlan.length,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return Padding(
@@ -199,13 +210,13 @@ class _MainScreenState extends State<MainScreen> {
                               width: width,
                               alignment: Alignment.bottomLeft,
                               child: Text(
-                                "Featured",
+                                "Featured Content",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 24),
                               ),
                             ),
                             Container(
-                              width: width*0.9,
+                              width: width * 0.9,
                               height: 300,
                               child: ListView.builder(
                                   shrinkWrap: true,
@@ -213,36 +224,52 @@ class _MainScreenState extends State<MainScreen> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return Container(
-                                      
-                                      width: width*0.9,
-                                      height: 200,
+                                        width: width * 0.9,
+                                        height: 200,
                                         decoration: BoxDecoration(
-                                          borderRadius:BorderRadius.circular(12) ,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                             image: DecorationImage(
-                                              
                                                 image: NetworkImage(
-                                                    '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'
-                                                    ),
-                                                    fit: BoxFit.cover
-                                                    )
-                                                    
-                                                    ),
-                                                    
+                                                    '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'),
+                                                fit: BoxFit.cover)),
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 12),
                                           child: Container(
-                                            alignment:Alignment.bottomLeft,
+                                            alignment: Alignment.bottomLeft,
                                             child: Text(
-                                                
-                                                featuredCourse[index].title ?? '',style: TextStyle(
-                                                
-                                                  color: Colors.white,fontSize: 23
-                                                ),),
+                                              featuredCourse[index].title ?? '',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 23),
+                                            ),
                                           ),
-                                        )
-                                            
-                                            );
+                                        ));
                                   }),
+                            ),
+                            Container(
+                              height: 40,
+                              width: width,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Meet Our Professionals",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              height: 40,
+                              width: width,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Practice Mindfulness",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              ),
                             ),
                           ]),
                         ),

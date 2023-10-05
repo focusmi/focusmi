@@ -19,7 +19,7 @@ userTRoutes.post('/api/create-therapist', async(req,res,next) => {
     next()
 })
 
-userTRoutes.get('/api/get-therapist/', async(req,res,next)=>{
+userTRoutes.get('/api/get-therapist', async(req,res,next)=>{
     try{
         var result =  await UserTherapist.getTherapist()
         res.status(400).send(result)

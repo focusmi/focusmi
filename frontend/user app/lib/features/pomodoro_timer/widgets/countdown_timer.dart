@@ -21,7 +21,7 @@ class CountdownTimer extends StatefulWidget {
 }
 
 class _CountdownTimerState extends State<CountdownTimer> {
-  int _selectedValue = 1;
+  int _selectedValue = 8;
   // Step 2
   Timer? countdownTimer;
   late List<SubTask> subtasks;
@@ -188,9 +188,17 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                 scrollController:
                                     FixedExtentScrollController(initialItem: 1),
                                 children: [
-                                  Text('0'),
-                                  Text('1'),
-                                  Text('2')
+                                  Text('5 min'),
+                                  Text('10 min'),
+                                  Text('15 min'),
+                                  Text('20 min'),
+                                  Text('25 min'),
+                                  Text('30 min'),
+                                  Text('35 min'),
+                                  Text('40 min'),
+                                  Text('45 min'),
+                                  Text('50 min'),
+                                  Text('55 min'),
                                 ],
                                 onSelectedItemChanged: (int value) {
                                   print(value);

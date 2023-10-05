@@ -48,12 +48,15 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
           backgroundColor: const Color(0xFF83DE70),
           automaticallyImplyLeading: false,
           title: Text(
-            'Councillors',
-            style: FlutterFlowTheme.of(context).bodyText1.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
+            'Councelors',
+            style: TextStyle(
+              color: Colors.white
+            ),
+            // style: FlutterFlowTheme.of(context).bodyText1.override(
+            //       fontFamily: 'Outfit',
+            //       color: Colors.white,
+            //       fontSize: 22,
+            //     ),
           ),
           actions: [],
           centerTitle: false,
@@ -132,13 +135,25 @@ class CouncillorCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 10),
-                  Text(
-                    username??'',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Readex Pro',
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
-                        ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        username??'',
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                      ),
+                      Text(
+                        about??'',
+                        style:TextStyle(
+                          fontSize: 14
+
+                        )
+                      )
+                    ],
                   ),
                 ],
               ),
