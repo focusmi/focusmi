@@ -54,6 +54,8 @@ dependencies:
   tap_canvas: ^0.9.5
   photo_view: ^0.14.0
   dropdown_button2: ^2.3.9
+  just_audio: ^0.9.35
+  audio_video_progress_bar: ^2.0.0
 
    
 

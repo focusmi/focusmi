@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
+import 'package:focusmi/features/mindfulness_courses/screens/course_media_player.dart';
 import 'package:focusmi/features/mindfulness_courses/services/mindfulness_main_page_services.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
@@ -218,38 +219,45 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.white, fontSize: 24),
                               ),
                             ),
-                            Container(
-                              width: width * 0.9,
-                              height: 300,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: featuredCourse.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                        width: width * 0.9,
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'),
-                                                fit: BoxFit.cover)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12),
-                                          child: Container(
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              featuredCourse[index].title ?? '',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 23),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, CourseMediaPlayer.routeName);
+                              },
+                              child: Container(
+                                width: width * 0.9,
+                                height: 300,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: featuredCourse.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                          width: width * 0.9,
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'),
+                                                  fit: BoxFit.cover)),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: Container(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                featuredCourse[index].title ??
+                                                    '',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 23),
+                                              ),
                                             ),
-                                          ),
-                                        ));
-                                  }),
+                                          ));
+                                    }),
+                              ),
                             ),
                             Container(
                               height: 40,

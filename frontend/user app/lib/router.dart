@@ -9,6 +9,8 @@ import "package:focusmi/features/authentication/widgets/packages_widget.dart";
 import "package:focusmi/features/group_task_planner/screens/single_task_view.dart";
 import "package:focusmi/features/group_task_planner/screens/task_plan_view.dart";
 import "package:focusmi/features/mainpage/screens/main_page.dart";
+import "package:focusmi/features/mindfulness_courses/screens/course_mainpage.dart";
+import "package:focusmi/features/mindfulness_courses/screens/course_media_player.dart";
 import "package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart";
 import "package:focusmi/features/task_group.dart/screens/create_group.dart";
 import "package:focusmi/features/task_group.dart/screens/edit_task_group.dart";
@@ -91,10 +93,15 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (context) => PomodoroTimerScreen(task:args),
       );
-      case SubscriptionPackagesPage.routeName:
+    case SubscriptionPackagesPage.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (context) => SubscriptionPackagesPage(),
+      );
+    case CourseMediaPlayer.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => CourseMediaPlayer(),
       );
     default:
       return MaterialPageRoute(
