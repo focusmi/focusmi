@@ -27,7 +27,7 @@ class _AudioPlayeraState extends State<AudioPlayera> {
 
   void initState() {
     player = AudioPlayer();
-    musicUrl = widget.imageUrl;
+    musicUrl = widget.musicUrl;
     thumbnailImgUrl = widget.imageUrl;
     loadMusic();
     super.initState();
@@ -35,6 +35,7 @@ class _AudioPlayeraState extends State<AudioPlayera> {
 
   void loadMusic() async {
     try {
+      print(musicUrl);
       await player.setUrl(musicUrl);
       setState(() {
         print("loadded");
