@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/group_task_planner/widget/dropdown.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
+import 'package:focusmi/models/taskplan.dart';
 import 'package:tap_canvas/tap_canvas.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late String? descriptionval;
   late bool setdescription;
   late Map<int, bool> subAllocated;
+  late List<TaskPlan> taskPlan;
+  late List<String> taskNames;
 
   @override
   void initState() {
@@ -68,6 +71,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     _subtaskValue = TextEditingController();
     _titleName = TextEditingController();
     description = TextEditingController();
+    taskPlan = [];
     setdescription = false;
     // fixed the date to taday\
     now = DateTime.now();
@@ -79,14 +83,17 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     subAllocated = {};
     label = Color.fromARGB(255, 255, 255, 255);
     title = '';
+    taskNames = [];
     refreshColor(widget.task.task_id);
     refreshTaskName(widget.task.task_id);
     refreshDeadline(widget.task.task_id);
+    getTaskPlanByPlanID(widget.task.plan_id);
     refreshTaskList();
     refreshTaskDescription();
     checkSubTaskUser();
     changeTitle = false;
     refreshGroupUsers();
+
   }
 
   void chanageColorApi(taskid, color) {
@@ -330,6 +337,19 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     } catch (e) {}
   }
 
+  Future getTaskPlanByPlanID(planid) async {
+    try {
+      var result = await GTaskPlannerServices.getTaskPlansByPlan(planid);
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+      setState(() {
+        taskPlan = list.map((model) => TaskPlan.fromJson(model)).toList();
+        taskNames = taskPlan.map((model)=>model.plan_name).toList();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Widget _buildAddMemberPopup(BuildContext context, subtaskid) {
     return AlertDialog(
       title: const Text("Add Member"),
@@ -400,7 +420,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       content: StatefulBuilder(
         builder: (BuildContext, StateSetter setState) {
           return DropDownList(
-              items: [1,2,3],
+              items:taskNames,
               taskplanid: widget.task.plan_id,
               taskid: widget.task.task_id);
         },
@@ -613,10 +633,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             Container(
                               child: GestureDetector(
                                 onTap: () {
-                                   showDialog(
-                                      context:
-                                        context,
-                                        builder: (BuildContext context) =>_changePlanPopup(context));
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          _changePlanPopup(context));
                                 },
                                 child: const Column(
                                   children: [
@@ -630,9 +650,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     Text(
                                       "Change Taskplan",
                                       style: TextStyle(
-                                          color: GlobalVariables.greyFontColor,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold),
+                                        color: GlobalVariables.greyFontColor,
+                                        fontSize: 12,
+                                      ),
                                     )
                                   ],
                                 ),

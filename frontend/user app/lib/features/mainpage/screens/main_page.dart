@@ -86,8 +86,8 @@ class _MainScreenState extends State<MainScreen> {
     try {
       var result = await MindFMainPageServices.getTherapists();
       Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
-      featuredCourse =
-          list.map((model) => MindfulnessCourse.fromJson(model)).toList();
+      therapists =
+          list.map((model) => AdministrativeUser.fromJson(model)).toList();
     } catch (e) {
       print(e);
     }
@@ -102,6 +102,7 @@ class _MainScreenState extends State<MainScreen> {
     bval = 0;
     getTaskPlanApi();
     getFeatured();
+    getTherapist();
     controller.addListener(onScroll);
     // TODO: implement initState
     super.initState();
@@ -268,6 +269,14 @@ class _MainScreenState extends State<MainScreen> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 24),
                               ),
+                            ),
+                            Container(
+                              height: 100,
+                              child: ListView.builder(
+                                  itemCount: therapists.length,
+                                  itemBuilder: (context, index) {
+                                    return Text(therapists[index].full_name??'');
+                                  }),
                             ),
                             SizedBox(
                               height: 20,

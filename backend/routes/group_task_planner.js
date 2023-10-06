@@ -14,6 +14,7 @@ const Blog = require('../models/blog');
 const PomodoroTimer = require('../models/pomodoro_timer');
 const SubTask = require('../models/sub_task');
 const { runInNewContext } = require('vm');
+const { Op } = require('sequelize');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -547,6 +548,34 @@ gTaskRoutes.get('/api/get-task-users/:taskid', auth , async(req, res, next)=>{
    catch(e){
       console.log(e)
       console.log("get sub task users")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-plan-by-plan/:planid', async(req, res, next)=>{
+   try{
+      var result = await task_plan.findOne({
+         where:{
+            plan_id:req.params.planid
+         }
+      })
+      result = await task_plan.findAll({
+         where:{
+            group_id:result.dataValues.group_id,
+            plan_id:{[Op.not] : result.dataValues.plan_id}
+
+         }
+      })
+      //result = result[0].group_id
+      if(result == null){
+         res.send(0)
+      }
+      else{
+         res.send(result)
+      }
+   }
+   catch(e){
+      console.log(e)
    }
    next()
 })

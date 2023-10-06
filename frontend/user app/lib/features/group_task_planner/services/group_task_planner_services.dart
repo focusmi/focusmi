@@ -108,6 +108,7 @@ class GTaskPlannerServices {
       print(e);
     }
   }
+
   static Future getTaskByPlanFilterByUser(taskplanid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,8 +124,6 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-
-
 
   static Future getRecentTaskPlan() async {
     try {
@@ -264,12 +263,12 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-  
+
   static Future setTimerAttr(attr, value, context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      var user = Provider.of<UserProvider>(context,listen: false).user;
+      var user = Provider.of<UserProvider>(context, listen: false).user;
       http.Response res = await http.get(
           Uri.parse('$uri/api/set-timer-attr/${attr}/${value}/${user.user_id}'),
           headers: <String, String>{
@@ -282,4 +281,19 @@ class GTaskPlannerServices {
     }
   }
 
+  static Future getTaskPlansByPlan(taskplan) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-plan-by-plan/${taskplan}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print("error in get task plans by plan");
+    }
+  }
 }

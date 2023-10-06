@@ -6,7 +6,7 @@ import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 
 class DropDownList extends StatefulWidget {
-  List<int> items;
+  List<String> items;
   int taskplanid;
   int taskid;
   DropDownList({
@@ -22,7 +22,7 @@ class DropDownList extends StatefulWidget {
 
 class _DropDownListState extends State<DropDownList> {
   void getTaskPlan() {}
-  List<int> items = [];
+  List<String> items = [];
   String? selectedValue;
   late int taskplanid;
   @override
@@ -74,8 +74,8 @@ class _DropDownListState extends State<DropDownList> {
             ],
           ),
           items: items
-              .map((int item) => DropdownMenuItem<String>(
-                    value: item.toString(),
+              .map((String item) => DropdownMenuItem<String>(
+                    value: item,
                     child: Text(
                       item.toString(),
                       style: const TextStyle(
