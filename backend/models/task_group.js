@@ -1,9 +1,10 @@
 const { get } = require("http");
 const pool =  require("../database/dbconnection");
 const { joinJson } = require("../JSON/JSON");
-const {task_group} = require("../sequelize/models");
+const {task_group,application_user} = require("../sequelize/models");
 const {group_user} = require("../sequelize/models");
 const { json } = require("sequelize");
+const { sendMail } = require("./core/email");
 
 class TaskGroup{
     
@@ -89,12 +90,19 @@ class TaskGroup{
     }
 
     async addGroupUser(groupid,userid){
-        console.log("reached")
         try{
+            var result =await application_user.findOne({
+                user_id:userid
+            })
+            var email = result.dataValues.email
             const d = new Date();
             var date=d.toISOString();
-            pool.cQuery(`insert into group_user (user_id,group_id,created_at,updated_at) values(${userid},${groupid},'${date}','${date}')`)
-            console.log("Added")
+            pool.cQuery(`insert into group_user (user_id,group_id,created_at,updated_at,previlage) values(${userid},${groupid},'${date}','${date}','nonmember')`)
+            sendMail(email,`
+            <div>
+                <h1>Group Member Invitation</h1>
+            </div>
+            `, "Focusmi group member invitation");
 
             return true;
 

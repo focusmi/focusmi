@@ -6,6 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_util.dart';
+import 'package:focusmi/features/chat_application/screens/chat_page.dart';
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart';
@@ -237,7 +238,6 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                   .greyFontColor),
                                         ),
                                       ),
-                                     
                                     ],
                                   ),
                                   onTap: () {
@@ -351,12 +351,13 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                                 );
                                                               }),
                                                           Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Container(
                                                                 child: Text(
-                                                                  (taskMap[taskPlans[
-                                                                                  index]
+                                                                  (taskMap[taskPlans[index]
                                                                               .plan_id])[
                                                                           subindex]
                                                                       .task_name,
@@ -365,16 +366,25 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                                           .greyFontColor),
                                                                 ),
                                                               ),
-                                                              (((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date!=null)?
-                                                              Container(
-                                                                child: Text(
-                                                                    DateFormat('MMM/d').format(DateTime.parse((((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date).split(' ')[0]))??'',
-                                                                    style: TextStyle(
-                                                                      color: Colors.red,
-                                                                      fontSize: 12
-                                                                    ),
-                                                                ),
-                                                              ):SizedBox(width: 0, height: 0,)
+                                                              (((taskMap[taskPlans[index].plan_id])[
+                                                                              subindex])
+                                                                          .deadline_date !=
+                                                                      null)
+                                                                  ? Container(
+                                                                      child:
+                                                                          Text(
+                                                                        DateFormat('MMM/d').format(DateTime.parse((((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date).split(' ')[0])) ??
+                                                                            '',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.red,
+                                                                            fontSize: 12),
+                                                                      ),
+                                                                    )
+                                                                  : SizedBox(
+                                                                      width: 0,
+                                                                      height: 0,
+                                                                    )
                                                             ],
                                                           ),
                                                         ],
@@ -489,7 +499,15 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                   },
                 ),
                 title: 'Add'),
-            TabItem(icon: Icons.chat, title: 'Chat'),
+            TabItem(
+              icon: GestureDetector(
+                child: Container(child: Icon(Icons.chat,color: Colors.white,)),
+                onTap: () {
+                  Navigator.pushNamed(context, ChatRoom.routeName);
+                },
+              ),
+              title: 'Chat',
+            ),
           ],
           onTap: (int i) => print('click index=$i'),
         ),

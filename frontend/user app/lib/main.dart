@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/features/authentication/screens/auth-otp-insert.dart';
 import 'package:focusmi/features/authentication/screens/auth_choic_screen.dart';
@@ -11,9 +12,12 @@ import 'package:focusmi/router.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MultiProvider(providers:[
-    ChangeNotifierProvider(create:(context)=>UserProvider(),)
-  ],child: const MyApp()));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+    )
+  ], child: const MyApp()));
+  AndroidAlarmManager.initialize();
 }
 
 class MyApp extends StatefulWidget {
@@ -28,20 +32,20 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     authService.getUser(context: context);
-   
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'focusmi',
-      theme: ThemeData( 
+      theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       onGenerateRoute: (routeSettings) => generateRoute(routeSettings),
-      home: Provider.of<UserProvider>(context).user.token.isNotEmpty ?const MainScreen():const LandingPage(),
-     
+      home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+          ? const MainScreen()
+          : const LandingPage(),
     );
   }
 }
-

@@ -56,6 +56,9 @@ dependencies:
   dropdown_button2: ^2.3.9
   just_audio: ^0.9.35
   audio_video_progress_bar: ^2.0.0
+  flutter_chat_bubble: ^2.0.2
+  socket_io_client: ^2.0.3+1
+  android_alarm_manager_plus: ^3.0.2
 
    
 

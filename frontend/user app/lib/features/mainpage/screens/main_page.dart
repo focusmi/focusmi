@@ -271,11 +271,27 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
-                              height: 100,
+                              height: 150,
                               child: ListView.builder(
                                   itemCount: therapists.length,
-                                  itemBuilder: (context, index) {
-                                    return Text(therapists[index].full_name??'');
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) { 
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 40, //radius of avatar
+                                            backgroundColor: Colors.green, //color
+                                            backgroundImage:NetworkImage('$uri/api/assets/image/user-profs/profile-0.jpg'),
+                                          
+                                        ),
+                                          Text(therapists[index].full_name??'',style: TextStyle(
+                                            color: Colors.white
+                                          ),),
+                                        ],
+                                      ),
+                                    );
                                   }),
                             ),
                             SizedBox(

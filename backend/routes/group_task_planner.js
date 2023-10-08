@@ -56,22 +56,21 @@ gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
 
 gTaskRoutes.post('/api/add-group-user',async(req,res,next)=>{
    try{
-       const userID = isAuth(req, res);
-       console.log(userID);
-       if(userID){
+     //  const userID = isAuth(req, res);
+   //
           
           var Group =new TaskGroup();
           var reqBody = req.body;
           Group.group_id= reqBody.group_id;
           
-          var result = await Group.addGroupUser(reqBody.status,reqBody.user);
+          var result = await Group.addGroupUser(reqBody.group_id,reqBody.user);
           if(result){
             res.status(200).send({"msg":"Successful"});
           }
           else{
             res.status(400).send({"msg":"User not added"});
           }
-       }
+    //   }
        
 
    }
@@ -579,6 +578,8 @@ gTaskRoutes.get('/api/get-plan-by-plan/:planid', async(req, res, next)=>{
    }
    next()
 })
+
+
 
 
 module.exports = gTaskRoutes;

@@ -51,10 +51,9 @@ app.use(mRouter)
 const PORT = process.env.PORT || 3000
 
 //connection
-try{
-    app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
 
-}
-catch{
-    console.log("Server failed");
-}
+    var server = app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
+    const io =  require('socket.io')(server);
+    io.on('connection', (socket)=>{
+        console.log("connnected successfully",socket.id);
+    });
