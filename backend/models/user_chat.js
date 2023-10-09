@@ -1,3 +1,4 @@
+const pool = require("../database/dbconnection")
 const {chat} = require("../sequelize/models")
 const {user_chat} = require("../sequelize/models")
 
@@ -23,10 +24,11 @@ class UserChat{
     }
 
     static async addMessage(message){
+        var chat_id = await this.getChatByGroup(message.group_id)
         try{
             user_chat.create({
                 user_id:message.user_id,
-                chat_id:message.chat_id,
+                chat_id:chat_id,
                 message_text:message.message_text,
                 message_type:message.message_type,
                 image:message.image
@@ -56,19 +58,16 @@ class UserChat{
     static async getChatMessage(groupid){
         try{
             var chat_id = await this.getChatByGroup(groupid)
-            var result  = user_chat.findAll({
-                where:{
-                    chat_id:chat_id
-                }
-            })
-            return result.dataValues
+            var result  = await pool.cQuery(`Select * from user_chat where chat_id=${chat_id}`)
+            console.log(result)
+            return result;
         }
         catch(e){
             console.log(e)
         }
     }
 
-    static async createChatMessage(){
-
-    }
+    
 }
+
+module.exports = UserChat

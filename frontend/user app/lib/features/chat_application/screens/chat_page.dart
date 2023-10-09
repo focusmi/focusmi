@@ -1,14 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
+
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/chat_application/services/chat_room_services.dart';
 import 'package:focusmi/models/chat_message.dart';
 import 'package:focusmi/providers/user_provider.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatRoom extends StatefulWidget {
-  const ChatRoom({super.key});
+  int group_id;
+  ChatRoom({
+    Key? key,
+    required this.group_id,
+  }) : super(key: key);
   static const String routeName = '/chat_page';
   @override
   State<ChatRoom> createState() => _ChatRoomState();
@@ -38,14 +46,27 @@ class _ChatRoomState extends State<ChatRoom> {
 
   void getChatMessages() async {
     try {
-      messages = await ChatRoomServices.getChats();
+      var result = await ChatRoomServices.getChatMessage(widget.group_id);
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+      messages = list.map((model) => ChatMessage.fromJson(model)).toList();
       setState(() {
         messages = messages;
       });
     } catch (e) {}
   }
 
-  void sendMessage() {}
+  void sendMessage() {
+    try {
+      var user = Provider.of<UserProvider>(context, listen: false).user;
+      ChatMessage chatMessage = ChatMessage(
+          message_text: messageInputController.text,
+          message_type: "text",
+          user_id: user.user_id,
+          group_id: widget.group_id,
+          image: null);
+      ChatRoomServices.getChatMessage(chatMessage);
+    } catch (e) {}
+  }
 
   @override
   Widget build(BuildContext context) {

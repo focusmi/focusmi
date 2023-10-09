@@ -15,6 +15,9 @@ const PomodoroTimer = require('../models/pomodoro_timer');
 const SubTask = require('../models/sub_task');
 const { runInNewContext } = require('vm');
 const { Op } = require('sequelize');
+const UserChat = require('../models/user_chat');
+const { copyFileSync } = require('fs');
+const { addMessage } = require('../models/user_chat');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
@@ -578,6 +581,41 @@ gTaskRoutes.get('/api/get-plan-by-plan/:planid', async(req, res, next)=>{
    }
    next()
 })
+
+gTaskRoutes.get('/api/create-chat/:groupid', auth, async(req, res, next)=>{
+   try{
+      UserChat.createChat(req.params.groupid)
+   }
+   catch(e){
+      console.log("Error in create chat")
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/add-chat-message', auth, async(req, res, next)=>{
+   try{
+      UserChat.addMessage(req.body)
+   }
+   catch(e){
+      console.log(e)
+      console.log("Error in adding message")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-chat-message/:groupid', auth,  async(req, res, next)=>{
+   try{
+     var result = await UserChat.getChatMessage(req.params.groupid)
+     res.send(result)
+   }
+   catch(e){
+      console.log("Error in get chat message")
+      console.log(e)
+   }
+   next()
+})
+
 
 
 

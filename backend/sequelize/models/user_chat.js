@@ -14,13 +14,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   user_chat.init({
+    message_id: {
+      type:DataTypes.INTEGER,
+      primaryKey:true,
+      autoIncrement:true
+    },
     user_id: {
       type:DataTypes.INTEGER,
-      primaryKey:true
     } ,
     chat_id: {
       type:DataTypes.INTEGER,
-      primaryKey:true
     } ,
     message_text: DataTypes.TEXT,
     message_type: DataTypes.TEXT,
