@@ -105,9 +105,10 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => CourseMediaPlayer(),
       );
     case ChatRoom.routeName:
+        final int arg = routeSettings.arguments as int;
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (context) => ChatRoom(),
+          builder: (context) => ChatRoom(group_id: arg,),
         );
     default:
       return MaterialPageRoute(

@@ -54,12 +54,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late Map<int, bool> subAllocated;
   late List<TaskPlan> taskPlan;
   late List<String> taskNames;
+  late List<GroupMember> taskUser;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     subTasks = [];
+    taskUser = [];
     subTaskAllocation = {};
     memberList = List<GroupMember>.empty(growable: true);
     showMemeberList = List<GroupMember>.empty(growable: true);
@@ -91,9 +93,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     refreshTaskList();
     refreshTaskDescription();
     checkSubTaskUser();
+    refreshTaskAllocation();
+    refreshSubTaskAllocation();
     changeTitle = false;
     refreshGroupUsers();
-
   }
 
   void chanageColorApi(taskid, color) {
@@ -208,7 +211,37 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void allocateMember(GroupMember member, subtask) {
     setState(() {
       _subTaskAllocation[subtask]?.add(member);
+      GTaskPlannerServices.setSubTaskUser(subtask, member.user_id);
+      GTaskPlannerServices.setTaskUser(widget.task.task_id, member.user_id);
     });
+  }
+
+  Future<void> refreshSubTaskAllocation() async {
+    try {
+      for (SubTask subTask in subTasks) {
+        var result =
+            await GTaskPlannerServices.getSubTaskUser(subTask.stask_id);
+        Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+        List<GroupMember> groupMember =
+            list.map((model) => GroupMember.fromJson(model)).toList();
+        setState(() {
+          _subTaskAllocation[subTask.stask_id ?? 0] = groupMember;
+        });
+      }
+    } catch (e) {}
+  }
+
+  Future<void> refreshTaskAllocation() async {
+    try {
+      var result =
+          await GTaskPlannerServices.getSubTaskUser(widget.task.task_id);
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+      List<GroupMember> groupMember =
+          list.map((model) => GroupMember.fromJson(model)).toList();
+      setState(() {
+        taskUser = groupMember;
+      });
+    } catch (e) {}
   }
 
   void refreshTaskList() async {
@@ -343,7 +376,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
       setState(() {
         taskPlan = list.map((model) => TaskPlan.fromJson(model)).toList();
-        taskNames = taskPlan.map((model)=>model.plan_name).toList();
+        taskNames = taskPlan.map((model) => model.plan_name).toList();
       });
     } catch (e) {
       print(e);
@@ -420,7 +453,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       content: StatefulBuilder(
         builder: (BuildContext, StateSetter setState) {
           return DropDownList(
-              items:taskNames,
+              items: taskNames,
               taskplanid: widget.task.plan_id,
               taskid: widget.task.task_id);
         },

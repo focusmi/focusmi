@@ -264,6 +264,54 @@ class GTaskPlannerServices {
     }
   }
 
+  static Future setSubTaskUser(subtaskid,userid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/allocate-subtask-users/${subtaskid}/${userid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+  static Future getTaskUser(taskid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-users/${taskid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      print(res.body);
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future setTaskUser(taskid,userid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/allocate-task-users/${taskid}/${userid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   static Future setTimerAttr(attr, value, context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

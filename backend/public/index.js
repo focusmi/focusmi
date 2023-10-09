@@ -56,4 +56,7 @@ const PORT = process.env.PORT || 3000
     const io =  require('socket.io')(server);
     io.on('connection', (socket)=>{
         console.log("connnected successfully",socket.id);
+        socket.on("message", (data)=>{
+            console.log(data);
+        })
     });

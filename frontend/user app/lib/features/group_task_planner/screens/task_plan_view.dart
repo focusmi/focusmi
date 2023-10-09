@@ -503,7 +503,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
               icon: GestureDetector(
                 child: Container(child: Icon(Icons.chat,color: Colors.white,)),
                 onTap: () {
-                  Navigator.pushNamed(context, ChatRoom.routeName);
+                  Navigator.pushNamed(context, ChatRoom.routeName,arguments: widget.group.group_id);
                 },
               ),
               title: 'Chat',

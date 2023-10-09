@@ -505,9 +505,9 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.post('/api/allocate-subtask-user',auth ,async(req, res, next)=>{
+gTaskRoutes.get('/api/allocate-subtask-user/:task_id/:user_id',auth ,async(req, res, next)=>{
    try{
-      SubTask.allocateTaskUser(req.body.task_id, req.body.user_id)
+      SubTask.allocateTaskUser(req.params.task_id, req.params.user_id)
 
    }
    catch(e){
@@ -530,9 +530,9 @@ gTaskRoutes.get('/api/get-subtask-users/:taskid', auth , async(req, res, next)=>
    next()
 })
 
-gTaskRoutes.post('/api/allocate-task-user',auth ,async(req, res, next)=>{
+gTaskRoutes.post('/api/allocate-task-users/:taskid/:userid',auth ,async(req, res, next)=>{
    try{
-      Task.allocateTaskUser(req.body.task_id, req.body.user_id)
+      Task.allocateTaskUser(req.params.taskid, req.params.userid)
    }
    catch(e){
       console.log(e)

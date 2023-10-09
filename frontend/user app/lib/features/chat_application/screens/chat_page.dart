@@ -38,6 +38,9 @@ class _ChatRoomState extends State<ChatRoom> {
             .disableAutoConnect() // disable auto-connection // optional
             .build());
     socket.connect();
+    socket.on('connect', (_) {
+      print("-----------Connected----------------");
+    });
     user_id = Provider.of<UserProvider>(context, listen: false).user.user_id;
     messages = [];
     getChatMessages();
@@ -56,6 +59,8 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void sendMessage() {
+    print("inside send message");
+    print(socket.connected);
     try {
       var user = Provider.of<UserProvider>(context, listen: false).user;
       ChatMessage chatMessage = ChatMessage(
@@ -64,8 +69,12 @@ class _ChatRoomState extends State<ChatRoom> {
           user_id: user.user_id,
           group_id: widget.group_id,
           image: null);
-      ChatRoomServices.getChatMessage(chatMessage);
-    } catch (e) {}
+
+      socket.emit('message', chatMessage.toJson());
+      socket.emit("message", {"Dfdf": "Dfdf"});
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
