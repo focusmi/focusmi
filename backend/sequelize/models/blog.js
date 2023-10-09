@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey:true
       ,autoIncrement:true
     } ,
+    status:DataTypes.TEXT,
     user_id: DataTypes.INTEGER,
     title: DataTypes.TEXT,
     subtitle: DataTypes.TEXT,
