@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/group_task_planner/widget/dropdown.dart';
+import 'package:focusmi/features/group_task_planner/widget/userimage.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:tap_canvas/tap_canvas.dart';
@@ -91,13 +92,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     refreshDeadline(widget.task.task_id);
     getTaskPlanByPlanID(widget.task.plan_id);
     refreshTaskList();
-    refreshTaskDescription();
-    checkSubTaskUser();
     refreshTaskAllocation();
     refreshSubTaskAllocation();
+    refreshTaskDescription();
+    checkSubTaskUser();
     changeTitle = false;
     refreshGroupUsers();
   }
+
 
   void chanageColorApi(taskid, color) {
     try {
@@ -173,8 +175,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     for (var member in memberList) {
       if (val != '') {
         var re = RegExp('^[a-zA-z]*${val}[a-zA-Z0-9]*');
-        if (re.hasMatch(member.email.toLowerCase()) ||
-            re.hasMatch(member.username.toLowerCase())) {
+        if (re.hasMatch(member.email?.toLowerCase() ?? '') ||
+            re.hasMatch(member.username!.toLowerCase())) {
           setState(() {
             showMemeberList.add(member);
           });
@@ -216,20 +218,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     });
   }
 
-  Future<void> refreshSubTaskAllocation() async {
-    try {
-      for (SubTask subTask in subTasks) {
-        var result =
-            await GTaskPlannerServices.getSubTaskUser(subTask.stask_id);
-        Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
-        List<GroupMember> groupMember =
-            list.map((model) => GroupMember.fromJson(model)).toList();
-        setState(() {
-          _subTaskAllocation[subTask.stask_id ?? 0] = groupMember;
-        });
-      }
-    } catch (e) {}
-  }
+  Future<void> refreshSubTaskAllocation() async {}
 
   Future<void> refreshTaskAllocation() async {
     try {
@@ -256,11 +245,29 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           _subTaskAllocation[task.stask_id ?? 0] = [];
         }
         checkSubTaskUser();
-        print("-----+++----------");
-        print(subAllocated);
       });
     } catch (e) {
       print("----------");
+      print(e);
+    }
+    try {
+      for (SubTask subTask in subTasks) {
+        var result =
+            await GTaskPlannerServices.getSubTaskUser(subTask.stask_id);
+        print("-------");
+        print(json.decode(result.body)["value"]);
+        print("-------");
+        Iterable list =
+            json.decode(result.body)["value"].cast<Map<String?, dynamic>>();
+        List<GroupMember> groupMember =
+            list.map((model) => GroupMember.fromJson(model)).toList();
+        setState(() {
+          _subTaskAllocation[subTask.stask_id ?? 0] = groupMember;
+        });
+        print("--------------------------------------");
+        
+      }
+    } catch (e) {
       print(e);
     }
   }
@@ -402,8 +409,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     for (var member in memberList) {
                       if (val != '') {
                         var re = RegExp('^[a-zA-z]*${val}[a-zA-Z0-9]*');
-                        if (re.hasMatch(member.email.toLowerCase()) ||
-                            re.hasMatch(member.username.toLowerCase())) {
+                        if (re.hasMatch(member.email!.toLowerCase()) ||
+                            re.hasMatch(member.username!.toLowerCase())) {
                           setState(() {
                             showMemeberList.add(member);
                           });
@@ -430,8 +437,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             //Image.network('$uri/api/assets/image/user-profs/team.png'),
                             Column(
                               children: [
-                                Text(showMemeberList[index].username),
-                                Text(showMemeberList[index].email),
+                                Text(showMemeberList[index].username ?? ''),
+                                Text(showMemeberList[index].email ?? ''),
                               ],
                             )
                           ],
@@ -1014,7 +1021,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                             ?.length !=
                                                         0)
                                                     ? Container(
-                                                        height: 60,
+                                                        height: 80,
                                                         decoration: const BoxDecoration(
                                                             border: Border(
                                                                 top: BorderSide(
@@ -1039,14 +1046,14 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                                               true,
                                                                           scrollDirection: Axis
                                                                               .horizontal,
-                                                                          itemCount: _subTaskAllocation[subTasks[index].task_id]
+                                                                          itemCount: _subTaskAllocation[subTasks[index].stask_id]
                                                                               ?.length,
                                                                           itemBuilder:
                                                                               (context, subindex) {
                                                                             return Padding(
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                                                                              child: CustomText.normalText(((_subTaskAllocation[subTasks[index].stask_id])?[subindex])?.username ?? ''),
-                                                                            );
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                                                                child: UserImage.createUserImage((_subTaskAllocation[subTasks[index].stask_id])?[0]));
+                                                                               
                                                                           }),
                                                                 ),
                                                               ),

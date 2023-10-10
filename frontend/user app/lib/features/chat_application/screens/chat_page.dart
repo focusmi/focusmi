@@ -38,6 +38,8 @@ class _ChatRoomState extends State<ChatRoom> {
             .disableAutoConnect() // disable auto-connection // optional
             .build());
     socket.connect();
+    print("inside send message");
+    print(socket.connected);
     socket.on('connect', (_) {
       print("-----------Connected----------------");
     });
@@ -59,8 +61,7 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void sendMessage() {
-    print("inside send message");
-    print(socket.connected);
+    
     try {
       var user = Provider.of<UserProvider>(context, listen: false).user;
       ChatMessage chatMessage = ChatMessage(

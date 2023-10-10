@@ -19,6 +19,9 @@ module.exports = {
       text: {
         type: Sequelize.TEXT
       },
+      status: {
+        type: Sequelize.TEXT
+      },
       type: {
         type: Sequelize.TEXT
       },

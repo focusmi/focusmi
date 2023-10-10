@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:elegant_notification/elegant_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:focusmi/features/authentication/screens/auth_screen.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
@@ -14,6 +16,7 @@ import 'package:focusmi/layouts/user-layout.dart';
 import 'package:focusmi/models/administrative_user.dart';
 import 'package:focusmi/models/blog.dart';
 import 'package:focusmi/models/mindfulnesscourses.dart';
+import 'package:focusmi/models/notification.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:focusmi/widgets/containers.dart';
@@ -36,6 +39,8 @@ class _MainScreenState extends State<MainScreen> {
   late ScrollController controller = ScrollController();
   late List<MindfulnessCourse> featuredCourse;
   late List<AdministrativeUser> therapists;
+  late bool isNoti;
+  late Notifications notification;
   void getTaskPlanApi() async {
     try {
       Response response = await GTaskPlannerServices.getRecentTaskPlan();
@@ -61,6 +66,21 @@ class _MainScreenState extends State<MainScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void getNotificatoin() async {
+    try {
+      var response = await MainPageServices.getNotfication(context);
+      Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+      List<Notifications> result =
+          list.map((model) => Notifications.fromJson(model)).toList();
+      if (json.decode(response.body)["noitem"] == false) {
+        setState(() {
+          isNoti = true;
+          notification = result[0];
+        });
+      }
+    } catch (e) {}
   }
 
   void onScroll() {
@@ -103,6 +123,8 @@ class _MainScreenState extends State<MainScreen> {
     getTaskPlanApi();
     getFeatured();
     getTherapist();
+    notification = Notifications();
+    isNoti = false;
     controller.addListener(onScroll);
     // TODO: implement initState
     super.initState();
@@ -150,6 +172,22 @@ class _MainScreenState extends State<MainScreen> {
                   controller: controller,
                   child: Container(
                     child: Column(children: [
+                      GestureDetector(
+                        onTap: () {
+                          ElegantNotification.success(
+                                  title: Text(notification.type??''),
+                                  description:
+                                      Text(notification.text??''))
+                              .show(context);
+                        },
+                        child: Container(
+                          
+                          child: Icon(
+                            Icons.notifications,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 250,
                       ),
@@ -275,20 +313,23 @@ class _MainScreenState extends State<MainScreen> {
                               child: ListView.builder(
                                   itemCount: therapists.length,
                                   scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) { 
+                                  itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
                                         children: [
                                           CircleAvatar(
                                             radius: 40, //radius of avatar
-                                            backgroundColor: Colors.green, //color
-                                            backgroundImage:NetworkImage('$uri/api/assets/image/user-profs/profile-0.jpg'),
-                                          
-                                        ),
-                                          Text(therapists[index].full_name??'',style: TextStyle(
-                                            color: Colors.white
-                                          ),),
+                                            backgroundColor:
+                                                Colors.green, //color
+                                            backgroundImage: NetworkImage(
+                                                '$uri/api/assets/image/user-profs/profile-0.jpg'),
+                                          ),
+                                          Text(
+                                            therapists[index].full_name ?? '',
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
                                         ],
                                       ),
                                     );

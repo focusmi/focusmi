@@ -22,6 +22,23 @@ let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
 
+
+gTaskRoutes.get('/api/get-user-by-id/:userid',auth,async(req,res,next)=>{
+   try{
+      var result = await application_user.findOne({
+         user_id:req.params.userid
+      })
+      res.send([result])
+   }
+   catch (e){
+      res.status(400);
+      res.send({'msg':'User not verified'});
+ 
+   }
+   next();
+})
+
+
 gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    try{
       var userID=req.user;
@@ -505,7 +522,8 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/allocate-subtask-user/:task_id/:user_id',auth ,async(req, res, next)=>{
+gTaskRoutes.get('/api/allocate-subtask-users/:task_id/:user_id',auth ,async(req, res, next)=>{
+   
    try{
       SubTask.allocateTaskUser(req.params.task_id, req.params.user_id)
 
@@ -530,7 +548,7 @@ gTaskRoutes.get('/api/get-subtask-users/:taskid', auth , async(req, res, next)=>
    next()
 })
 
-gTaskRoutes.post('/api/allocate-task-users/:taskid/:userid',auth ,async(req, res, next)=>{
+gTaskRoutes.get('/api/allocate-task-users/:taskid/:userid',auth ,async(req, res, next)=>{
    try{
       Task.allocateTaskUser(req.params.taskid, req.params.userid)
    }

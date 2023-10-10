@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       ,autoIncrement:true
     } ,
     user_id:DataTypes.INTEGER,
+    status:DataTypes.TEXT,
     text: DataTypes.TEXT,
     type: DataTypes.TEXT,
     group_id: DataTypes.INTEGER,

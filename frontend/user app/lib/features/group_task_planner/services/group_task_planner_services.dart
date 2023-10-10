@@ -11,6 +11,19 @@ import 'package:http/http.dart' as http;
 import 'package:focusmi/constants/global_variables.dart';
 
 class GTaskPlannerServices {
+  static Future getUserById(int userid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-user-by-id/$userid'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {}
+  }
   static Future createTaskPlan(TaskPlan taskplan) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -264,7 +277,8 @@ class GTaskPlannerServices {
     }
   }
 
-  static Future setSubTaskUser(subtaskid,userid) async {
+  static Future setSubTaskUser(subtaskid, userid) async {
+    print('$uri/api/allocate-subtask-users/${subtaskid}/${userid}');
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -278,7 +292,6 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-
 
   static Future getTaskUser(taskid) async {
     try {
@@ -297,7 +310,7 @@ class GTaskPlannerServices {
     }
   }
 
-  static Future setTaskUser(taskid,userid) async {
+  static Future setTaskUser(taskid, userid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');

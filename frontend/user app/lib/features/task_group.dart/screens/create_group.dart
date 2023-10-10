@@ -211,7 +211,7 @@ class _CreateGroupState extends State<CreateGroup> {
                                                 });
                                               },),
                                               SizedBox(width: 4,),
-                                              Text(selectedMemberList[index].username,
+                                              Text(selectedMemberList[index]?.username??'',
                                                 style: TextStyle(
                                                   fontSize: 12,
                                                   color: GlobalVariables.greyFontColor
@@ -316,7 +316,7 @@ class _CreateGroupState extends State<CreateGroup> {
                                 Row(
                                   children: [
                                     SizedBox(width: 20,),
-                                    Text(searchMemberList[index].username),
+                                    Text(searchMemberList[index].username??''),
                                     ((!listInt.contains(searchMemberList[index].user_id))?
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(

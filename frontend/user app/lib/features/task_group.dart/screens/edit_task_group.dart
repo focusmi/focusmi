@@ -221,7 +221,7 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
                                     Column(
                                       children: [
                                         Text(
-                                          memberList[index].username,
+                                          memberList[index].username??'',
                                           style: const TextStyle(
                                             fontSize: 12
                                           ),
@@ -323,8 +323,8 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
                                  Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                     Text(searchMemberList[index].username),
-                                      Text(searchMemberList[index].email,style:const TextStyle(fontSize: 12)),
+                                     Text(searchMemberList[index].username??""),
+                                      Text(searchMemberList[index].email??"",style:const TextStyle(fontSize: 12)),
                                   ],
                                 ),
                                 const SizedBox(width: 40,)

@@ -11,6 +11,7 @@ import 'package:focusmi/features/pomodoro_timer/services/pomodoro_timer_services
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskplan.dart';
+import 'package:neon_circular_timer/neon_circular_timer.dart';
 
 class CountdownTimer extends StatefulWidget {
   const CountdownTimer({super.key, required this.task});
@@ -30,12 +31,21 @@ class _CountdownTimerState extends State<CountdownTimer> {
   late int minute;
   late String hours;
   late String minutes;
+  late int duration;
+  late bool isBreak;
+
+  late CountDownController controller;
+  late CountDownController controller2;
   @override
   void initState() {
     //
     hour = 0;
     minute = 20;
     subtasks = [];
+    controller = CountDownController();
+    controller2 = CountDownController();
+    duration = 5;
+    isBreak = false;
     super.initState();
     refreshTaskAllocation();
     setTimers(context);
@@ -137,6 +147,12 @@ class _CountdownTimerState extends State<CountdownTimer> {
     }
   }
 
+  void setBreak(bool val) {
+    setState(() {
+      isBreak = val;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     String strDigits(int n) => n.toString().padLeft(2, '0');
@@ -168,48 +184,104 @@ class _CountdownTimerState extends State<CountdownTimer> {
                   height: 100,
                 ),
                 // Step 8
-                GestureDetector(
-                  child: Text(
-                    '$minutes:$seconds',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 50),
-                  ),
-                  onTap: () {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (_) => SizedBox(
-                              width: double.infinity,
-                              height: 250,
-                              child: CupertinoPicker(
-                                backgroundColor: Colors.white,
-                                itemExtent: 30,
-                                scrollController:
-                                    FixedExtentScrollController(initialItem: 1),
-                                children: [
-                                  Text('5 min'),
-                                  Text('10 min'),
-                                  Text('15 min'),
-                                  Text('20 min'),
-                                  Text('25 min'),
-                                  Text('30 min'),
-                                  Text('35 min'),
-                                  Text('40 min'),
-                                  Text('45 min'),
-                                  Text('50 min'),
-                                  Text('55 min'),
-                                ],
-                                onSelectedItemChanged: (int value) {
-                                  print(value);
-                                  setState(() {
-                                    _selectedValue = value;
-                                  });
-                                },
-                              ),
-                            ));
-                  },
-                ),
+                (isBreak == false)
+                    ? GestureDetector(
+                        child: NeonCircularTimer(
+                          width: 200,
+                          duration: 5,
+                          controller: controller,
+                          autoStart: false,
+                          isReverse: true,
+                          onComplete: () {
+                            setState(() {
+                              print("complete");
+                              setBreak(true);
+                            });
+                          },
+                        ),
+                        onTap: () {
+                          showCupertinoModalPopup(
+                              context: context,
+                              builder: (_) => SizedBox(
+                                    width: double.infinity,
+                                    height: 250,
+                                    child: CupertinoPicker(
+                                      backgroundColor: Colors.white,
+                                      itemExtent: 30,
+                                      scrollController:
+                                          FixedExtentScrollController(
+                                              initialItem: 1),
+                                      children: [
+                                        Text('5 min'),
+                                        Text('10 min'),
+                                        Text('15 min'),
+                                        Text('20 min'),
+                                        Text('25 min'),
+                                        Text('30 min'),
+                                        Text('35 min'),
+                                        Text('40 min'),
+                                        Text('45 min'),
+                                        Text('50 min'),
+                                        Text('55 min'),
+                                      ],
+                                      onSelectedItemChanged: (int value) {
+                                        print(value);
+                                        setState(() {
+                                          _selectedValue = value;
+                                        });
+                                      },
+                                    ),
+                                  ));
+                        },
+                      )
+                    : GestureDetector(
+                        child: NeonCircularTimer(
+                          width: 200,
+                          duration: 10,
+                          controller: controller2,
+                          autoStart: true,
+                          isReverse: true,
+                          onComplete: () {
+                            setState(() {
+                              
+                            });
+                          },
+                        ),
+                        onTap: () {
+                          showCupertinoModalPopup(
+                              context: context,
+                              builder: (_) => SizedBox(
+                                    width: double.infinity,
+                                    height: 250,
+                                    child: CupertinoPicker(
+                                      backgroundColor: Colors.white,
+                                      itemExtent: 30,
+                                      scrollController:
+                                          FixedExtentScrollController(
+                                              initialItem: 1),
+                                      children: [
+                                        Text('5 min'),
+                                        Text('10 min'),
+                                        Text('15 min'),
+                                        Text('20 min'),
+                                        Text('25 min'),
+                                        Text('30 min'),
+                                        Text('35 min'),
+                                        Text('40 min'),
+                                        Text('45 min'),
+                                        Text('50 min'),
+                                        Text('55 min'),
+                                      ],
+                                      onSelectedItemChanged: (int value) {
+                                        print(value);
+                                        setState(() {
+                                          _selectedValue = value;
+                                        });
+                                      },
+                                    ),
+                                  ));
+                        },
+                      ),
                 SizedBox(height: 0),
                 // Step 9
                 Center(
@@ -221,7 +293,10 @@ class _CountdownTimerState extends State<CountdownTimer> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: GlobalVariables.primaryColor),
-                        onPressed: startTimer,
+                        onPressed: () {
+                          print("pressed");
+                          controller.start();
+                        },
                         child: Icon(
                           Icons.play_arrow,
                           color: Colors.white,
