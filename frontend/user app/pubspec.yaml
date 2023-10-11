@@ -61,6 +61,7 @@ dependencies:
   android_alarm_manager_plus: ^3.0.2
   elegant_notification: ^1.11.2
   neon_circular_timer: ^0.0.7
+  google_maps_place_picker_mb: ^3.1.2
 
    
 

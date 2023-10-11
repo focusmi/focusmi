@@ -46,6 +46,7 @@ class _MyAppState extends State<MyApp> {
       home: Provider.of<UserProvider>(context).user.token.isNotEmpty
           ? const MainScreen()
           : const LandingPage(),
+      // home: MyApp(),
     );
   }
 }

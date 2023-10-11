@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/group_task_planner/widget/dropdown.dart';
 import 'package:focusmi/features/group_task_planner/widget/userimage.dart';
+import 'package:focusmi/features/mainpage/screens/main_page.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:tap_canvas/tap_canvas.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
@@ -57,6 +60,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late List<String> taskNames;
   late List<GroupMember> taskUser;
 
+  static final kInitialPosition = LatLng(-33.8567844, 151.213108);
   @override
   void initState() {
     // TODO: implement initState
@@ -99,7 +103,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     changeTitle = false;
     refreshGroupUsers();
   }
-
 
   void chanageColorApi(taskid, color) {
     try {
@@ -265,7 +268,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           _subTaskAllocation[subTask.stask_id ?? 0] = groupMember;
         });
         print("--------------------------------------");
-        
       }
     } catch (e) {
       print(e);
@@ -879,7 +881,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                 width: 5,
                                               ),
                                               CustomText.normalText(
-                                                  "Set Deadline"),
+                                                  "Set Deadline"
+                                              ),
                                             ],
                                           )),
                                     ])
@@ -905,10 +908,32 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text(
-                                "Add Location",
-                                style: TextStyle(
-                                    color: GlobalVariables.greyFontColor),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PlacePicker(
+                                        apiKey:
+                                            "AIzaSyBWNpnuO38pt9NFdvKvUvriUEyAwp-zhiM",
+                                        onPlacePicked: (result) {
+                                          print(result.adrAddress);
+                                          Navigator.of(context).pop();
+                                        },
+                                        initialPosition: kInitialPosition,
+                                        useCurrentLocation: true,
+                                        ignoreLocationPermissionErrors: true,
+                                        resizeToAvoidBottomInset:
+                                            false, // only works in page mode, less flickery, remove if wrong offsets
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "Add Location",
+                                  style: TextStyle(
+                                      color: GlobalVariables.greyFontColor),
+                                ),
                               )
                             ],
                           )
@@ -1053,7 +1078,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                                             return Padding(
                                                                                 padding: const EdgeInsets.symmetric(horizontal: 5),
                                                                                 child: UserImage.createUserImage((_subTaskAllocation[subTasks[index].stask_id])?[0]));
-                                                                               
                                                                           }),
                                                                 ),
                                                               ),
