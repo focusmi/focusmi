@@ -1,6 +1,8 @@
+const { unstable_createStaticHandler } = require('@remix-run/router')
 let express = require('express')
 const pool = require('../database/dbconnection')
 const imageUpload = require('../middleware/multer')
+const CourseUser = require('../models/course_user')
 const {mindfulness_course} = require('../sequelize/models')
 
 let mRouter = express.Router()
@@ -25,6 +27,25 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
     }
     catch(eq){
         console.log("create course")
+    }
+    next()
+})
+
+mRouter.post('/api/update-course', auth , async(req, res, next)=>{
+    try{
+        let pos = 0;
+        for(const key in req.body){
+            if(pos!=0  && req.body[`'${key}'`]!=null){
+                mindfulness_course.update({key:req.body[`'${key}'`]},{
+                    course_id:req.body.course_id
+                })
+                
+            }
+            pos++
+        }
+    }
+    catch(e){
+        console.log(e)
     }
     next()
 })
@@ -56,5 +77,18 @@ mRouter.get('/api/get-all-featured-courses',async(req, res, next)=>{
     }
     next()
 })
+
+mRouter.get("/api/create-course-user/:userid/:courseid", async(req, res, next)=>{
+    try{
+        CourseUser.allocateCourseUser(req.params.userid, req.params.courseid)
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+
+
 
 module.exports = mRouter
