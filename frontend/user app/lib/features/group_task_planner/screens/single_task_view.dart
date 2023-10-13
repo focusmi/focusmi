@@ -121,6 +121,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       print(e);
     }
   }
+  void chanageReminderApi(taskid, deadline_time, deadline_date) {
+    try {
+      GTaskPlannerServices.setTaskAttr('reminder_date', taskid, deadline_date);
+      GTaskPlannerServices.setTaskAttr('reminder_time', taskid,
+          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void changeTaskNmae(task_id) async {
     try {
@@ -310,6 +320,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       if (resultDate != null) {
         setState(() {
           showTime = resultTime?.format(context);
+          chanageReminderApi(
+              widget.task.task_id, resultTime?.format(context), showDateTime);
         });
       }
     }

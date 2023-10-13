@@ -24,6 +24,7 @@ class GTaskPlannerServices {
       return res;
     } catch (e) {}
   }
+
   static Future createTaskPlan(TaskPlan taskplan) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -355,6 +356,14 @@ class GTaskPlannerServices {
       return res;
     } catch (e) {
       print("error in get task plans by plan");
+    }
+  }
+
+  static void setAlarm() {
+    try {
+      
+    } catch (e) {
+      print(e);
     }
   }
 }

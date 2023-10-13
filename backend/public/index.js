@@ -55,9 +55,15 @@ const PORT = process.env.PORT || 3000
 //connection
 
     var server = app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
-    const io =  require('socket.io')(server);
+
+    const io =  require('socket.io')(server,{
+        
+    });
     io.on('connection', (socket)=>{
         console.log("connnected successfully",socket.id);
+        socket.on('disconnect',()=>{
+            console.log("Disconnected", socket.id)
+        })
         socket.on("message", (data)=>{
             console.log(data);
         })

@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:socket_io_client/socket_io_client.dart';
 
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/chat_application/services/chat_room_services.dart';
@@ -32,7 +31,7 @@ class _ChatRoomState extends State<ChatRoom> {
     // TODO: implement initState
     super.initState();
     socket = IO.io(
-        uri,
+        "http://192.168.183.55:3001",
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .disableAutoConnect() // disable auto-connection // optional
@@ -61,7 +60,6 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   void sendMessage() {
-    
     try {
       var user = Provider.of<UserProvider>(context, listen: false).user;
       ChatMessage chatMessage = ChatMessage(
@@ -71,8 +69,11 @@ class _ChatRoomState extends State<ChatRoom> {
           group_id: widget.group_id,
           image: null);
 
-      socket.emit('message', chatMessage.toJson());
-      socket.emit("message", {"Dfdf": "Dfdf"});
+      //socket.emit('message', chatMessage.toJson());
+      var se = {"Dfdf": "Dfdf", "sendByMe": socket.id};
+      socket.emit(
+        "message",se
+      );
     } catch (e) {
       print(e);
     }

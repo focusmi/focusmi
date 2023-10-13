@@ -31,7 +31,7 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
     next()
 })
 
-mRouter.post('/api/update-course', auth , async(req, res, next)=>{
+mRouter.post('/api/update-course'  , async(req, res, next)=>{
     try{
         let pos = 0;
         for(const key in req.body){

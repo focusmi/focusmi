@@ -18,6 +18,7 @@ void main() {
     )
   ], child: const MyApp()));
   AndroidAlarmManager.initialize();
+  
 }
 
 class MyApp extends StatefulWidget {

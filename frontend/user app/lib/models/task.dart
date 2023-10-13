@@ -16,6 +16,8 @@ class Task {
   bool? is_text_field;
   String? deadline_date;
   String? deadline_time;
+  String? reminder_time;
+  String? reminder_date;
 
   Task({
     required this.task_id,
@@ -32,6 +34,8 @@ class Task {
     required this.is_text_field,
     this.deadline_date,
     this.deadline_time,
+    this.reminder_time,
+    this.reminder_date,
   });
 
   Map<String, dynamic> toMap() {
@@ -50,6 +54,8 @@ class Task {
       'is_text_field': is_text_field,
       'deadline_date': deadline_date,
       'deadline_time': deadline_time,
+      'reminder_time': reminder_time,
+      'reminder_date': reminder_date,
     };
   }
 
@@ -69,14 +75,14 @@ class Task {
       is_text_field: map['is_text_field'] != null ? map['is_text_field'] as bool : null,
       deadline_date: map['deadline_date'] != null ? map['deadline_date'] as String : null,
       deadline_time: map['deadline_time'] != null ? map['deadline_time'] as String : null,
+      reminder_time: map['reminder_time'] != null ? map['reminder_time'] as String : null,
+      reminder_date: map['reminder_date'] != null ? map['reminder_date'] as String : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-
- 
-
-  factory Task.fromJson(Map<String, dynamic> source) =>Task.fromMap(source as Map<String, dynamic>);
+  factory Task.fromJson(Map<String, dynamic> source) =>
+      Task.fromMap(source as Map<String, dynamic>);
 
 }
