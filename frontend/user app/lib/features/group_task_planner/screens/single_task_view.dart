@@ -45,9 +45,12 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late TextEditingController _subtaskValue;
   late DateTime dateTime;
   late String? showDateTime;
+   late String? showDateTime2;
   late DateTime now;
   late String? nowtime;
   late String? showTime;
+  late String? nowtime2;
+  late String? showTime2;
   late Color? label;
   late bool changeTitle;
   late TextEditingController _titleName;
@@ -86,6 +89,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     showDateTime = null;
     showTime = null;
     nowtime = '';
+    showDateTime2 = null;
+    showTime2 = null;
+    nowtime2 = '';
     descriptionval = '';
     subAllocated = {};
     label = Color.fromARGB(255, 255, 255, 255);
@@ -114,18 +120,17 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void chanageDeadlineApi(taskid, deadline_time, deadline_date) {
     try {
       GTaskPlannerServices.setTaskAttr('deadline_date', taskid, deadline_date);
-      GTaskPlannerServices.setTaskAttr('deadline_time', taskid,
-          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
+      GTaskPlannerServices.setTaskAttr('deadline_time', taskid,"${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
     } catch (e) {
       print(e);
     }
   }
+
   void chanageReminderApi(taskid, deadline_time, deadline_date) {
     try {
       GTaskPlannerServices.setTaskAttr('reminder_date', taskid, deadline_date);
-      GTaskPlannerServices.setTaskAttr('reminder_time', taskid,
-          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
+      GTaskPlannerServices.setTaskAttr('reminder_time', taskid,"${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
     } catch (e) {
       print(e);
@@ -315,13 +320,13 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     if (resultDate != null) {
       TimeOfDay? resultTime = await pickTime();
       setState(() {
-        showDateTime = resultDate.toString();
+         showDateTime2 = resultDate.toString();
       });
       if (resultDate != null) {
         setState(() {
-          showTime = resultTime?.format(context);
+          showTime2 = resultTime?.format(context);
           chanageReminderApi(
-              widget.task.task_id, resultTime?.format(context), showDateTime);
+              widget.task.task_id, resultTime?.format(context), showDateTime2);
         });
       }
     }
@@ -893,8 +898,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                 width: 5,
                                               ),
                                               CustomText.normalText(
-                                                  "Set Deadline"
-                                              ),
+                                                  "Set Deadline"),
                                             ],
                                           )),
                                     ])
@@ -927,9 +931,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     MaterialPageRoute(
                                       builder: (context) => PlacePicker(
                                         apiKey:
-                                            "AIzaSyBWNpnuO38pt9NFdvKvUvriUEyAwp-zhiM",
-                                        onPlacePicked: (result) {
-                                          print(result.adrAddress);
+                                            "AIzaSyDp9s9hdUOnbOBIQQjR1_goCMPJYsDEukk",
+                                        onPlacePicked: (PickResult result) {
+                                          print(
+                                              "Place picked: ${result.formattedAddress}");
                                           Navigator.of(context).pop();
                                         },
                                         initialPosition: kInitialPosition,

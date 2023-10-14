@@ -182,6 +182,21 @@ class Task{
                     }
                 })
             }
+             else if(type == 'reminder_date'){
+                task.update({reminder_date:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+             else if(type == 'reminder_time'){
+                
+                task.update({reminder_time:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
         }
         catch(e){
             console.log(e)

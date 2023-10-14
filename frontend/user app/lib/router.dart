@@ -110,6 +110,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           settings: routeSettings,
           builder: (context) => ChatRoom(group_id: arg,),
         );
+      
     default:
       return MaterialPageRoute(
         settings: routeSettings,

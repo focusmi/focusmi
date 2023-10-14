@@ -31,21 +31,29 @@ class _ChatRoomState extends State<ChatRoom> {
     // TODO: implement initState
     super.initState();
     socket = IO.io(
-        "http://192.168.183.55:3001",
+        uri,
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .disableAutoConnect() // disable auto-connection // optional
             .build());
     socket.connect();
-    print("inside send message");
-    print(socket.connected);
-    socket.on('connect', (_) {
-      print("-----------Connected----------------");
-    });
     user_id = Provider.of<UserProvider>(context, listen: false).user.user_id;
     messages = [];
     getChatMessages();
     messageInputController = TextEditingController();
+    setUpSocketListener();
+     socket.on("message-receive", (data) {
+      print("------------listenening and recieved-----------------");
+      print(data);
+    });
+  }
+
+  void setUpSocketListener() {
+    print("initiailized");
+    socket.on("message-receive", (data) {
+      print("------------listenening and recieved-----------------");
+      print(data);
+    });
   }
 
   void getChatMessages() async {
@@ -70,10 +78,7 @@ class _ChatRoomState extends State<ChatRoom> {
           image: null);
 
       //socket.emit('message', chatMessage.toJson());
-      var se = {"Dfdf": "Dfdf", "sendByMe": socket.id};
-      socket.emit(
-        "message",se
-      );
+      socket.emit("message", chatMessage);
     } catch (e) {
       print(e);
     }

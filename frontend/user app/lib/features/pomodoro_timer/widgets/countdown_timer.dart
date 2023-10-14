@@ -150,6 +150,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
   void setBreak(bool val) {
     setState(() {
       isBreak = val;
+      print(isBreak);
     });
   }
 
@@ -243,7 +244,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
                           isReverse: true,
                           onComplete: () {
                             setState(() {
-                              
+                              print("seecod");
                             });
                           },
                         ),

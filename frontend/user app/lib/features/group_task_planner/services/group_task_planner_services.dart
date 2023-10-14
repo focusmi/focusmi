@@ -73,6 +73,8 @@ class GTaskPlannerServices {
   }
 
   static void setTaskAttr(attr, task, val) async {
+    print("-------------");
+    print(attr);
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -360,9 +362,7 @@ class GTaskPlannerServices {
   }
 
   static void setAlarm() {
-    try {
-      
-    } catch (e) {
+    try {} catch (e) {
       print(e);
     }
   }
