@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     } ,
     username: DataTypes.TEXT,
     full_name: DataTypes.TEXT,
+    //nic
     role:DataTypes.STRING,
     email: DataTypes.TEXT,
     phone_number: DataTypes.TEXT,
@@ -30,7 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     account_status: DataTypes.TEXT,
     years_of_experience: DataTypes.TEXT,
     tot_clients: DataTypes.INTEGER,
-    password:DataTypes.STRING
+    password:DataTypes.STRING,
+    title:DataTypes.TEXT,
+    image:DataTypes.STRING,
+    nic:DataTypes.STRING,
+
   }, {
     sequelize,
     modelName: 'administrative_user',

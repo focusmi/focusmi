@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       session_time: {
-        type: Sequelize.TIME
+        type: Sequelize.DATE
       },
       session_end_time: {
         type: Sequelize.TIME
@@ -33,7 +33,10 @@ module.exports = {
       },
       updated_at: {
         type: Sequelize.DATE
-      }
+      },
+      image:{
+        type: Sequelize.TEXT
+      } 
     });
   },
   async down(queryInterface, Sequelize) {

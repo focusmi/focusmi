@@ -2,39 +2,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('task', {
-      task_id: {
+    await queryInterface.createTable('user_otp', {
+      rec_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      plan_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         references:{
-          model:'task_plan',
-          key:'plan_id'
+          model:'application_user',
+          key:'user_id'
         }
       },
-      timer_id: {
-        type: Sequelize.INTEGER,
-        references:{
-          model:'timer',
-          key:'timer_id'
-        }
-      },
-     
-      duration: {
-        type: Sequelize.INTEGER
-      },
-      color: {
-        type:Sequelize.TEXT
-      },
-      task_status: {
+      otp: {
         type: Sequelize.TEXT
-      },
-      priority: {
-        type: Sequelize.INTEGER
       },
       created_at: {
         type: Sequelize.DATE
@@ -45,6 +28,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('task');
+    await queryInterface.dropTable('user_otp');
   }
 };

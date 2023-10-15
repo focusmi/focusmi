@@ -35,6 +35,7 @@ class Task{
     }
 
     static async getPlanTask(taskplan){
+ 
         var result = await task.findAll({
             where:{
                 plan_id:taskplan
@@ -65,7 +66,7 @@ class Task{
                         task_id:taskid
                     }
                 })
-                break;f
+                break; 
         
             default:
                 break;

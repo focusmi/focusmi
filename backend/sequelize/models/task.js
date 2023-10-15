@@ -1,4 +1,5 @@
 'use strict';
+const { DatabaseError } = require('pg');
 const {
   Model
 } = require('sequelize');
@@ -31,8 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     duration: DataTypes.INTEGER,
     task_status: DataTypes.TEXT,
     priority: DataTypes.INTEGER,
+    color: DataTypes.TEXT,
     description:DataTypes.TEXT,
-    created_at:DataTypes.DATE
+    created_at:DataTypes.DATE,
+    deadline_time:DataTypes.STRING,
+    deadline_date:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'task',

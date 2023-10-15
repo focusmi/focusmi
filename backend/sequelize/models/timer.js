@@ -22,8 +22,16 @@ module.exports = (sequelize, DataTypes) => {
     } ,
     stopped_time: DataTypes.TEXT,
     break_duration: DataTypes.INTEGER,
-    total_dutatoin: DataTypes.INTEGER,
-    status: DataTypes.TEXT
+    total_duration: DataTypes.INTEGER,
+    status: DataTypes.TEXT,
+    turns:DataTypes.INTEGER,
+    user_id:{
+      type:DataTypes.INTEGER,
+      references:{
+        model:'application_user',
+        key:'user_id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'timer',
