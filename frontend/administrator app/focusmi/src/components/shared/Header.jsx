@@ -1,10 +1,12 @@
-import React,{Fragment} from 'react';
+import React,{Fragment, useState} from 'react';
 import { FiSearch,FiBell,FiMessageSquare } from 'react-icons/fi';
 import { Popover,Transition,Menu} from '@headlessui/react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import classnames from 'tailwindcss-classnames'
+import classnames from 'tailwindcss-classnames';
 
 function Header() {
+  let userdata = window.localStorage.getItem('user')
+  const [user, setUser] = useState(JSON.parse(userdata));
   const navigate = useNavigate();
   return (
     <div className='h-[100px] mx-auto px-4 bg-[#55a06a] text-white flex justify-between items-center'>
@@ -16,6 +18,7 @@ function Header() {
 
       </div>
       <div className='flex itemes-center gap-2 mr-2 h-10'>
+        <p className='m-auto'>{user.email}</p>
 
           <Popover className="relative">
             {({ open }) => (

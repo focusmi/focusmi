@@ -1,11 +1,10 @@
 import { extend } from "jquery"
 import React, { Component, useEffect, useState,Link } from "react"
-import "../../styles/index.css"
-import Administrative_User from "../../models/administrative_user";
+import Administrative_User from "../models/administrative_user";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { FiLock,FiMail} from "react-icons/fi";
-import logo from '../../Assets/logo.png';
+import logo from '../Assets/logo.png';
 
 
 export default function LoginPage(props){
@@ -36,8 +35,7 @@ export default function LoginPage(props){
 
                         email:user.email,
                         password:user.password
-                    }}
-                    ,
+                    }},
                      {
                         headers: { "Content-Type": "application/json" },
                         withCredentials: false,
@@ -57,19 +55,16 @@ export default function LoginPage(props){
                         window.localStorage.setItem('user',JSON.stringify(user));
                         console.log("User- "+ window.localStorage.setItem('user',JSON.stringify(user)))
                    }
-                      
-                    
                     navigate('/dashboard')
                     
                 }).catch(result=>{
                     setRes(result.response.data.type)
                     console.log("Promise error catch")
-                    navigate('/login')
-                     
+                    navigate('/')
+
                 })   
-        
         }
-    
+
         return (
             <div className='bg-neutral-500 w-full h-screen  flex justify-center items-center text-white'>
                         <div className='bg-gradient-to-r from-[#55a06a] to-neutral-300 shadow-2xl w-1/2 h-3/4 mx-auto  rounded-2xl p-4 '>
@@ -115,8 +110,5 @@ export default function LoginPage(props){
                 </div>
                 </div>
             </div>
-            
-
-        );
-    
+        );    
 }

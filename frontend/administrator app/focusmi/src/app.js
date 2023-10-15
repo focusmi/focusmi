@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import NavBar from "./components/shared/Navbar";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import LoginPage from "./features/screens/login";
+import LoginPage from "./components/login";
 import Layout from "./components/shared/Layout";
 import Dashboard from "./components/dashboard/Dashboard"
 import Counsellors from './components/counsellors/Counsellors';
@@ -12,6 +12,7 @@ import CreateCoursePage from './components/Courses/CreateCoursePage';
 import LevelContentEditor from './components/Courses/LevelContentEditor';
 import CreateTips from './components/DailyTips/CreateTips';
 import DailyTipsMain from './components/DailyTips/DailyTipsMain';
+
 
 
 import Reports from './components/Reports/Reports';
@@ -34,6 +35,7 @@ export default function App(){
             <React.Fragment>
                 <BrowserRouter>
                     <Routes>
+                    <Route exact path="/"  element = {<LoginPage login={login}/>} />
                     {/* <Route exact path="/" element={<NavBar user={user}/>} /> */}
                     <Route path="/" element={<Layout user={user} />}>
                         <Route path="dashboard" element={<Dashboard/>}/>
@@ -52,7 +54,6 @@ export default function App(){
                                        
                         
                 
-                    <Route exact path="/login"  element = {<LoginPage login={login}/>} />
                     </Routes>
                </BrowserRouter>
             </React.Fragment>

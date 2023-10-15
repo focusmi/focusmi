@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import EditUserPopup from './EditUserPopup';
-import { FiTrash } from 'react-icons/fi';
+import axios from 'axios';
+
 
 
 
@@ -20,13 +21,15 @@ const UsersTable = ({ users }) => {
     setShowAddUserForm(true);
   };
 
-  const handleSaveEdit = (updatedUser) => {
-    // Here you can update the user data in your state or API
-    // For this example, I'll just console.log the updated user
-    console.log('Updated User:', updatedUser);
 
+  const handleSaveEdit=(updatedUser)=>{
+    console.log('Updated User:', updatedUser);
+    axios.put('http://localhost:3001/api/update-therapist',updatedUser)
+    .then(res=>console.log(res.data))
+    .catch(err=>console.log(err))
     setEditedUser(null);
-  };
+    window.location.reload();
+  }
 
   return (
     <div className="bg-white rounded-md  p-4">
@@ -46,10 +49,10 @@ const UsersTable = ({ users }) => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td className="py-2 px-4">{user.id}</td>
-              <td className="py-2 px-4">{user.name}</td>
+              <td className="py-2 px-4">{user.user_id}</td>
+              <td className="py-2 px-4">{user.full_name}</td>
               <td className="py-2 px-4">{user.nic}</td>
-              <td className="py-2 px-4">{user.contact}</td>
+              <td className="py-2 px-4">{user.phone_number}</td>
               <td className="py-2 px-4">{user.email}</td>
               <td className="py-2 px-4">
                 {showActions && (
@@ -61,7 +64,7 @@ const UsersTable = ({ users }) => {
                       Edit
                     </button>
                     <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
-                       Delete
+                       Deactivate
                     </button>
                   </>
                 )}

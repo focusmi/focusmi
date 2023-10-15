@@ -1,27 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AddCounsellors from './AddCounsellors';
 import UsersTable from './UsersTable';
 import { FiUserPlus } from 'react-icons/fi';
+import axios from 'axios';
 
 
-const usersData = [
-  { id: 1, name: 'John Doe', nic: '123456789X', contact: '1234567890', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },  
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-  { id: 1, name: 'John Doe', nic: '123456789X', contact: '1234567890', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },  
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-  { id: 1, name: 'John Doe', nic: '123456789X', contact: '1234567890', email: 'john@example.com' },
-  { id: 2, name: 'Jane Smith', nic: '987654321Y', contact: '9876543210', email: 'jane@example.com' },
-];
+
+
+// var usersData = [
+//   { id: 1, name: 'John Doe', nic: '123456789X', contact: '1234567890', email: 'john@example.com' },
+//   ];
+
 
 
 
 function Counsellors() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -35,7 +30,37 @@ function Counsellors() {
     // Handle form submission logic here
     console.log('Counselor added:', formData);
   };
- 
+
+
+
+    let userdata = window.localStorage.getItem('user');
+    const [user, setUser] = useState(JSON.parse(userdata));
+    // console.log(user.email)
+    const [usersData, setUsersData] = useState([]);
+
+
+    const requestData = () => {
+      axios.request({
+        headers: {
+          authorization: `Bearer ${user.token}`
+        },
+        method: "GET",
+        url: `http://localhost:3001/api/get-therapist`
+      }).then(response => {
+       
+        setUsersData(response.data);
+  
+        // console.log(usersData);
+       
+      });
+      
+    };
+   
+    useEffect(()=>{
+      requestData();
+    },[])
+
+   
       
   return (
     <div className='w-11/12 mx-auto my-10 max-h-[70vh] overflow-y-scroll'>
@@ -48,6 +73,7 @@ function Counsellors() {
       </div>
         <div>
           <UsersTable users={usersData} />
+
         </div>
       
       

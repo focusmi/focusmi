@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 
 const EditUserPopup = ({ user, onSave, onClose }) => {
@@ -21,8 +22,8 @@ const EditUserPopup = ({ user, onSave, onClose }) => {
             <input
               type="text"
               className="border rounded px-2 py-1 w-full"
-              value={editedUser.name}
-              onChange={(e) => handleFieldChange('name', e.target.value)}
+              value={editedUser.full_name}
+              onChange={(e) => handleFieldChange('full_name', e.target.value)}
             />
           </label>
           <label className="block mb-2">
@@ -39,8 +40,8 @@ const EditUserPopup = ({ user, onSave, onClose }) => {
             <input
               type="text"
               className="border rounded px-2 py-1 w-full"
-              value={editedUser.contact}
-              onChange={(e) => handleFieldChange('contact', e.target.value)}
+              value={editedUser.phone_number}
+              onChange={(e) => handleFieldChange('phone_number', e.target.value)}
             />
           </label>
           <label className="block mb-2">
