@@ -31,6 +31,22 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
     next()
 })
 
+mRouter.post('/api/get-course/:courseid',(req, res, next)=>{
+    try{
+        var result = mindfulness_course.findOne({
+            course_id:courseid
+        })
+
+        res.send(result)
+   
+    }
+    catch(eq){
+        console.log("create course")
+    }
+    next()
+})
+
+
 mRouter.post('/api/update-course'  , async(req, res, next)=>{
     try{
         let pos = 0;
