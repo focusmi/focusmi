@@ -3,7 +3,8 @@ let express = require('express')
 const pool = require('../database/dbconnection')
 const imageUpload = require('../middleware/multer')
 const CourseUser = require('../models/course_user')
-const {mindfulness_course} = require('../sequelize/models')
+const {mindfulness_course, course_level} = require('../sequelize/models')
+const auth = require('../tokens/auth')
 
 let mRouter = express.Router()
 /* ----------------------------------------*/
@@ -26,6 +27,7 @@ mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>
    
     }
     catch(eq){
+        console.log(eq)
         console.log("create course")
     }
     next()
@@ -102,6 +104,40 @@ mRouter.get("/api/create-course-user/:userid/:courseid", async(req, res, next)=>
 
     }
     next()
+})
+
+mRouter.post('/api/create-course-level',imageUpload.single('image'),(req, res, next)=>{
+    try{
+        course_level.create({
+            course_id:req.body.course_id,
+            level_name:req.body.level_name,
+            level_description:req.body.level_description,
+            reference:req.body.reference,
+            media_type:req.body.media_type,
+            content_location:req.file.filename
+        })
+   
+    }
+    catch(eq){
+        console.log(eq)
+        console.log("create course level")
+    }
+    next()
+})
+
+mRouter.get('/api/get-course-level/:courseid', auth, async(req, res, next)=>{
+    try{
+       var result =  await course_level.findAll({
+            where:{
+                course_id:req.params.courseid
+            }
+       }) 
+       return result
+    }
+    catch(e){
+        console.log(e)
+        console.log("create course level")
+    }
 })
 
 
