@@ -26,6 +26,7 @@
     "otp-generator": "^4.0.1",
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
+    "react-router-dom": "^6.16.0",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1",
     "socket.io": "^2.4.1"
