@@ -110,6 +110,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       editplan = taskplanid;
       planHeight[taskplanid] = 10;
     });
+    refreshTaskAllocation();
   }
 
   void addTask() {
@@ -180,6 +181,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       setState(() {
         taskPlans[index].plan_name = taskPlanControllers[index].text;
       });
+      refreshTaskAllocation();
     });
   }
 
@@ -501,9 +503,14 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                 title: 'Add'),
             TabItem(
               icon: GestureDetector(
-                child: Container(child: Icon(Icons.chat,color: Colors.white,)),
+                child: Container(
+                    child: Icon(
+                  Icons.chat,
+                  color: Colors.white,
+                )),
                 onTap: () {
-                  Navigator.pushNamed(context, ChatRoom.routeName,arguments: widget.group.group_id);
+                  Navigator.pushNamed(context, ChatRoom.routeName,
+                      arguments: widget.group.group_id);
                 },
               ),
               title: 'Chat',

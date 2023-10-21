@@ -81,8 +81,7 @@ gTaskRoutes.post('/api/add-group-user',async(req,res,next)=>{
           
           var Group =new TaskGroup();
           var reqBody = req.body;
-          Group.group_id= reqBody.group_id;
-          
+          Group.group_id= reqBody.group_id; 
           var result = await Group.addGroupUser(reqBody.group_id,reqBody.user);
           if(result){
             res.status(200).send({"msg":"Successful"});
@@ -309,6 +308,9 @@ gTaskRoutes.post('/api/delete-task-plan/:planid',auth,async(req, res, next)=>{
 gTaskRoutes.get('/api/get-task-plan-by-group/:groupid',auth, async(req,res,next)=>{
    try{ 
       var result = await TaskPlan.getTaskPlanByGroup(req.params.groupid)
+      console.log("-----------------------------")
+      console.log(result)
+      console.log("-----------------------------")
       res.status(200).send(result)
    }
    catch(e){
@@ -416,8 +418,16 @@ gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
                task_id:req.params.task
             }
          });
-      val =  val[`${req.params.attr}`]
-      res.send({value:val})
+      console.log(val)
+      if(val==null){
+         res.send({value:null})
+        
+      }
+      else{
+         val =  val[`${req.params.attr}`]
+         res.send({value:val})
+
+      }
    }
    catch(e){
       console.log(e)
@@ -514,7 +524,13 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
       var subtask=await pool.cQuery(`Select * from sub_task where task_id=${req.params.taskid}`);
       
       var result = subtask
-      res.send(result)
+      if(result ==0){
+         res.send([]);
+      }
+      else{
+         res.send(result)
+
+      }
    }
    catch(e){
       console.log(e)

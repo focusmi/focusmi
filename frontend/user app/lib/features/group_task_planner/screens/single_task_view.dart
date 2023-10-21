@@ -45,7 +45,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late TextEditingController _subtaskValue;
   late DateTime dateTime;
   late String? showDateTime;
-   late String? showDateTime2;
+  late String? showDateTime2;
   late DateTime now;
   late String? nowtime;
   late String? showTime;
@@ -120,7 +120,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void chanageDeadlineApi(taskid, deadline_time, deadline_date) {
     try {
       GTaskPlannerServices.setTaskAttr('deadline_date', taskid, deadline_date);
-      GTaskPlannerServices.setTaskAttr('deadline_time', taskid,"${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
+      GTaskPlannerServices.setTaskAttr('deadline_time', taskid,
+          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
     } catch (e) {
       print(e);
@@ -130,7 +131,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void chanageReminderApi(taskid, deadline_time, deadline_date) {
     try {
       GTaskPlannerServices.setTaskAttr('reminder_date', taskid, deadline_date);
-      GTaskPlannerServices.setTaskAttr('reminder_time', taskid,"${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
+      GTaskPlannerServices.setTaskAttr('reminder_time', taskid,
+          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
     } catch (e) {
       print(e);
@@ -148,21 +150,28 @@ class _SingleTaskViewState extends State<SingleTaskView> {
 
   Future refreshTaskName(task_id) async {
     var result = await GTaskPlannerServices.getTaskAttr('task_name', task_id);
+    print(result.body);
     setState(() {
-      title = json.decode(result.body)['value'];
-      _titleName.text = title;
+      if (json.decode(result.body)['value'] == null) {
+        _titleName.text = widget.task.task_name;
+      }
+      else{
+        title = json.decode(result.body)['value'];
+        _titleName.text = title;
+
+      }
     });
   }
 
   void refreshDeadline(task_id) async {
     var date = await GTaskPlannerServices.getTaskAttr('deadline_date', task_id);
     var time = await GTaskPlannerServices.getTaskAttr('deadline_time', task_id);
-    //print("date time"+date+" and "+ time);
-    print(date.body);
+    date = jsonDecode(date.body)['value'];
+    time = jsonDecode(time.body)['value'];
     if (date != null && time != null) {
       setState(() {
-        showDateTime = jsonDecode(date.body)['value'];
-        showTime = jsonDecode(time.body)['value'];
+        showDateTime = date;
+        showTime = time;
       });
     }
   }
@@ -171,7 +180,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     var val =
         await GTaskPlannerServices.getTaskAttr('color', widget.task.task_id);
     val = (json.decode(val.body))['value'];
-    if (val == 'nocolor') {
+    if (val == null) {
       val = Color.fromARGB(255, 255, 255, 255);
     } else {
       val = val.split(':');
@@ -320,7 +329,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     if (resultDate != null) {
       TimeOfDay? resultTime = await pickTime();
       setState(() {
-         showDateTime2 = resultDate.toString();
+        showDateTime2 = resultDate.toString();
       });
       if (resultDate != null) {
         setState(() {

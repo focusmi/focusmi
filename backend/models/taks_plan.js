@@ -23,6 +23,9 @@ class TaskPlan{
 
     static async getTaskPlanByGroup(groupid){
         var res = await task_plan.findAll({
+            order:[
+                ["createdAt","ASc"]
+            ],
             where:{
                 group_id:groupid
             }
