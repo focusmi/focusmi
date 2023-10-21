@@ -106,7 +106,8 @@ mRouter.get("/api/create-course-user/:userid/:courseid", async(req, res, next)=>
     next()
 })
 
-mRouter.post('/api/create-course-level',imageUpload.single('image'),(req, res, next)=>{
+mRouter.post('/api/create-course-level',imageUpload.single('audio'),(req, res, next)=>{
+
     try{
         course_level.create({
             course_id:req.body.course_id,
@@ -125,19 +126,20 @@ mRouter.post('/api/create-course-level',imageUpload.single('image'),(req, res, n
     next()
 })
 
-mRouter.get('/api/get-course-level/:courseid', auth, async(req, res, next)=>{
+mRouter.get('/api/get-course-level/:courseid',  async(req, res, next)=>{
     try{
-       var result =  await course_level.findAll({
+       var result =  await course_level.findOne({
             where:{
-                course_id:req.params.courseid
+                level_id:req.params.courseid
             }
        }) 
-       return result
+       res.send(result)
     }
     catch(e){
         console.log(e)
         console.log("create course level")
     }
+    next()
 })
 
 

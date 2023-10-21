@@ -6,7 +6,6 @@ const storage = multer.diskStorage({
         cb(null,'public/assets/images/mindfulness-courses/' )
     },
     filename: (req, file, cb) =>{
-        console.log("erer")
         console.log(file)
         var filen = Date.now()+path.extname(file.originalname)
         cb(null,filen)
