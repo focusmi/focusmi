@@ -62,6 +62,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late List<TaskPlan> taskPlan;
   late List<String> taskNames;
   late List<GroupMember> taskUser;
+  
 
   static final kInitialPosition = LatLng(-33.8567844, 151.213108);
   @override
@@ -71,6 +72,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     subTasks = [];
     taskUser = [];
     subTaskAllocation = {};
+0;
     memberList = List<GroupMember>.empty(growable: true);
     showMemeberList = List<GroupMember>.empty(growable: true);
     selectedMemberList = List<GroupMember>.empty(growable: true);
@@ -154,11 +156,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     setState(() {
       if (json.decode(result.body)['value'] == null) {
         _titleName.text = widget.task.task_name;
-      }
-      else{
+        title = widget.task.task_name;
+      } else {
         title = json.decode(result.body)['value'];
         _titleName.text = title;
-
       }
     });
   }
@@ -180,7 +181,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     var val =
         await GTaskPlannerServices.getTaskAttr('color', widget.task.task_id);
     val = (json.decode(val.body))['value'];
-    if (val == null) {
+    if (val == null || val == 'nocolor') {
       val = Color.fromARGB(255, 255, 255, 255);
     } else {
       val = val.split(':');
@@ -233,8 +234,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           created_at: '');
       subTasks.add(stask);
       GTaskPlannerServices.createSubTask(stask);
-      refreshTaskList();
     });
+    refreshTaskList();
   }
 
   void allocateMember(GroupMember member, subtask) {
@@ -264,8 +265,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     try {
       var result =
           await GTaskPlannerServices.getAllSubTask(widget.task.task_id);
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
       setState(() {
-        Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
         subTasks = list.map((model) => SubTask.fromJson(model)).toList();
         for (SubTask task in subTasks) {
           subAllocated?[task.stask_id ?? 0] = false;

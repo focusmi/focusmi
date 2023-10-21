@@ -12,6 +12,7 @@ import "package:focusmi/features/group_task_planner/screens/task_plan_view.dart"
 import "package:focusmi/features/mainpage/screens/main_page.dart";
 import "package:focusmi/features/mindfulness_courses/screens/course_mainpage.dart";
 import "package:focusmi/features/mindfulness_courses/screens/course_media_player.dart";
+import "package:focusmi/features/pomodoro_timer/screens/break_view.dart";
 import "package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart";
 import "package:focusmi/features/task_group.dart/screens/create_group.dart";
 import "package:focusmi/features/task_group.dart/screens/edit_task_group.dart";
@@ -92,7 +93,7 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       final Task args = routeSettings.arguments as Task;
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => PomodoroTimerScreen(task:args),
+        builder: (context) => PomodoroTimerScreen(task: args),
       );
     case SubscriptionPackagesPage.routeName:
       return MaterialPageRoute(
@@ -105,12 +106,20 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => CourseMediaPlayer(),
       );
     case ChatRoom.routeName:
-        final int arg = routeSettings.arguments as int;
-        return MaterialPageRoute(
-          settings: routeSettings,
-          builder: (context) => ChatRoom(group_id: arg,),
-        );
-      
+      final int arg = routeSettings.arguments as int;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => ChatRoom(
+          group_id: arg,
+        ),
+      );
+    case BreakView.routeName:
+      final Task args = (routeSettings.arguments as List<dynamic>)[0];
+      final int btime = (routeSettings.arguments as List<dynamic>)[1];
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => BreakView(task: args,btime: btime,),
+      );
     default:
       return MaterialPageRoute(
         settings: routeSettings,

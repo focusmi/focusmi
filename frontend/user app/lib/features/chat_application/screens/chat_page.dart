@@ -42,15 +42,12 @@ class _ChatRoomState extends State<ChatRoom> {
     getChatMessages();
     messageInputController = TextEditingController();
     setUpSocketListener();
-     socket.on("message-receive", (data) {
-      print("------------listenening and recieved-----------------");
-      print(data);
-    });
+     
   }
 
   void setUpSocketListener() {
     print("initiailized");
-    socket.on("message-receive", (data) {
+    socket.on("messageback", (data) {
       print("------------listenening and recieved-----------------");
       print(data);
     });

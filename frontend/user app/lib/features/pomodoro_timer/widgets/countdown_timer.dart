@@ -3,10 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
+import 'package:focusmi/features/pomodoro_timer/screens/break_view.dart';
 import 'package:focusmi/features/pomodoro_timer/services/pomodoro_timer_services.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
@@ -32,20 +34,30 @@ class _CountdownTimerState extends State<CountdownTimer> {
   late String hours;
   late String minutes;
   late int duration;
+  late int bduration;
   late bool isBreak;
-
+  late TextEditingController hcontroller;
+  late TextEditingController mcontroller;
+  late int tduration;
+  late int totPomodoros;
+  late int remPomodoros;
   late CountDownController controller;
   late CountDownController controller2;
   @override
   void initState() {
     //
     hour = 0;
+    totPomodoros = 0;
+    remPomodoros = 0;
     minute = 20;
     subtasks = [];
     controller = CountDownController();
     controller2 = CountDownController();
     duration = 5;
+    bduration = 0;
     isBreak = false;
+    hcontroller = TextEditingController();
+    mcontroller = TextEditingController();
     super.initState();
     refreshTaskAllocation();
     setTimers(context);
@@ -98,7 +110,11 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   void setTimers(context) async {
     var result = await PomodoroTimerServices.getTime(context);
+
     setState(() {
+      duration = result['duration'];
+      bduration = result['break'];
+
       if (result['duration'] < 60) {
         hour = 0;
       } else {
@@ -138,6 +154,19 @@ class _CountdownTimerState extends State<CountdownTimer> {
     });
   }
 
+  void CalculatePomodoros() async {
+    try {
+      var totMinutes =
+          (int.parse(hcontroller.text) * 60) + int.parse(mcontroller.text);
+      var value = (totMinutes / (duration + bduration)).ceil();
+      setState(() {
+        remPomodoros = value;
+        totPomodoros = value;
+      });
+      print(value);
+    } catch (e) {}
+  }
+
   void completeTask(task_id) async {
     try {
       GTaskPlannerServices.setTaskAttr('status', task_id, 'completed');
@@ -169,6 +198,73 @@ class _CountdownTimerState extends State<CountdownTimer> {
     } else {
       minutes = strDigits(myDuration.inMinutes.remainder(minute));
     }
+
+    Widget _setDurationPopup(BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text("Move Task"),
+        content: StatefulBuilder(
+          builder: (BuildContext, StateSetter setState) {
+            return Container(
+              height: 300,
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Text("Hours"),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        child: TextField(
+                          controller: hcontroller,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ], // Only numbers can be entered
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text("Minutes"),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        child: TextField(
+                          controller: mcontroller,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ], // Only numbers can be entered
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          CalculatePomodoros();
+                          Navigator.pop(context);
+                        },
+                        child: Text("Add Duration")),
+                  )
+                ],
+              ),
+            );
+          },
+        ),
+      );
+    }
     //final minutes = strDigits(myDuration.inMinutes.remainder(minute));
 
     final seconds = strDigits(myDuration.inSeconds.remainder(60));
@@ -182,107 +278,139 @@ class _CountdownTimerState extends State<CountdownTimer> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 100,
+                  height: 40,
                 ),
-                // Step 8
-                (isBreak == false)
-                    ? GestureDetector(
-                        child: NeonCircularTimer(
-                          width: 200,
-                          duration: 5,
-                          controller: controller,
-                          autoStart: false,
-                          isReverse: true,
-                          onComplete: () {
-                            setState(() {
-                              print("complete");
-                              setBreak(true);
-                            });
-                          },
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Container(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Duration",
+                          style: TextStyle(color: Colors.white),
                         ),
-                        onTap: () {
-                          showCupertinoModalPopup(
-                              context: context,
-                              builder: (_) => SizedBox(
-                                    width: double.infinity,
-                                    height: 250,
-                                    child: CupertinoPicker(
-                                      backgroundColor: Colors.white,
-                                      itemExtent: 30,
-                                      scrollController:
-                                          FixedExtentScrollController(
-                                              initialItem: 1),
-                                      children: [
-                                        Text('5 min'),
-                                        Text('10 min'),
-                                        Text('15 min'),
-                                        Text('20 min'),
-                                        Text('25 min'),
-                                        Text('30 min'),
-                                        Text('35 min'),
-                                        Text('40 min'),
-                                        Text('45 min'),
-                                        Text('50 min'),
-                                        Text('55 min'),
-                                      ],
-                                      onSelectedItemChanged: (int value) {
-                                        print(value);
-                                        setState(() {
-                                          _selectedValue = value;
-                                        });
-                                      },
+                        Text(
+                          duration.toString() + " min",
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    )),
+                    SizedBox(
+                      width: 70,
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      _setDurationPopup(context));
+                            },
+                            child: Container(
+                              child: Text("Pomodoros",
+                                  style: TextStyle(color: Colors.white)),
+                            ),
+                          ),
+                          (totPomodoros != 0)
+                              ? Row(
+                                  children: [
+                                    Text(
+                                      remPomodoros.toString(),
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  ));
-                        },
-                      )
-                    : GestureDetector(
-                        child: NeonCircularTimer(
-                          width: 200,
-                          duration: 10,
-                          controller: controller2,
-                          autoStart: true,
-                          isReverse: true,
-                          onComplete: () {
-                            setState(() {
-                              print("seecod");
-                            });
-                          },
-                        ),
-                        onTap: () {
-                          showCupertinoModalPopup(
-                              context: context,
-                              builder: (_) => SizedBox(
-                                    width: double.infinity,
-                                    height: 250,
-                                    child: CupertinoPicker(
-                                      backgroundColor: Colors.white,
-                                      itemExtent: 30,
-                                      scrollController:
-                                          FixedExtentScrollController(
-                                              initialItem: 1),
-                                      children: [
-                                        Text('5 min'),
-                                        Text('10 min'),
-                                        Text('15 min'),
-                                        Text('20 min'),
-                                        Text('25 min'),
-                                        Text('30 min'),
-                                        Text('35 min'),
-                                        Text('40 min'),
-                                        Text('45 min'),
-                                        Text('50 min'),
-                                        Text('55 min'),
-                                      ],
-                                      onSelectedItemChanged: (int value) {
-                                        print(value);
-                                        setState(() {
-                                          _selectedValue = value;
-                                        });
-                                      },
+                                    Text(
+                                      "/",
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  ));
-                        },
+                                    Text(
+                                      totPomodoros.toString(),
+                                      style: TextStyle(color: Colors.white),
+                                    )
+                                  ],
+                                )
+                              : SizedBox(width: 0, height: 0)
+                        ],
                       ),
+                    ),
+                    SizedBox(
+                      width: 70,
+                    ),
+                    Container(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Break",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          bduration.toString() + " min",
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    )),
+                  ],
+                ),
+                SizedBox(
+                  height: 60,
+                ),
+                GestureDetector(
+                  child: NeonCircularTimer(
+                    width: 200,
+                    duration: 5,
+                    controller: controller,
+                    autoStart: false,
+                    isReverse: true,
+                    onComplete: () {
+                      setState(() {
+                        print("complete");
+                        setBreak(true);
+                        Navigator.pushNamed(context, BreakView.routeName,arguments:[widget.task,bduration]);
+                      });
+                    },
+                  ),
+                  onTap: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (_) => SizedBox(
+                              width: double.infinity,
+                              height: 250,
+                              child: CupertinoPicker(
+                                backgroundColor: Colors.white,
+                                itemExtent: 30,
+                                scrollController:
+                                    FixedExtentScrollController(initialItem: 1),
+                                children: [
+                                  Text('5 min'),
+                                  Text('10 min'),
+                                  Text('15 min'),
+                                  Text('20 min'),
+                                  Text('25 min'),
+                                  Text('30 min'),
+                                  Text('35 min'),
+                                  Text('40 min'),
+                                  Text('45 min'),
+                                  Text('50 min'),
+                                  Text('55 min'),
+                                ],
+                                onSelectedItemChanged: (int value) {
+                                  print(value);
+                                  setState(() {
+                                    _selectedValue = value;
+                                  });
+                                },
+                              ),
+                            ));
+                  },
+                ),
+
                 SizedBox(height: 0),
                 // Step 9
                 Center(
