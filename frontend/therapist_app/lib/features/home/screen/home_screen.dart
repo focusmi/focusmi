@@ -1,5 +1,6 @@
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/features/home/screen/charts.dart';
+import 'package:therapist_app/features/schedule/screen/schedule_screen.dart';
 import 'package:therapist_app/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -103,7 +104,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               child: CustomButton(
                                                 text: 'Goto Appointment',
                                                 onTap: () {
-                                                  
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ScheduleScreen(),
+                                                      ));
                                                 },
                                               ),
                                             ),
@@ -208,9 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   const EdgeInsets.all(8.0),
                                               child: CustomButton(
                                                 text: 'Got It',
-                                                onTap: () {
-                                                  
-                                                },
+                                                onTap: () {},
                                               ),
                                             ),
                                           ],
@@ -246,13 +250,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
+              padding: const EdgeInsets.only(left: 15, right: 10, top: 10),
+              child: Text(
+                "Time Slot Analyst",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 width: MediaQuery.of(context).size.width - 20,
                 height: 200,
-                decoration: BoxDecoration(
-                    // color: Color.fromARGB(255, 255, 216, 216),
-                    ),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 50,
                   child: Padding(
