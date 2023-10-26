@@ -85,14 +85,6 @@ class _BarChartSampleState extends State<BarChartSample> {
           }
         }
       }
-
-      // Print the count of time slots for each day for this week
-      print('This week: $timeSlotsThisWeek');
-
-      // Print the count of time slots for each day for the second week
-      print('Second week: $timeSlotsSecondWeek');
-
-      // Return both datasets in a map
       return {
         'thisWeek': timeSlotsThisWeek,
         'secondWeek': timeSlotsSecondWeek,
