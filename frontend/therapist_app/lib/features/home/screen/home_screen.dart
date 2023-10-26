@@ -1,3 +1,4 @@
+import 'package:lottie/lottie.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/features/home/screen/charts.dart';
 import 'package:therapist_app/features/schedule/screen/schedule_screen.dart';
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 100,
                     width: 175,
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 102, 255, 0).withAlpha(150),
+                        color: Color.fromARGB(255, 164, 249, 159),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -146,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 102, 255, 0).withAlpha(150),
+                        color: Color.fromARGB(255, 164, 249, 159),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -291,19 +292,32 @@ class _UserInfoState extends State<UserInfo> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: const Padding(
-        padding: EdgeInsets.only(bottom: 7),
-        child: Text("👋 Hello!"),
-      ),
-      subtitle: Text(
-        "${user.name}",
-        style: Theme.of(context)
-            .textTheme
-            .headlineSmall!
-            .copyWith(fontWeight: FontWeight.w700),
-      ),
+    return Row(
+      children: [
+        Container(
+          height: 120,
+          width: 120,
+          child: Lottie.asset('assets/images/qO4KLdZrLb.json',
+              fit: BoxFit.cover),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Good Morning",textAlign: TextAlign.start, style: TextStyle(fontSize: 16),),
+              Text(
+                "${user.name}",
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
