@@ -93,7 +93,7 @@ class _BlogScreenState extends State<BlogScreen> {
             child: Container(
             height: 200,
             margin: const EdgeInsets.only(top: 200),
-            child: Lottie.asset('assets/images/AxbbZeTUvO.json',
+            child: Lottie.asset('assets/images/Comp.json',
                 fit: BoxFit.cover),
           ));
   }
