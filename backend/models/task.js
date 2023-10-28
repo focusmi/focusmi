@@ -5,7 +5,7 @@ const {user_task,task} = require("../sequelize/models");
 
 class Task{
     
-    constructor(task_id, plan_id, timer_id, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description,deadline_date,deadline_time){
+    constructor(task_id, plan_id, timer_id, duration, task_status, priority, created_date, created_time, completed_date, completed_time, color, description,deadline_date,deadline_time, location){
         this.task_id = task_id;
         this.plan_id = plan_id;
         this.timer_id =  timer_id;
@@ -21,6 +21,7 @@ class Task{
         this.completed_time = completed_time
         this.color = color;
         this.description = description;
+        this.location = location
     }
 
     
@@ -37,6 +38,7 @@ class Task{
                 description:task.description,
                 color:'nocolor',
                 task_type:task.task_type,
+                location:task.location
                 
                 
             })
@@ -192,6 +194,14 @@ class Task{
              else if(type == 'reminder_time'){
                 
                 task.update({reminder_time:val},{
+                    where:{
+                        task_id:taskid
+                    }
+                })
+            }
+            else if(type == 'location'){
+                
+                task.update({location:val},{
                     where:{
                         task_id:taskid
                     }

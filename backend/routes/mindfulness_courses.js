@@ -11,19 +11,21 @@ let mRouter = express.Router()
 //course-types meditation, stress relief, sleep well, focus, realtionship, applied mindfulness
 //subscribe_type free, paid
 //course status published, drafted
-mRouter.post('/api/create-course',imageUpload.single('image'),(req, res, next)=>{
+mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, next)=>{
     try{
-        mindfulness_course.create({
+        var result=await mindfulness_course.create({
           title:req.body.title,
           description:req.body.description,
           skill:req.body.skill,
           duration:req.body.duration,
           rating:req.body.rating,
-          image:req.file.filename,
+          //image:req.file.filename,
           course_status:req.body.course_status,
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
         })
+        //result come as [courseid]
+        res.send([result.dataValues.course_id])
    
     }
     catch(eq){
@@ -106,10 +108,10 @@ mRouter.get("/api/create-course-user/:userid/:courseid", async(req, res, next)=>
     next()
 })
 
-mRouter.post('/api/create-course-level',imageUpload.single('audio'),(req, res, next)=>{
+mRouter.post('/api/create-course-level',imageUpload.single('audio'),async(req, res, next)=>{
 
     try{
-        course_level.create({
+        var result = await course_level.create({
             course_id:req.body.course_id,
             level_name:req.body.level_name,
             level_description:req.body.level_description,
@@ -117,6 +119,7 @@ mRouter.post('/api/create-course-level',imageUpload.single('audio'),(req, res, n
             media_type:req.body.media_type,
             content_location:req.file.filename
         })
+        res.send([result.dataValues.level_id])
    
     }
     catch(eq){
@@ -128,9 +131,9 @@ mRouter.post('/api/create-course-level',imageUpload.single('audio'),(req, res, n
 
 mRouter.get('/api/get-course-level/:courseid',  async(req, res, next)=>{
     try{
-       var result =  await course_level.findOne({
+       var result =  await course_level.findAll({
             where:{
-                level_id:req.params.courseid
+                course_id:req.params.courseid
             }
        }) 
        res.send(result)
@@ -138,6 +141,38 @@ mRouter.get('/api/get-course-level/:courseid',  async(req, res, next)=>{
     catch(e){
         console.log(e)
         console.log("create course level")
+    }
+    next()
+})
+
+mRouter.get('/api/get-course-level-by-courselevel/:level',  async(req, res, next)=>{
+    try{
+       var result =  await course_level.findOne({
+            where:{
+                level_id:req.params.level
+            }
+       }) 
+       res.send(result)
+    }
+    catch(e){
+        console.log(e)
+        console.log("create course level")
+    }
+    next()
+})
+
+mRouter.get('/api/get-similar-courses/:coursetype', auth,async(req, res, next)=>{
+    try{
+        var result = await mindfulness_course.findAll({
+            where:{
+                course_type:req.params.coursetype
+            }
+        })
+        result = result.map(course => course.dataValues);
+        res.send(result)
+    }
+    catch(e){
+
     }
     next()
 })

@@ -650,6 +650,8 @@ gTaskRoutes.get('/api/get-chat-message/:groupid', auth,  async(req, res, next)=>
    next()
 })
 
+//gTaskRoutes.get('/api/create-daily-tips')
+
 
 
 
