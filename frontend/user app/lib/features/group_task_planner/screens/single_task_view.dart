@@ -813,7 +813,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     setState(() {
                                       label = color;
                                       int? blue = label?.blue;
-                                      int? red = label?.green;
+                                      int? red = label?.red;
                                       int? green = label?.green;
                                       double? opacity = label?.opacity;
                                       String strcolor =

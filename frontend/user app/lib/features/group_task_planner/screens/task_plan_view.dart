@@ -50,6 +50,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   late List<TaskPlan> taskPlans;
   Map taskMap = Map();
   List<Task> tasks = List<Task>.empty(growable: true);
+  late Map<int, Color?> color;
   List<SubTask> subTasks = List<SubTask>.empty(growable: true);
   List<TextEditingController> taskPlanControllers =
       List<TextEditingController>.empty(growable: true);
@@ -57,12 +58,34 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   late int editplan;
   void initState() {
     taskPlanEditName = 0;
+    color = {};
     editplan = 0;
     planHeight = {};
     taskCreate = TextEditingController();
     taskPlans = List<TaskPlan>.empty(growable: true);
     _getTaskPlan();
     super.initState();
+  }
+
+  void refreshColor(taskid) async {
+    var val = await GTaskPlannerServices.getTaskAttr('color', taskid);
+    val = (json.decode(val.body))['value'];
+    if (val == null || val == 'nocolor') {
+      val = Color.fromARGB(255, 255, 255, 255);
+    } else {
+      val = val.split(':');
+      int blue = int.parse(val[0]);
+      int red = int.parse(val[1]);
+      int green = int.parse(val[2]);
+      val = Color.fromARGB(255, red, green, blue);
+      setState(() {
+        if (val == null || val == 'nocolor') {
+          color[taskid] = null;
+        } else {
+          color[taskid] = val;
+        }
+      });
+    }
   }
 
   void completeTask(task_id) async {
@@ -81,6 +104,9 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       //run the loop to create the list
       Iterable list = json.decode(result.body).cast<Map<String, dynamic>>();
       tasks = list.map((model) => Task.fromJson(model)).toList();
+      for (Task element in tasks) {
+        refreshColor(element.task_id);
+      }
       //assign the loop in the set state
       setState(() {
         taskMap[element.plan_id] = tasks;
@@ -326,7 +352,9 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                       arguments: (taskMap[
                                                               taskPlans[index]
                                                                   .plan_id]
-                                                          [subindex]));
+                                                          [subindex])).then((value) => {
+                                                            Navigator.pushNamed(context, GroupTaskPlanner.routeName)
+                                                          });
                                                 },
                                                 child: Container(
                                                     width: planWidth,
@@ -386,7 +414,25 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                                   : SizedBox(
                                                                       width: 0,
                                                                       height: 0,
-                                                                    )
+                                                                    ),
+                                                              (color[taskMap[taskPlans[index]
+                                                                              .plan_id]
+                                                                          [
+                                                                          subindex]
+                                                                      .task_id]!=null)?Container(
+                                                                decoration: BoxDecoration(
+                                                                    color:color[taskMap[taskPlans[index]
+                                                                              .plan_id]
+                                                                          [
+                                                                          subindex]
+                                                                      .task_id]),
+                                                                height: 5,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.80,
+                                                              ):SizedBox(height: 0, width: 0,)
                                                             ],
                                                           ),
                                                         ],
