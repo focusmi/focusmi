@@ -200,12 +200,8 @@ class Task{
                 })
             }
             else if(type == 'location'){
-                
-                task.update({location:val},{
-                    where:{
-                        task_id:taskid
-                    }
-                })
+                 
+                pool.cQuery(`update task set location='${val}' where task_id=${taskid} `)
             }
         }
         catch(e){

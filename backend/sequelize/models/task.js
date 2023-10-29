@@ -38,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
     deadline_time:DataTypes.STRING,
     deadline_date:DataTypes.STRING,
     reminder_time:DataTypes.STRING,
-    reminder_date:DataTypes.STRING
+    reminder_date:DataTypes.STRING,
+    location:DataTypes.STRING
     
   }, {
     sequelize,

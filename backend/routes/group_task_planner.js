@@ -418,12 +418,14 @@ gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
                task_id:req.params.task
             }
          });
+         console.log("===")
       console.log(val)
       if(val==null){
          res.send({value:null})
-        
+         
       }
       else{
+       
          val =  val[`${req.params.attr}`]
          res.send({value:val})
 
