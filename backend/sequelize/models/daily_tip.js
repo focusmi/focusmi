@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class timer extends Model {
+  class chat extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,33 +11,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.task,{foreignKey:'timer_id'})
+    
+
     }
   }
-  timer.init({
-    timer_id:{
+  chat.init({
+    tip_id:{
       type:DataTypes.INTEGER,
       primaryKey:true
       ,autoIncrement:true
     } ,
-    stopped_time: DataTypes.TEXT,
-    break_duration: DataTypes.INTEGER,
-    total_duration: DataTypes.INTEGER,
-    status: DataTypes.TEXT,
-    turns:DataTypes.INTEGER,
-    rturns:DataTypes.INTEGER,
-    user_id:{
-      type:DataTypes.INTEGER,
-      references:{
-        model:'application_user',
-        key:'user_id'
-      }
-    }
+    day: DataTypes.STRING,
+    text: DataTypes.STRING,
+    content_location: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'timer',
+    modelName: 'daily_tip',
     underscored:true,
     freezeTableName:true,
   });
-  return timer;
+  return chat;
 };

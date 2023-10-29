@@ -32,7 +32,7 @@ class MainPageCatTile {
     static greenPageTileSubTask(Widget widget, double width) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(20),
         color:  Color.fromARGB(255, 108, 182, 93)
       ),
       width: width,

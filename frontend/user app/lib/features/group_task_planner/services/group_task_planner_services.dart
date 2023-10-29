@@ -330,9 +330,12 @@ class GTaskPlannerServices {
 
   static Future setTimerAttr(attr, value, context) async {
     try {
+      print("------====");
+      print(value);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
       var user = Provider.of<UserProvider>(context, listen: false).user;
+
       http.Response res = await http.get(
           Uri.parse('$uri/api/set-timer-attr/${attr}/${value}/${user.user_id}'),
           headers: <String, String>{
@@ -345,7 +348,64 @@ class GTaskPlannerServices {
     }
   }
 
-  
+  // static Future getTimerAttr(attr, context) async {
+  //   try {
+  //     print("------====");
+
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     var token = prefs.getString('auth-token');
+  //     var user = Provider.of<UserProvider>(context, listen: false).user;
+
+  //     http.Response res = await http.get(
+  //         Uri.parse('$uri/api/get-timer-attr/${user.user_id}/${attr}'),
+  //         headers: <String, String>{
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //           'authorization': 'Bearer ' + token.toString()
+  //         });
+  //     print(res.body);
+  //     return res;
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  static Future getTimerAttr(attr, context) async {
+    try {
+      print("------====");
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      var user = Provider.of<UserProvider>(context, listen: false).user;
+
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-timer-attr/${user.user_id}/${attr}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      print(res.body);
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future reduceTurns(context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      var user = Provider.of<UserProvider>(context, listen: false).user;
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/reduce-turns/${user.user_id}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      
+    } catch (e) {
+      print("error in get task plans by plan");
+    }
+  }
 
   static Future getTaskPlansByPlan(taskplan) async {
     try {

@@ -33,7 +33,7 @@ class PomodoroTimer{
                     user_id:user_id
                 }
             })
-            console.log(result)
+            
             return result[0].dataValues[`${attr}`]
             
         }
@@ -49,6 +49,34 @@ class PomodoroTimer{
             switch(attr){
                 case 'status':{
                     timer.update({status:value},{
+                        where:{
+                            user_id:user_id 
+                        }
+                    })
+                }
+                case 'total_duration':{
+                    timer.update({total_duration:value},{
+                        where:{
+                            user_id:user_id 
+                        }
+                    })
+                }
+                case 'break_duration':{
+                    timer.update({break_duration:value},{
+                        where:{
+                            user_id:user_id 
+                        }
+                    })
+                }
+                case 'turns':{
+                    timer.update({turns:value},{
+                        where:{
+                            user_id:user_id 
+                        }
+                    })
+                }
+                case 'rturns':{
+                    timer.update({rturns:value},{
                         where:{
                             user_id:user_id 
                         }

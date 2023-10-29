@@ -41,6 +41,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
   late int tduration;
   late int totPomodoros;
   late int remPomodoros;
+  late Widget timer;
   late CountDownController controller;
   late CountDownController controller2;
   @override
@@ -58,10 +59,15 @@ class _CountdownTimerState extends State<CountdownTimer> {
     isBreak = false;
     hcontroller = TextEditingController();
     mcontroller = TextEditingController();
+    timer = SizedBox(
+      width: 0,
+      height: 0,
+    );
     super.initState();
     refreshTaskAllocation();
     setTimers(context);
     getTasks();
+    refreshTurns();
     String strDigits(int n) => n.toString().padLeft(2, '0');
 
     if (hour == 0) {
@@ -108,6 +114,35 @@ class _CountdownTimerState extends State<CountdownTimer> {
     });
   }
 
+  Widget createTimer(duration) {
+    return NeonCircularTimer(
+      width: 200,
+      duration: 5,
+      controller: controller,
+      autoStart: false,
+      neumorphicEffect: false,
+      innerFillGradient: LinearGradient(
+          colors: [GlobalVariables.primaryColor, Colors.blueAccent.shade400]),
+      neonGradient: LinearGradient(
+          colors: [GlobalVariables.primaryColor, Colors.blueAccent.shade400]),
+      isReverse: true,
+      textStyle: TextStyle(color: Colors.white, fontSize: 45),
+      onComplete: () {
+        print("dfnvvnvnvnv");
+        reduceTurn(context);
+        setState(() {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  BreakView(task: widget.task, btime: bduration),
+            ),
+          );
+        });
+      },
+    );
+  }
+
   void setTimers(context) async {
     var result = await PomodoroTimerServices.getTime(context);
 
@@ -121,6 +156,9 @@ class _CountdownTimerState extends State<CountdownTimer> {
         hour = (result['duration']) ~/ 60;
       }
       minute = result['duration'] - hour * 60;
+    });
+    setState(() {
+      timer = createTimer(duration);
     });
   }
 
@@ -140,6 +178,18 @@ class _CountdownTimerState extends State<CountdownTimer> {
     }
   }
 
+  void setBreakDuration(durationh) async {
+    try {
+      GTaskPlannerServices.setTimerAttr("break_duration", durationh, context);
+    } catch (e) {}
+  }
+
+  void setDuration(bdurationh) async {
+    try {
+      GTaskPlannerServices.setTimerAttr("total_duration", bdurationh, context);
+    } catch (e) {}
+  }
+
   void refreshTaskAllocation() async {
     subtasks.forEach((element) async {
       //get the tasks
@@ -152,6 +202,39 @@ class _CountdownTimerState extends State<CountdownTimer> {
         subtasks = subtasks;
       });
     });
+  }
+
+  void refreshTurns() async {
+    try {
+      var result = await GTaskPlannerServices.getTimerAttr("turns", context);
+      var rresult = await GTaskPlannerServices.getTimerAttr("rturns", context);
+      result = json.decode(result.body);
+      rresult = json.decode(rresult.body);
+
+      result = result['value'];
+      rresult = rresult['value'];
+      print(",,,,,,,,,,,,,,");
+      print(result);
+      setState(() {
+        totPomodoros = result;
+        remPomodoros = rresult;
+      });
+    } catch (e) {}
+  }
+
+  void setTurns() async {
+    try {
+      GTaskPlannerServices.setTimerAttr("turns", totPomodoros, context);
+      GTaskPlannerServices.setTimerAttr("rturns", remPomodoros, context);
+    } catch (e) {}
+  }
+
+  void reduceTurn(context) async {
+    try {
+      // GTaskPlannerServices.reduceTurns(context);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void CalculatePomodoros() async {
@@ -255,6 +338,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
                         onPressed: () {
                           CalculatePomodoros();
                           Navigator.pop(context);
+                          setTurns();
                         },
                         child: Text("Add Duration")),
                   )
@@ -283,24 +367,61 @@ class _CountdownTimerState extends State<CountdownTimer> {
                 Row(
                   children: [
                     SizedBox(
-                      width: 40,
+                      width: 30,
                     ),
-                    Container(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Duration",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          duration.toString() + " min",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    )),
+                    GestureDetector(
+                      onTap: () {
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (_) => SizedBox(
+                                  width: double.infinity,
+                                  height: 250,
+                                  child: CupertinoPicker(
+                                    backgroundColor: Colors.white,
+                                    itemExtent: 30,
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                            initialItem: 1),
+                                    children: [
+                                      Text('5 min'),
+                                      Text('10 min'),
+                                      Text('15 min'),
+                                      Text('20 min'),
+                                      Text('25 min'),
+                                      Text('30 min'),
+                                      Text('35 min'),
+                                      Text('40 min'),
+                                      Text('45 min'),
+                                      Text('50 min'),
+                                      Text('55 min'),
+                                    ],
+                                    onSelectedItemChanged: (int value) {
+                                      print(value);
+                                      setState(() {
+                                        duration = (value + 1) * 5;
+                                        setDuration(duration);
+                                      });
+                                    },
+                                  ),
+                                ));
+                      },
+                      child: Container(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Duration",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            duration.toString() + " min",
+                            style: TextStyle(color: Colors.white, fontSize: 23),
+                          )
+                        ],
+                      )),
+                    ),
                     SizedBox(
-                      width: 70,
+                      width: 60,
                     ),
                     Container(
                       child: Column(
@@ -323,15 +444,18 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                   children: [
                                     Text(
                                       remPomodoros.toString(),
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
                                     ),
                                     Text(
                                       "/",
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
                                     ),
                                     Text(
                                       totPomodoros.toString(),
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
                                     )
                                   ],
                                 )
@@ -340,135 +464,121 @@ class _CountdownTimerState extends State<CountdownTimer> {
                       ),
                     ),
                     SizedBox(
-                      width: 70,
+                      width: 60,
                     ),
-                    Container(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Break",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          bduration.toString() + " min",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ],
-                    )),
+                    GestureDetector(
+                      onTap: () {
+                        showCupertinoModalPopup(
+                            context: context,
+                            builder: (_) => SizedBox(
+                                  width: double.infinity,
+                                  height: 250,
+                                  child: CupertinoPicker(
+                                    backgroundColor: Colors.white,
+                                    itemExtent: 30,
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                            initialItem: 1),
+                                    children: [
+                                      Text('5 min'),
+                                      Text('10 min'),
+                                      Text('15 min'),
+                                      Text('20 min'),
+                                      Text('25 min'),
+                                      Text('30 min'),
+                                      Text('35 min'),
+                                      Text('40 min'),
+                                      Text('45 min'),
+                                      Text('50 min'),
+                                      Text('55 min'),
+                                    ],
+                                    onSelectedItemChanged: (int value) {
+                                      print(value);
+                                      setState(() {
+                                        bduration = (value + 1) * 5;
+                                        setBreakDuration(bduration);
+                                      });
+                                    },
+                                  ),
+                                ));
+                      },
+                      child: Container(
+                          child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Break",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text(
+                            bduration.toString() + " min",
+                            style: TextStyle(color: Colors.white, fontSize: 23),
+                          )
+                        ],
+                      )),
+                    ),
                   ],
                 ),
                 SizedBox(
                   height: 60,
                 ),
                 GestureDetector(
-                  child: NeonCircularTimer(
-                    width: 200,
-                    duration: 5,
-                    controller: controller,
-                    autoStart: false,
-                    isReverse: true,
-                    onComplete: () {
-                      setState(() {
-                        print("complete");
-                        setBreak(true);
-                        Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                          BreakView(task: widget.task, btime: bduration),
-                      ),
-                    );
-                      });
-                    },
-                  ),
-                  onTap: () {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (_) => SizedBox(
-                              width: double.infinity,
-                              height: 250,
-                              child: CupertinoPicker(
-                                backgroundColor: Colors.white,
-                                itemExtent: 30,
-                                scrollController:
-                                    FixedExtentScrollController(initialItem: 1),
-                                children: [
-                                  Text('5 min'),
-                                  Text('10 min'),
-                                  Text('15 min'),
-                                  Text('20 min'),
-                                  Text('25 min'),
-                                  Text('30 min'),
-                                  Text('35 min'),
-                                  Text('40 min'),
-                                  Text('45 min'),
-                                  Text('50 min'),
-                                  Text('55 min'),
-                                ],
-                                onSelectedItemChanged: (int value) {
-                                  print(value);
-                                  setState(() {
-                                    _selectedValue = value;
-                                  });
-                                },
-                              ),
-                            ));
-                  },
+                  child: timer,
+                  onTap: () {},
                 ),
 
-                SizedBox(height: 0),
+                SizedBox(height: 10),
                 // Step 9
                 Center(
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 90,
+                        width: 110,
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: GlobalVariables.primaryColor),
-                        onPressed: () {
-                          print("pressed");
+                      GestureDetector(
+                        onTap: () {
                           controller.start();
                         },
-                        child: Icon(
-                          Icons.play_arrow,
-                          color: Colors.white,
-                        ),
+                        child: Container(
+                            height: 70,
+                            alignment: Alignment.topLeft,
+                            child: Icon(
+                              Icons.play_circle_outline_rounded,
+                              color: Colors.white,
+                              size: 50,
+                            )),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
                       // Step 10
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: GlobalVariables.primaryColor),
-                        onPressed: () {
-                          if (countdownTimer == null ||
-                              countdownTimer!.isActive) {
-                            stopTimer();
-                          }
+                      GestureDetector(
+                        onTap: () {
+                          controller.pause();
                         },
-                        child: Icon(
-                          Icons.stop,
+                        child: Container(
+                            child: Icon(
+                          Icons.stop_circle_outlined,
                           color: Colors.white,
-                        ),
+                          size: 50,
+                        )),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
                       // Step 11
-                      ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: GlobalVariables.primaryColor),
-                          onPressed: () {
-                            resetTimer();
-                          },
-                          child: Icon(
-                            Icons.restore,
-                            color: Colors.white,
-                          )),
+                      Container(
+                          height: 70,
+                          alignment: Alignment.topLeft,
+                          child: GestureDetector(
+                              onTap: () {
+                                controller.restart();
+                              },
+                              child: Icon(
+                                Icons.replay_rounded,
+                                color: Colors.white,
+                                size: 50,
+                              ))),
                     ],
                   ),
                 )
@@ -490,43 +600,47 @@ class _CountdownTimerState extends State<CountdownTimer> {
           ),
           Center(
             child: Container(
-              height: 350,
-              child: ListView.builder(
-                  itemCount: subtasks.length,
-                  itemBuilder: (context, index) {
-                    return Column(children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      MainPageCatTile.greenPageTileSubTask(
-                          Container(
-                              width: planWidth * 0.9,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                child: Row(
-                                  children: [
-                                    Radio(
-                                        activeColor: Colors.white,
-                                        value: subtasks[index].task_id,
-                                        groupValue: "",
-                                        onChanged: (value) {
-                                          completeTask(
-                                            subtasks[index].task_id,
-                                          );
-                                        }),
-                                    Container(
-                                      child: Text(
-                                        subtasks[index].sub_label ?? '',
-                                        style: const TextStyle(
-                                            color: Colors.white),
+              height: 330,
+              child: SingleChildScrollView(
+                child: ListView.builder(
+                    itemCount: subtasks.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return Column(children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        MainPageCatTile.greenPageTileSubTask(
+                            Container(
+                                width: planWidth * 0.9,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                  child: Row(
+                                    children: [
+                                      Radio(
+                                          activeColor: Colors.white,
+                                          value: subtasks[index].task_id,
+                                          groupValue: "",
+                                          onChanged: (value) {
+                                            completeTask(
+                                              subtasks[index].task_id,
+                                            );
+                                          }),
+                                      Container(
+                                        child: Text(
+                                          subtasks[index].sub_label ?? '',
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                          planWidth * 0.9)
-                    ]);
-                  }),
+                                    ],
+                                  ),
+                                )),
+                            planWidth * 0.9)
+                      ]);
+                    }),
+              ),
             ),
           )
         ],

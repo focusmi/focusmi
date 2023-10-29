@@ -19,7 +19,7 @@ mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, ne
           skill:req.body.skill,
           duration:req.body.duration,
           rating:req.body.rating,
-          //image:req.file.filename,
+          image:req.file.filename,
           course_status:req.body.course_status,
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
@@ -35,10 +35,10 @@ mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, ne
     next()
 })
 
-mRouter.post('/api/get-course/:courseid',(req, res, next)=>{
+mRouter.get('/api/get-course/:courseid',async(req, res, next)=>{
     try{
-        var result = mindfulness_course.findOne({
-            course_id:courseid
+        var result = await mindfulness_course.findOne({
+            course_id:req.params.courseid
         })
 
         res.send(result)
@@ -50,8 +50,56 @@ mRouter.post('/api/get-course/:courseid',(req, res, next)=>{
     next()
 })
 
+mRouter.get('/api/publish-course/:courseid',(req, res, next)=>{
+    try{
+        mindfulness_course.update({course_status:'published'},{
+            where:{
+                course_id:req.params.courseid
+            }
+        })
+    }
+    catch(e){
 
-mRouter.post('/api/update-course'  , async(req, res, next)=>{
+    }
+    next()
+})
+
+mRouter.get('/api/draft-course/:courseid',(req, res, next)=>{
+    try{
+        mindfulness_course.update({course_status:'drafted'},{
+            where:{
+                course_id:req.params.courseid
+            }
+        })
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+
+mRouter.post('/api/update-course/:courseid'  , async(req, res, next)=>{
+    try{
+        
+        
+                mindfulness_course.update({
+                    title:req.body.title,
+                    description:req.body.description,
+                    
+
+                },{
+                    course_id:req.params.courseid
+                })
+        
+        }
+    
+    catch(e){
+        console.log(e)
+    }
+    next()
+})
+mRouter.post('/api/update-course-level'  , async(req, res, next)=>{
     try{
         let pos = 0;
         for(const key in req.body){

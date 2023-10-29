@@ -48,6 +48,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
       task_name: '');
   late TextEditingController taskCreate;
   late List<TaskPlan> taskPlans;
+  late ScrollController hcontroller;
   Map taskMap = Map();
   List<Task> tasks = List<Task>.empty(growable: true);
   late Map<int, Color?> color;
@@ -63,6 +64,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
     planHeight = {};
     taskCreate = TextEditingController();
     taskPlans = List<TaskPlan>.empty(growable: true);
+    hcontroller = ScrollController();
     _getTaskPlan();
     super.initState();
   }
@@ -132,11 +134,17 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
         taskMap[plans.plan_id] = List.empty(growable: true);
       }
     });
+    refreshTaskAllocation();
     setState(() {
       editplan = taskplanid;
       planHeight[taskplanid] = 10;
+      hcontroller.animateTo(
+        hcontroller.position.maxScrollExtent+MediaQuery.of(context).size.width,
+        duration: Duration(milliseconds: 800),
+        curve: Curves.easeInOut
+      );
     });
-    refreshTaskAllocation();
+
   }
 
   void addTask() {
@@ -235,6 +243,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
               shrinkWrap: true,
               itemCount: taskPlans.length,
               scrollDirection: Axis.horizontal,
+              controller: hcontroller,
               itemBuilder: (context, index) {
                 taskPlanControllers.add(TextEditingController());
                 return Padding(
@@ -344,7 +353,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                             ),
                                             child: Padding(
                                               padding:
-                                                  const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.only(left: 8,right: 8,top: 8,bottom: 0),
                                               child: GestureDetector(
                                                 onTap: () {
                                                   Navigator.pushNamed(context,
@@ -358,64 +367,74 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                 },
                                                 child: Container(
                                                     width: planWidth,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(0, 5, 0, 0),
-                                                      child: Row(
-                                                        children: [
-                                                          Radio(
-                                                              value: taskMap[taskPlans[
-                                                                              index]
-                                                                          .plan_id]
-                                                                      [subindex]
-                                                                  .task_id,
-                                                              groupValue: "",
-                                                              onChanged:
-                                                                  (value) {
-                                                                completeTask(
-                                                                  taskMap[taskPlans[index]
-                                                                              .plan_id]
-                                                                          [
-                                                                          subindex]
-                                                                      .task_id,
-                                                                );
-                                                              }),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets
+                                                              .fromLTRB(0, 5, 0, 0),
+                                                          child: Row(
                                                             children: [
-                                                              Container(
-                                                                child: Text(
-                                                                  (taskMap[taskPlans[index]
-                                                                              .plan_id])[
-                                                                          subindex]
-                                                                      .task_name,
-                                                                  style: const TextStyle(
-                                                                      color: GlobalVariables
-                                                                          .greyFontColor),
-                                                                ),
-                                                              ),
-                                                              (((taskMap[taskPlans[index].plan_id])[
-                                                                              subindex])
-                                                                          .deadline_date !=
-                                                                      null)
-                                                                  ? Container(
-                                                                      child:
-                                                                          Text(
-                                                                        DateFormat('MMM/d').format(DateTime.parse((((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date).split(' ')[0])) ??
-                                                                            '',
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.red,
-                                                                            fontSize: 12),
-                                                                      ),
-                                                                    )
-                                                                  : SizedBox(
-                                                                      width: 0,
-                                                                      height: 0,
+                                                              Radio(
+                                                                  value: taskMap[taskPlans[
+                                                                                  index]
+                                                                              .plan_id]
+                                                                          [subindex]
+                                                                      .task_id,
+                                                                  groupValue: "",
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    completeTask(
+                                                                      taskMap[taskPlans[index]
+                                                                                  .plan_id]
+                                                                              [
+                                                                              subindex]
+                                                                          .task_id,
+                                                                    );
+                                                                  }),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Container(
+                                                                    child: Text(
+                                                                      (taskMap[taskPlans[index]
+                                                                                  .plan_id])[
+                                                                              subindex]
+                                                                          .task_name,
+                                                                      style: const TextStyle(
+                                                                          color: GlobalVariables
+                                                                              .greyFontColor),
                                                                     ),
-                                                              (color[taskMap[taskPlans[index]
+                                                                  ),
+                                                                  (((taskMap[taskPlans[index].plan_id])[
+                                                                                  subindex])
+                                                                              .deadline_date !=
+                                                                          null)
+                                                                      ? Container(
+                                                                          child:
+                                                                              Text(
+                                                                            DateFormat('MMM/d').format(DateTime.parse((((taskMap[taskPlans[index].plan_id])[subindex]).deadline_date).split(' ')[0])) ??
+                                                                                '',
+                                                                            style: TextStyle(
+                                                                                color:
+                                                                                    Colors.red,
+                                                                                fontSize: 12),
+                                                                          ),
+                                                                        )
+                                                                      : SizedBox(
+                                                                          width: 0,
+                                                                          height: 0,
+                                                                        ),
+                                                                  
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          alignment: Alignment.bottomCenter,
+                                                          child: (color[taskMap[taskPlans[index]
                                                                               .plan_id]
                                                                           [
                                                                           subindex]
@@ -432,14 +451,14 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                                         .size
                                                                         .width *
                                                                     0.80,
-                                                              ):SizedBox(height: 0, width: 0,)
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )),
+                                                              ):SizedBox(height: 0, width: 0,),
+                                                        )
+                                                      ],
+                                                    )
+                                                    ),
                                               ),
-                                            ))
+                                            )
+                                            )
                                         : SizedBox(
                                             width: 0,
                                             height: 0,

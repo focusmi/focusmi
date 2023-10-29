@@ -21,6 +21,7 @@ const appointmentRouter = require("../routes/appointment");
 const userTRoutes = require("../routes/adminitrator");
 const mRouter = require("../routes/mindfulness_courses");
 const nRouter = require("../routes/notification_routes");
+const dRouter = require("../routes/daily_tips");
 
 dotenv.config()
 
@@ -46,6 +47,7 @@ app.use(appointmentRouter)
 app.use(userTRoutes)
 app.use(mRouter)
 app.use(nRouter)
+app.use(dRouter)
 
 
 

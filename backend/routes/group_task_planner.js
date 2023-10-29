@@ -436,9 +436,9 @@ gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
 })
 
 gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:user', auth ,async(req, res, next)=>{
-   console.log("inside")
+   console.log(req.params.value)
    try{
-      PomodoroTimer.attrSetter(req.params.attr, req.params.value, req.params.timer)
+      PomodoroTimer.attrSetter(req.params.attr, req.params.value, req.params.user)
    }
    catch(e){
       console.log("Route Error - set timer attributes")
@@ -447,6 +447,34 @@ gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:user', auth ,async(req, res, 
    }
    next()
 })
+
+gTaskRoutes.get('/api/reduce-turns/:userid',async(req, res, next)=>{
+   console.log("redusing")
+   try{
+      var result = await PomodoroTimer.attrGetter("rturns",req.params.userid)
+      console.log(result-1)
+      PomodoroTimer.attrSetter("rturns",result-1,req.params.userid)
+   }
+   catch(e){
+      console.log("Route Error - set timer attributes")
+      console.log(e)
+
+   }
+   next()
+})
+
+// gTaskRoutes.get('/api/get-timer-attr2/:attr/:user',async(req, res, next)=>{
+//    try{
+//       var result =  await PomodoroTimer.attrGetter(req.params.attr, req.params.user)
+//       res.send([result])
+//    }
+//    catch(e){
+//       console.log("Route Error - set timer attributes")
+//       console.log(e)
+
+//    }
+//    next()
+// })
 
 gTaskRoutes.post('/api/create-timer', auth, async(req, res, next)=>{
 
@@ -462,9 +490,10 @@ gTaskRoutes.post('/api/create-timer', auth, async(req, res, next)=>{
    next()
 })
 
-gTaskRoutes.get('/api/get-timer-attr/:user/:attr', auth, async(req, res, next)=>{
+gTaskRoutes.get('/api/get-timer-attr/:user/:attr', async(req, res, next)=>{
    try{
       console.log("inside the routes");
+      console.log(req.params.attr)
       var result = await PomodoroTimer.attrGetter(req.params.attr, req.params.user)
       res.send({'value':result})
    }
@@ -474,7 +503,7 @@ gTaskRoutes.get('/api/get-timer-attr/:user/:attr', auth, async(req, res, next)=>
       console.log(e)
    }
 
-   next()
+
 
 })
 
