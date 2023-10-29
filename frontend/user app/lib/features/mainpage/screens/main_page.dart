@@ -8,7 +8,10 @@ import 'package:focusmi/features/authentication/screens/auth_screen.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
+import 'package:focusmi/features/mindfulness_courses/screens/cat_courses.dart';
+import 'package:focusmi/features/mindfulness_courses/screens/course_content.dart';
 import 'package:focusmi/features/mindfulness_courses/screens/course_media_player.dart';
+import 'package:focusmi/features/mindfulness_courses/screens/levels.dart';
 import 'package:focusmi/features/mindfulness_courses/services/mindfulness_main_page_services.dart';
 import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/task_group.dart/screens/group_list.dart';
@@ -41,6 +44,30 @@ class _MainScreenState extends State<MainScreen> {
   late List<AdministrativeUser> therapists;
   late bool isNoti;
   late Notifications notification;
+  List<String> images = [
+    "med.jpg",
+    "stress.jpg",
+    "Sleep Well",
+    "Focus",
+    "Realtionship",
+    "Applied Mindfulness"
+  ];
+  List<String> pageNames = [
+    "meditation",
+    "stress relief",
+    "sleep well",
+    "focus",
+    "realtionship",
+    "applied mindfulness"
+  ];
+  List<String> name = [
+    "Meditation",
+    "Stress Relief",
+    "Sleep Well",
+    "Focus",
+    "Realtionship",
+    "Applied Mindfulness"
+  ];
   void getTaskPlanApi() async {
     try {
       Response response = await GTaskPlannerServices.getRecentTaskPlan();
@@ -48,6 +75,9 @@ class _MainScreenState extends State<MainScreen> {
       List<TaskPlan> result =
           list.map((model) => TaskPlan.fromJson(model)).toList();
       setState(() {
+        if (result.length > 2) {
+          result = result.sublist(0, 2);
+        }
         taskPlan = result;
       });
     } catch (e) {
@@ -175,13 +205,11 @@ class _MainScreenState extends State<MainScreen> {
                       GestureDetector(
                         onTap: () {
                           ElegantNotification.success(
-                                  title: Text(notification.type??''),
-                                  description:
-                                      Text(notification.text??''))
+                                  title: Text(notification.type ?? ''),
+                                  description: Text(notification.text ?? ''))
                               .show(context);
                         },
                         child: Container(
-                          
                           child: Icon(
                             Icons.notifications,
                             color: Colors.white,
@@ -218,13 +246,13 @@ class _MainScreenState extends State<MainScreen> {
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                               width: 0,
                             ),
                             Container(
                               height: 40,
                               width: width,
-                              alignment: Alignment.bottomLeft,
+                              alignment: Alignment.topLeft,
                               child: Text(
                                 "Recent Task Plans",
                                 style: TextStyle(
@@ -261,11 +289,15 @@ class _MainScreenState extends State<MainScreen> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.pushNamed(
-                                    context, CourseMediaPlayer.routeName);
+                                    context, CourseContentWidget.routeName,
+                                    arguments: featuredCourse[0]);
                               },
                               child: Container(
+                                // decoration: BoxDecoration(
+                                // border: Border.all(color: Colors.white)
+                                //),
                                 width: width * 0.9,
-                                height: 300,
+                                height: 270,
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     itemCount: featuredCourse.length,
@@ -309,7 +341,7 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                             ),
                             Container(
-                              height: 150,
+                              height: 120,
                               child: ListView.builder(
                                   itemCount: therapists.length,
                                   scrollDirection: Axis.horizontal,
@@ -323,7 +355,7 @@ class _MainScreenState extends State<MainScreen> {
                                             backgroundColor:
                                                 Colors.green, //color
                                             backgroundImage: NetworkImage(
-                                                '$uri/api/assets/image/user-profs/profile-0.jpg'),
+                                                '$uri/api/assets/image/user-profs/${therapists[index].image}'),
                                           ),
                                           Text(
                                             therapists[index].full_name ?? '',
@@ -342,22 +374,51 @@ class _MainScreenState extends State<MainScreen> {
                               height: 40,
                               width: width,
                               alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "Practice Mindfulness",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Practice Mindfulness",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 24),
+                                  ),
+                                ],
                               ),
                             ),
+                            Container(
+                              height: 200,
+                              child: ListView.builder(
+                                  itemCount: images.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, CatLevelWidget.routeName,arguments: pageNames[index]);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.43,
+                                          height: 70,
+                                          decoration: BoxDecoration(
+                                         
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      '$uri/api/assets/image/mind-course/${images[index]}'),
+                                                  fit: BoxFit.cover)),
+                                          child: Text(name[index]),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                            )
                           ]),
                         ),
                       ),
-                      Container(
-                          //task plans goes here
-
-                          ),
-                      Container(
-                          //mindfullness courses goes here
-                          )
                     ]),
                   ),
                 ),

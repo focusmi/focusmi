@@ -372,7 +372,13 @@ class _CountdownTimerState extends State<CountdownTimer> {
                       setState(() {
                         print("complete");
                         setBreak(true);
-                        Navigator.pushNamed(context, BreakView.routeName,arguments:[widget.task,bduration]);
+                        Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                          BreakView(task: widget.task, btime: bduration),
+                      ),
+                    );
                       });
                     },
                   ),

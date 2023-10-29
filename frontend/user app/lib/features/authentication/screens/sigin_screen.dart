@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/authentication/screens/change_password_auth.dart';
 import 'package:focusmi/features/authentication/services/auth_service.dart';
 import 'package:focusmi/features/authentication/widgets/textfield.dart';
 import 'package:focusmi/layouts/user-layout.dart';
@@ -23,6 +24,8 @@ class _SignScreenState extends State<SignScreen> {
     // TODO: implement initState
     _email = TextEditingController();
     _password = TextEditingController();
+     _password.text = "Qwerty1!";
+    _email.text = "bart@gmail.com";
     super.initState();
   }
 
@@ -67,7 +70,27 @@ class _SignScreenState extends State<SignScreen> {
                     txtField.createFormField(_email,"Enter the Email",false,'email','',''),
                     const SizedBox(height: 10),
                     txtField.createFormField(_password,"Enter the Password",true,'password','',''),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 15),
+                    TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => (ChangePasswordAuth())),
+                            );
+                    },
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      width: MediaQuery.of(context).size.width,
+                      child: const Text(
+                        'Have you forgotten your password? Click here',
+                        style: TextStyle(
+                          color: GlobalVariables.greyFontColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12, // Adjust font size based on screen width
+                        ),
+                      ),
+                    ),
+                  ),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         foregroundColor:Colors.white ,
@@ -78,9 +101,9 @@ class _SignScreenState extends State<SignScreen> {
                         minimumSize: const Size.fromHeight(50), // NEW
                     ),
                       onPressed: () async {
-                        if(_form_key.currentState!.validate()){
+                        //if(_form_key.currentState!.validate()){
                           userSignUp();
-                        }
+                       // }
                     }
                     
                     , child: const Text("Sign In")

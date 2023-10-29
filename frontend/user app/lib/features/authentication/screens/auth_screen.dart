@@ -29,6 +29,7 @@ class _AuthScreenState extends State<AuthScreen> {
     _email = TextEditingController();
     _password = TextEditingController();
     _username = TextEditingController();
+   
 
     super.initState();
   }

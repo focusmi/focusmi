@@ -18,6 +18,7 @@ class Task {
   String? deadline_time;
   String? reminder_time;
   String? reminder_date;
+  String? location;
 
   Task({
     required this.task_id,
@@ -36,6 +37,7 @@ class Task {
     this.deadline_time,
     this.reminder_time,
     this.reminder_date,
+    this.location,
   });
 
   Map<String, dynamic> toMap() {
@@ -56,6 +58,7 @@ class Task {
       'deadline_time': deadline_time,
       'reminder_time': reminder_time,
       'reminder_date': reminder_date,
+      'location': location,
     };
   }
 
@@ -77,6 +80,7 @@ class Task {
       deadline_time: map['deadline_time'] != null ? map['deadline_time'] as String : null,
       reminder_time: map['reminder_time'] != null ? map['reminder_time'] as String : null,
       reminder_date: map['reminder_date'] != null ? map['reminder_date'] as String : null,
+      location: map['location'] != null ? map['location'] as String : null,
     );
   }
 

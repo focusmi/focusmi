@@ -10,14 +10,18 @@ import "package:focusmi/features/chat_application/screens/chat_page.dart";
 import "package:focusmi/features/group_task_planner/screens/single_task_view.dart";
 import "package:focusmi/features/group_task_planner/screens/task_plan_view.dart";
 import "package:focusmi/features/mainpage/screens/main_page.dart";
-import "package:focusmi/features/mindfulness_courses/screens/course_mainpage.dart";
+import "package:focusmi/features/mindfulness_courses/screens/cat_courses.dart";
+import "package:focusmi/features/mindfulness_courses/screens/course_content.dart";
 import "package:focusmi/features/mindfulness_courses/screens/course_media_player.dart";
+import "package:focusmi/features/mindfulness_courses/screens/levels.dart";
 import "package:focusmi/features/pomodoro_timer/screens/break_view.dart";
 import "package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart";
 import "package:focusmi/features/task_group.dart/screens/create_group.dart";
 import "package:focusmi/features/task_group.dart/screens/edit_task_group.dart";
 import "package:focusmi/features/task_group.dart/screens/group_list.dart";
 import "package:flutter/material.dart";
+import "package:focusmi/models/course_level.dart";
+import "package:focusmi/models/mindfulnesscourses.dart";
 import "package:focusmi/models/subtask.dart";
 import "package:focusmi/models/task.dart";
 import "package:focusmi/models/taskgroup.dart";
@@ -101,9 +105,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => SubscriptionPackagesPage(),
       );
     case CourseMediaPlayer.routeName:
+      final  MindfulnessCourse course = (routeSettings.arguments as List<dynamic>)[1];
+      final MindfulnessCourseLevel level = (routeSettings.arguments as List<dynamic>)[0];
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => CourseMediaPlayer(),
+        builder: (context) => CourseMediaPlayer(level: level,course: course,),
       );
     case ChatRoom.routeName:
       final int arg = routeSettings.arguments as int;
@@ -118,7 +124,28 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       final int btime = (routeSettings.arguments as List<dynamic>)[1];
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => BreakView(task: args,btime: btime,),
+        builder: (context) => BreakView(
+          task: args,
+          btime: btime,
+        ),
+      );
+    case LevelsWidget.routeName:
+      final MindfulnessCourse args = (routeSettings.arguments as MindfulnessCourse);
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => LevelsWidget(course: args,),
+      );
+    case CourseContentWidget.routeName:
+      final MindfulnessCourse args = (routeSettings.arguments as MindfulnessCourse);
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => CourseContentWidget(course:args),
+      );
+    case CatLevelWidget.routeName:
+      final String args = (routeSettings.arguments as String);
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => CatLevelWidget(type: args,)
       );
     default:
       return MaterialPageRoute(

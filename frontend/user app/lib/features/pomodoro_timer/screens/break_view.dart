@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/pomodoro_timer/widgets/count_down_timer_2.dart';
 import 'package:story_view/story_view.dart';
 
 import 'package:focusmi/features/group_task_planner/screens/single_task_view.dart';
@@ -25,7 +26,7 @@ class _BreakViewState extends State<BreakView> {
   final StoryController controller = StoryController();
   @override
   void initState() {
-    Timer(Duration(seconds: widget.btime), (){
+    Timer(Duration(seconds: widget.btime*60), (){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> 
       SingleTaskView(task: widget.task,)));
 });
@@ -33,20 +34,14 @@ class _BreakViewState extends State<BreakView> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Delicious Ghanaian Meals"),
-      ),
-      body: Container(
-        margin: EdgeInsets.all(
-          8,
-        ),
-        child: ListView(
-          children: <Widget>[
-            Column(
-              children: [
-                Text(widget.task.task_name),
-                Text(widget.btime.toString()),
+    return Stack(
+      children: <Widget>[
+        Container(
+            margin: EdgeInsets.all(
+              8,
+            ),
+            child: ListView(
+              children: <Widget>[
                 Container(
                   height: 800,
                   child: StoryView(
@@ -108,42 +103,51 @@ class _BreakViewState extends State<BreakView> {
                     inline: true,
                   ),
                 ),
-              ],
-            ),
-            Material(
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => MoreStories()));
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(8))),
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
+                Material(
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => MoreStories()));
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius:
+                              BorderRadius.vertical(bottom: Radius.circular(8))),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Text(
+                            "View more stories",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        "View more stories",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+          Column(
+            children: [
+              SizedBox(height: 500,),
+              Container(
+             
+                alignment: Alignment.bottomCenter,
+                child: TextualCTimer(minutes: widget.btime)
+              ),
+            ],
+          )
+      ],
     );
   }
 }

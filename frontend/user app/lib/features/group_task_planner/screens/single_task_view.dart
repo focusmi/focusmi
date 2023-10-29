@@ -62,7 +62,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   late List<TaskPlan> taskPlan;
   late List<String> taskNames;
   late List<GroupMember> taskUser;
-  
+  late String? taskLocation;
 
   static final kInitialPosition = LatLng(-33.8567844, 151.213108);
   @override
@@ -72,7 +72,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     subTasks = [];
     taskUser = [];
     subTaskAllocation = {};
-0;
+    0;
     memberList = List<GroupMember>.empty(growable: true);
     showMemeberList = List<GroupMember>.empty(growable: true);
     selectedMemberList = List<GroupMember>.empty(growable: true);
@@ -93,6 +93,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     nowtime = '';
     showDateTime2 = null;
     showTime2 = null;
+    taskLocation = null;
     nowtime2 = '';
     descriptionval = '';
     subAllocated = {};
@@ -108,6 +109,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     refreshSubTaskAllocation();
     refreshTaskDescription();
     checkSubTaskUser();
+    refreshTaskLocation();
     changeTitle = false;
     refreshGroupUsers();
   }
@@ -125,6 +127,18 @@ class _SingleTaskViewState extends State<SingleTaskView> {
       GTaskPlannerServices.setTaskAttr('deadline_time', taskid,
           "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void refreshTaskLocation() async {
+    try {
+      var result =
+          await GTaskPlannerServices.getTaskAttr('location', widget.task.task_id);
+      print("location here");
+      print(result.body);
+      print("location here");
     } catch (e) {
       print(e);
     }
@@ -295,6 +309,16 @@ class _SingleTaskViewState extends State<SingleTaskView> {
         print("--------------------------------------");
       }
     } catch (e) {
+      print(e);
+    }
+  }
+
+  void addTaskLocation(location) {
+    try {
+      GTaskPlannerServices.setTaskAttr(
+          'location', widget.task.task_id, location);
+    } catch (e) {
+      print("error in the location");
       print(e);
     }
   }
@@ -945,6 +969,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                         onPlacePicked: (PickResult result) {
                                           print(
                                               "Place picked: ${result.formattedAddress}");
+                                          addTaskLocation(
+                                              "{$result.formattedAddress}");
                                           Navigator.of(context).pop();
                                         },
                                         initialPosition: kInitialPosition,
