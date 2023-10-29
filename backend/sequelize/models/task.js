@@ -36,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     description:DataTypes.TEXT,
     created_at:DataTypes.DATE,
     deadline_time:DataTypes.STRING,
-    deadline_date:DataTypes.STRING
+    deadline_date:DataTypes.STRING,
+    reminder_time:DataTypes.STRING,
+    reminder_date:DataTypes.STRING
+    
   }, {
     sequelize,
     modelName: 'task',

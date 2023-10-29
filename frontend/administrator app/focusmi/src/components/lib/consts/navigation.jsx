@@ -5,7 +5,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     {
         key :'dashboard',
         lable : 'Dashboard',
-        path : '/login/dashboard',
+        path : '/dashboard',
         icon: <FiHome/>
     },
     {
@@ -29,7 +29,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     {
         key :'daily tips',
         lable : 'Daily Tips',
-        path : '/daily-tips',
+        path : '/daily_tips',
         icon: <FiSun/>
     },
 ]

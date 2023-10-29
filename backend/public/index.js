@@ -19,6 +19,8 @@ const {task_group} = require("../sequelize/models");
 const assetRouter = require("../routes/asset_routes");
 const appointmentRouter = require("../routes/appointment"); 
 const userTRoutes = require("../routes/adminitrator");
+const mRouter = require("../routes/mindfulness_courses");
+const nRouter = require("../routes/notification_routes");
 
 dotenv.config()
 
@@ -42,6 +44,8 @@ app.use(authRouterTherapist)
 app.use(ScheduleRouter)
 app.use(appointmentRouter)
 app.use(userTRoutes)
+app.use(mRouter)
+app.use(nRouter)
 
 
 
@@ -49,10 +53,19 @@ app.use(userTRoutes)
 const PORT = process.env.PORT || 3000
 
 //connection
-try{
-    app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
 
-}
-catch{
-    console.log("Server failed");
-}
+    var server = app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
+
+    const io =  require('socket.io')(server,{
+        
+    });
+    io.on('connection', (socket)=>{
+        console.log("connnected successfully",socket.id);
+        socket.on('disconnect',()=>{
+            console.log("Disconnected", socket.id)
+        });
+        socket.on("message", (data)=>{
+            console.log(data);
+            socket.broadcast.emit("message-receive",data)
+        })
+    });

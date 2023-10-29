@@ -2,7 +2,7 @@ const {blog} = require("../sequelize/models");
 
 class Blog{
     constructor(user_id, title, subtitle, description){
-        this,user_id = user_id;
+        this.user_id = user_id;
         this.title = title;
         this.subtitle = subtitle;
         this.description = description

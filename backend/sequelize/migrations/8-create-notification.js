@@ -2,8 +2,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('blog', {
-      blog_id: {
+    await queryInterface.createTable('notification', {
+      noti_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -12,21 +12,27 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         references:{
-          model:'administrative_user',
+          model:'application_user',
           key:'user_id'
         }
       },
-      title: {
+      text: {
         type: Sequelize.TEXT
       },
-      status:{
-        type:Sequelize.TEXT
-      },
-      subtitle: {
+      status: {
         type: Sequelize.TEXT
       },
-      description: {
+      type: {
         type: Sequelize.TEXT
+      },
+      group_id: {
+        type: Sequelize.INTEGER
+      },
+      task_id: {
+        type: Sequelize.INTEGER
+      },
+      payment_id: {
+        type: Sequelize.INTEGER
       },
       created_at: {
         type: Sequelize.DATE
@@ -37,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('blog');
+    await queryInterface.dropTable('notification');
   }
 };

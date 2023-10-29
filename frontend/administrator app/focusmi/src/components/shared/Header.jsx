@@ -3,6 +3,8 @@ import { FiSearch,FiBell,FiMessageSquare } from 'react-icons/fi';
 import { Popover,Transition,Menu} from '@headlessui/react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import classnames from 'tailwindcss-classnames';
+import logo from '../../Assets/logo.png';
+
 
 function Header() {
   let userdata = window.localStorage.getItem('user')
@@ -11,12 +13,13 @@ function Header() {
   return (
     <div className='h-[100px] mx-auto px-4 bg-[#55a06a] text-white flex justify-between items-center'>
       {/* ********************************** */}
+      <div className='flex items-center gap-2 px-2 py-6 h-[100px]'> <img src={logo} alt="focusMi"  className='h-[40px] w-auto mx-auto'/> </div>
 
-      <div className='relative flex pl-2 border rounded-sm bg-white text-green-600' >
+      {/* <div className='relative flex pl-2 border rounded-sm bg-white text-green-600' >
         <FiSearch className='my-auto'/>
         <input type="text" placeholder='Search ...' className='text-sm  focus:outline-none active:outline-none  h-10 w-[300px] p-3'/>
 
-      </div>
+      </div> */}
       <div className='flex itemes-center gap-2 mr-2 h-10'>
         <p className='m-auto'>{user.email}</p>
 

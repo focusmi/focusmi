@@ -3,8 +3,9 @@ import React, { useState } from 'react';
 
 
 
-const LevelContentEditor = ({ courseID, onSave }) => {
+const EditLevelPopup = ({ levelData, courseID, onSave }) => {
   const [errors, setErrors] = useState({});
+  const [courseLevelData, setCourseLevelData] = useState({...levelData });
   const validateForm = () => {
     const newErrors = {};
 
@@ -16,22 +17,16 @@ const LevelContentEditor = ({ courseID, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const [courseLevelData, setCourseLevelData] = useState({
-    // course_id: courseID , // Set course_id from the URL
-    level_name: '',
-    level_description: '',
-    reference: '',
-    media_type: '',
-    audio: null, // For audio file upload
-  });
+  
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCourseLevelData({
-      ...courseLevelData,
-      [name]: value,
-    });
-  };
+
+ const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setCourseLevelData((prevData) => ({
+    ...prevData,
+    [name]: value,
+  }));
+};
 
   const handleAudioUpload = (e) => {
     const audioFile = e.target.files[0];
@@ -41,36 +36,39 @@ const LevelContentEditor = ({ courseID, onSave }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData();
-      // formData.append('course_id', courseLevelData.course_id);
-      formData.append('course_id', courseID);
-      formData.append('level_name', courseLevelData.level_name);
-      formData.append('level_description', courseLevelData.level_description);
-      formData.append('reference', courseLevelData.reference);
-      formData.append('media_type', courseLevelData.media_type);
-      formData.append('audio', courseLevelData.audio);
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const formData = new FormData();
+//       // formData.append('course_id', courseLevelData.course_id);
+//       formData.append('course_id', courseID);
+//       formData.append('level_name', courseLevelData.level_name);
+//       formData.append('level_description', courseLevelData.level_description);
+//       formData.append('reference', courseLevelData.reference);
+//       formData.append('media_type', courseLevelData.media_type);
+//       formData.append('audio', courseLevelData.audio);
 
-      const response = await axios.post('http://localhost:3001/api/create-course-level', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+//       const response = await axios.post('http://localhost:3001/api/create-course-level', formData, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
 
-      console.log('Course level created:', response.data);
-      // You can handle the response or navigation after creating the course level
-      window.location.reload();
-    } catch (error) {
-      console.error('Error creating course level:', error);
-    }
+//       console.log('Course level created:', response.data);
+//       // You can handle the response or navigation after creating the course level
+//       window.location.reload();
+//     } catch (error) {
+//       console.error('Error creating course level:', error);
+//     }
+//   };
+const handleSave = () => {
+    onSave(courseLevelData);
   };
 
   return (
     <div className='flex flex-col items-center' >
       <div className="bg-white shadow-2xl p-4 rounded-md mt-9 w-[800px] h-[400px] pt-10 ml-8 relative ">
-        <form onSubmit={handleSubmit} className="w-full" >
+        <form onSubmit={handleSave} className="w-full" >
         <div className="flex justify-center gap-10 py-2">
           <label className="flex items-center text-black w-[300px]" style={{ display: 'none' }}>Course ID </label>
           <input
@@ -150,8 +148,9 @@ const LevelContentEditor = ({ courseID, onSave }) => {
             type='submit'
             className="my-2 text-white px-4 py-2 rounded mr-2 bg-[#83DE70] hover:bg-[#55a06a]"
           >
-            Create Level
+            Update Level   
           </button>
+          
           </div>
 
           
@@ -164,4 +163,4 @@ const LevelContentEditor = ({ courseID, onSave }) => {
 );
 };
 
-export default LevelContentEditor;
+export default EditLevelPopup;

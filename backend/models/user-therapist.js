@@ -1,7 +1,7 @@
 const {administrative_user} = require("../sequelize/models")
 
 class UserTherapist{
-    constructor(user_id, username, full_name, role, email, phone_number, about, account_status, years_of_experience, tot_clients, password, title,nic){
+    constructor(user_id, username, full_name, role, email, phone_number, about, account_status, years_of_experience, tot_clients, password, title,nic,image){
         this.user_id = user_id
         this.username = username
         this.full_name =  full_name
@@ -15,6 +15,7 @@ class UserTherapist{
         this.password = password
         this.title = title
         this.nic = nic
+        this.image = image
     }
 
     static  async createTherapist(user){
@@ -46,7 +47,6 @@ class UserTherapist{
 
         );
         return result
-
     }
 
     static async deleteuser(userid){
@@ -58,18 +58,17 @@ class UserTherapist{
     }
 
     static async updateuser(userid, user){
-        // console.log(user.full_name)
         administrative_user.update({
-                full_name:user.full_name,
-                role:'therapist',
-                email:user.email,
-                phone_number:user.phone_number,
-                nic:user.nic
-        },{
-            where:{
-                user_id:userid
-            }
-        })
+            full_name:user.full_name,
+            role:'therapist',
+            email:user.email,
+            phone_number:user.phone_number,
+            nic:user.nic
+    },{
+        where:{
+            user_id:userid
+        }
+    })
     }
 }
 

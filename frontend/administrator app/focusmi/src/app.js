@@ -8,16 +8,13 @@ import Counsellors from './components/counsellors/Counsellors';
 import AddCounselors from './components/counsellors/AddCounsellors';
 import CoursesPage from './components/Courses/CoursesPage';
 import AddCoursePage from './components/Courses/AddCoursePage';
-import CreateCoursePage from './components/Courses/CreateCoursePage';
 import LevelContentEditor from './components/Courses/LevelContentEditor';
 import CreateTips from './components/DailyTips/CreateTips';
 import DailyTipsMain from './components/DailyTips/DailyTipsMain';
-
-
-
 import Reports from './components/Reports/Reports';
 import IncomeStatement from './components/Reports/IncomeStatement';
 import HelpSupportPage from './components/shared/HelpSupportPage';
+import ViewCourse from "./components/Courses/ViewCourse";
 
 
 export default function App(){
@@ -43,7 +40,7 @@ export default function App(){
                         <Route path="add-counsellors" element={<AddCounselors/>}/>
                         <Route path="courses" element={<CoursesPage/>}/>
                         <Route path="add-courses" element={<AddCoursePage/>}/>
-                        <Route path="create-courses" element={<CreateCoursePage/>}/>
+                        <Route path="courses/:courseID" element={<ViewCourse />} />
                         <Route path="edit-levels" element={<LevelContentEditor/>}/>
                         <Route path="daily_tips" element={<DailyTipsMain/>}/>
                         <Route path="create-tips" element={<CreateTips/>}/>
@@ -51,9 +48,6 @@ export default function App(){
                         <Route path="reports" element={<Reports/>}/>
                         <Route path="income-statement" element={<IncomeStatement/>}/>
                     </Route>
-                                       
-                        
-                
                     </Routes>
                </BrowserRouter>
             </React.Fragment>

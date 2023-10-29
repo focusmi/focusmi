@@ -8,11 +8,36 @@ const { request } = require('http');
 const TaskPlan = require('../models/taks_plan');
 const Task = require('../models/task');
 const {task_plan} = require('../sequelize/models');
+const {task, sub_task, application_user} = require('../sequelize/models');
 const pool = require('../database/dbconnection');
 const Blog = require('../models/blog');
+const PomodoroTimer = require('../models/pomodoro_timer');
+const SubTask = require('../models/sub_task');
+const { runInNewContext } = require('vm');
+const { Op } = require('sequelize');
+const UserChat = require('../models/user_chat');
+const { copyFileSync } = require('fs');
+const { addMessage } = require('../models/user_chat');
 let gTaskRoutes = express.Router();
 
 //cusomer route hadnling
+
+
+gTaskRoutes.get('/api/get-user-by-id/:userid',auth,async(req,res,next)=>{
+   try{
+      var result = await application_user.findOne({
+         user_id:req.params.userid
+      })
+      res.send([result])
+   }
+   catch (e){
+      res.status(400);
+      res.send({'msg':'User not verified'});
+ 
+   }
+   next();
+})
+
 
 gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    try{
@@ -51,22 +76,21 @@ gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
 
 gTaskRoutes.post('/api/add-group-user',async(req,res,next)=>{
    try{
-       const userID = isAuth(req, res);
-       console.log(userID);
-       if(userID){
+     //  const userID = isAuth(req, res);
+   //
           
           var Group =new TaskGroup();
           var reqBody = req.body;
           Group.group_id= reqBody.group_id;
           
-          var result = await Group.addGroupUser(reqBody.status,reqBody.user);
+          var result = await Group.addGroupUser(reqBody.group_id,reqBody.user);
           if(result){
             res.status(200).send({"msg":"Successful"});
           }
           else{
             res.status(400).send({"msg":"User not added"});
           }
-       }
+    //   }
        
 
    }
@@ -112,6 +136,22 @@ gTaskRoutes.get('/api/get-group-members/:groupID',auth,async(req,res,next)=>{
    }
 })
 
+gTaskRoutes.get('/api/get-group-members-by-task/:taskID',auth,async(req,res,next)=>{
+   var id = (req.user)[0]
+   id = id.user_id;
+   try{
+      var result = await task.findOne({task_id:req.params.taskID});
+      result = await task_plan.findOne({plan_id:result.dataValues.plan_id})
+      result = await pool.cQuery(`Select * from application_user left join group_user on group_user.user_id=application_user.user_id where group_id=${result.dataValues.group_id} and application_user.user_id<>${id}`)
+      console.log(result)
+      res.send(result)
+   }
+   catch(e){
+      console.log(e);
+      res.send({})
+   }
+})
+
 gTaskRoutes.get('/api/add-group-member/:userid/:groupid',auth,(req, res, next)=>{
    const userid = req.params.userid;
    const groupid = req.params.groupid;
@@ -131,8 +171,15 @@ gTaskRoutes.get('/api/add-group-member/:userid/:groupid',auth,(req, res, next)=>
 
 gTaskRoutes.post('/api/add-task',auth,async(req, res, next)=>{
    try{
-      Task.createTask(req.body)
-      
+      Task.createTask({
+         plan_id:req.body.plan_id,
+         timer_id:0,
+         duration:0,
+         task_status:'pending',
+         priority:req.body.priority,
+         
+         
+      })     
    }
    catch(e){
       print(e)
@@ -171,6 +218,18 @@ gTaskRoutes.get('/api/remove-group-member/:userid/:groupid',auth,async(req, res,
    next();
 })
 
+gTaskRoutes.get('/api/get-task-by-plan/:planid',auth,async(req, res, next)=>{
+   const planid = req.params.planid;  
+   try{
+      var task = await Task.getPlanTask(planid)
+      res.send(task)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next();
+})
+
 gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
    try{
       var userID=req.user;
@@ -191,7 +250,6 @@ gTaskRoutes.post('/api/create-task-plan',auth,async(req, res, next)=>{
 gTaskRoutes.post('/api/rename-task-plan',auth,(req , res, next)=>{
    try{
       const taskPlan = new TaskPlan()
-      console.log(req.body.plan_id+"------"+req.body.plan_name)
       taskPlan.renameTaskPlan(req.body.plan_id,req.body.plan_name)
    }
    catch(e){
@@ -213,6 +271,19 @@ gTaskRoutes.get('/api/get-plan-task/:planid',auth,async(req,res,next)=>{
    next()
 })
 
+
+gTaskRoutes.get('/api/get-task-by-plan-user/:planid',auth,async(req,res,next)=>{
+   var user = (req.user)[0];
+   try{
+      var result = await Task.getPlanTaskByUser(req.params.planid,user.user_id)
+      res.status(200).send(result)
+   }
+   catch(e){
+      console.log(e)
+      res.send(400).send({})
+   }
+   next()
+})
 gTaskRoutes.post('/api/update-task-name/',auth,async(req,res,next)=>{
    try{
       var result =await Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
@@ -295,7 +366,6 @@ gTaskRoutes.get('/api/get-all-blogs',auth, async(req, res, next)=>{
 })
 
 gTaskRoutes.post('/api/create-blog',auth,async(req, res, next)=>{
-   console.log("hit")
    var userID = req.user;
    userID = ((userID)[0]).user_id
    try{
@@ -308,5 +378,264 @@ gTaskRoutes.post('/api/create-blog',auth,async(req, res, next)=>{
    }
    next()
 })
+
+gTaskRoutes.post('/api/chanage-task-color', auth, async(req, res, next)=>{
+   var userID = req.user;
+   userID = ((userID)[0]).user_id
+   try{
+      Task.addColor(req.body.task_id, req.body.color)
+      res.send(true)
+   }
+   catch(e){
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/set-task-attr/:task/:attr/:val',auth, async(req, res, next)=>{
+   var userID = req.user;
+   try{
+      
+      Task.setAttribute(req.params.attr,req.params.task,req.params.val)
+      res.send(true)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-task-attr/:task/:attr',auth, async(req, res, next)=>{
+   var userID = req.user; 
+   console.log(req.params.attr)
+   try{
+      var val = await task.findOne(
+         {
+            where:{
+               task_id:req.params.task
+            }
+         });
+      val =  val[`${req.params.attr}`]
+      res.send({value:val})
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/set-timer-attr/:attr/:value/:user', auth ,async(req, res, next)=>{
+   console.log("inside")
+   try{
+      PomodoroTimer.attrSetter(req.params.attr, req.params.value, req.params.timer)
+   }
+   catch(e){
+      console.log("Route Error - set timer attributes")
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/create-timer', auth, async(req, res, next)=>{
+
+   try{
+      PomodoroTimer.createTimer(req.body)
+
+   }
+   catch(e){
+      console.log("Route Error - create timer")
+      console.log(e)
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-timer-attr/:user/:attr', auth, async(req, res, next)=>{
+   try{
+      console.log("inside the routes");
+      var result = await PomodoroTimer.attrGetter(req.params.attr, req.params.user)
+      res.send({'value':result})
+   }
+   catch(e){
+
+      console.log("Route Error - get timer attribute")
+      console.log(e)
+   }
+
+   next()
+
+})
+
+gTaskRoutes.post('/api/create-subtask', auth, async(req, res, next)=>{
+   console.log("inside create subtask")
+   try{
+      SubTask.createSubTask(req.body) 
+   }
+   catch(e){
+      console.log("creating sub task")
+      console.log(e)
+   }
+   next();
+})
+
+gTaskRoutes.get('/api/set-subtask-attr/:type/:staskid/:value', auth , async(req, res, next)=>{
+   try{     
+      SubTask.setSubTaskAttr(req.params.type, req.params.staskid, req.params.value)
+   }
+   catch(e){
+      console.log("task attribute")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-stask-attr/:task/:attr',auth, async(req, res, next)=>{
+   var userID = req.user; 
+   console.log(req.params.attr)
+   try{
+      var val = await task.findOne(
+         {
+            where:{
+               stask_id:req.params.task
+            }
+         });
+      val =  val[`${req.params.attr}`]
+      res.send({value:val})
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
+   try{
+      var subtask=await pool.cQuery(`Select * from sub_task where task_id=${req.params.taskid}`);
+      
+      var result = subtask
+      res.send(result)
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/allocate-subtask-users/:task_id/:user_id',auth ,async(req, res, next)=>{
+   
+   try{
+      SubTask.allocateTaskUser(req.params.task_id, req.params.user_id)
+
+   }
+   catch(e){
+      console.log(e)
+      console.log("allocate sub task user error")
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-subtask-users/:taskid', auth , async(req, res, next)=>{
+   try{
+      var result = await SubTask.getAllocatedUsers(req.params.taskid)
+      res.send({'value':result});
+   }
+   catch(e){
+      console.log(e)
+      console.log("get sub task users")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/allocate-task-users/:taskid/:userid',auth ,async(req, res, next)=>{
+   try{
+      Task.allocateTaskUser(req.params.taskid, req.params.userid)
+   }
+   catch(e){
+      console.log(e)
+      console.log("allocate sub task user error")
+
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-task-users/:taskid', auth , async(req, res, next)=>{
+   try{
+      var result = await Task.getAllocatedUsers(req.params.taskid)
+      res.send({'value':result});
+   }
+   catch(e){
+      console.log(e)
+      console.log("get sub task users")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-plan-by-plan/:planid', async(req, res, next)=>{
+   try{
+      var result = await task_plan.findOne({
+         where:{
+            plan_id:req.params.planid
+         }
+      })
+      result = await task_plan.findAll({
+         where:{
+            group_id:result.dataValues.group_id,
+            plan_id:{[Op.not] : result.dataValues.plan_id}
+
+         }
+      })
+      //result = result[0].group_id
+      if(result == null){
+         res.send(0)
+      }
+      else{
+         res.send(result)
+      }
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/create-chat/:groupid', auth, async(req, res, next)=>{
+   try{
+      UserChat.createChat(req.params.groupid)
+   }
+   catch(e){
+      console.log("Error in create chat")
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.post('/api/add-chat-message', auth, async(req, res, next)=>{
+   try{
+      UserChat.addMessage(req.body)
+   }
+   catch(e){
+      console.log(e)
+      console.log("Error in adding message")
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/get-chat-message/:groupid', auth,  async(req, res, next)=>{
+   try{
+     var result = await UserChat.getChatMessage(req.params.groupid)
+     res.send(result)
+   }
+   catch(e){
+      console.log("Error in get chat message")
+      console.log(e)
+   }
+   next()
+})
+
+
+
+
 
 module.exports = gTaskRoutes;

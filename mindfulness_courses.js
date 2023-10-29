@@ -4,52 +4,48 @@ const pool = require('../database/dbconnection')
 const imageUpload = require('../middleware/multer')
 const CourseUser = require('../models/course_user')
 const {mindfulness_course, course_level} = require('../sequelize/models')
+const auth = require('../tokens/auth')
 
 let mRouter = express.Router()
 /* ----------------------------------------*/
 //course-types meditation, stress relief, sleep well, focus, realtionship, applied mindfulness
 //subscribe_type free, paid
 //course status published, drafted
-mRouter.post('/api/create-course',imageUpload.single('image'), async(req, res, next)=>{
+mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, next)=>{
     try{
-        // console.log(req.file)
-        // console.log(req.body)
-        const newCourse= await mindfulness_course.create({
+        var result=await mindfulness_course.create({
           title:req.body.title,
           description:req.body.description,
-          skill:req.body.skillType,
+          skill:req.body.skill,
           duration:req.body.duration,
           rating:req.body.rating,
-          image:req.file.filename,
-          course_status:'drafted',
+          //image:req.file.filename,
+          course_status:req.body.course_status,
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
-        });
-
+        })
         //result come as [courseid]
-        res.send([newCourse.dataValues.course_id])
-        // res.status(201).json({ message: 'Course created successfully', course: newCourse });
+        res.send([result.dataValues.course_id])
    
     }
     catch(eq){
         console.log(eq)
         console.log("create course")
-    } 
+    }
     next()
 })
 
-mRouter.get('/api/get-course/:courseid', async(req, res, next)=>{
+mRouter.post('/api/get-course/:courseid',(req, res, next)=>{
     try{
-        const result = await mindfulness_course.findOne({
-            where: { course_id: req.params.courseid },
+        var result = mindfulness_course.findOne({
+            course_id:courseid
         })
-        // console.log(result)
 
         res.send(result)
    
     }
     catch(eq){
-        console.log(eq)
+        console.log("create course")
     }
     next()
 })
@@ -102,18 +98,6 @@ mRouter.get('/api/get-all-featured-courses',async(req, res, next)=>{
     next()
 })
 
-mRouter.get('/api/get-all-courses',async(req, res, next)=>{
-    try{
-        var course =await pool.cQuery("Select * from mindfulness_course ")
-        res.send(course)
-
-    }
-    catch(e){
-        console.log("get all courses")
-    }
-    next()
-})
-
 mRouter.get("/api/create-course-user/:userid/:courseid", async(req, res, next)=>{
     try{
         CourseUser.allocateCourseUser(req.params.userid, req.params.courseid)
@@ -142,25 +126,10 @@ mRouter.post('/api/create-course-level',imageUpload.single('audio'),async(req, r
         console.log(eq)
         console.log("create course level")
     }
-   next()
+    next()
 })
 
 mRouter.get('/api/get-course-level/:courseid',  async(req, res, next)=>{
-    try{
-       var result =  await course_level.findOne({
-            where:{
-                course_id:req.params.courseid
-            }
-       }) 
-       res.send(result)
-    }
-    catch(e){
-        console.log(e)
-        console.log("create course level")
-    }
-    next()
-})
-mRouter.get('/api/get-course-levels/:courseid',  async(req, res, next)=>{
     try{
        var result =  await course_level.findAll({
             where:{
@@ -175,6 +144,7 @@ mRouter.get('/api/get-course-levels/:courseid',  async(req, res, next)=>{
     }
     next()
 })
+
 mRouter.get('/api/get-course-level-by-courselevel/:level',  async(req, res, next)=>{
     try{
        var result =  await course_level.findOne({
@@ -188,8 +158,25 @@ mRouter.get('/api/get-course-level-by-courselevel/:level',  async(req, res, next
         console.log(e)
         console.log("create course level")
     }
-   next()
+    next()
 })
+
+mRouter.get('/api/get-similar-courses/:coursetype', auth,async(req, res, next)=>{
+    try{
+        var result = await mindfulness_course.findAll({
+            where:{
+                course_type:req.params.coursetype
+            }
+        })
+        result = result.map(course => course.dataValues);
+        res.send(result)
+    }
+    catch(e){
+
+    }
+    next()
+})
+
 
 
 

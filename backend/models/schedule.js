@@ -23,6 +23,7 @@ const Schedule = {
     }
   },
 
+
   getScheduleDataForUser: async (userId) => {
     try {
       const query = `SELECT

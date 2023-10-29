@@ -20,6 +20,8 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
     licenseImage: '',
   });
 
+  const [showErrors, setShowErrors] = useState(false);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
@@ -27,7 +29,7 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
       [name]: value,
     }));
 
-    validateField(name, value);
+    // validateField(name, value);
   };
 
   const handleFileChange = (event) => {
@@ -39,39 +41,32 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
   };
 
 
-  const validateField = async (name, value) => {
-    try {
-      // Define a validation schema for the specific field
-      const fieldSchema = yup.object().shape({
-        name: yup.string().required('Name is required'),
-        contactNumber: yup.string().required('Contact number is required'),
-        nic: yup.string().required('NIC is required'),
-        email: yup.string().email('Invalid email format').required('Email is required'),
-      });
+  // const validateField = async (name, value) => {
+  //   try {
+  //     // Define a validation schema for the specific field
+  //     const fieldSchema = yup.object().shape({
+  //       name: yup.string().required('Name is required'),
+  //       contactNumber: yup.string().required('Contact number is required'),
+  //       nic: yup.string().required('NIC is required'),
+  //       email: yup.string().email('Invalid email format').required('Email is required'),
+  //     });
 
-      // Validate the field
-      await fieldSchema.validateAt(name, { [name]: value });
+  //     // Validate the field
+  //     await fieldSchema.validateAt(name, { [name]: value });
 
-      // Clear the validation error for this field
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: '',
-      }));
-    } catch (validationError) {
-      // Set the validation error for this field
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: validationError.message,
-      }));
-    }
-  };
-
-
-  
-
-
-
-
+  //     // Clear the validation error for this field
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: '',
+  //     }));
+  //   } catch (validationError) {
+  //     // Set the validation error for this field
+  //     setErrors((prevErrors) => ({
+  //       ...prevErrors,
+  //       [name]: validationError.message,
+  //     }));
+  //   }
+  // };
 
 
 
@@ -85,6 +80,7 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
     try {
       await validationSchema.validate(formData, { abortEarly: false });
       setErrors({});
+      setShowErrors(false);
       const response = await axios.post('http://localhost:3001/api/create-therapist', formData);
 
       console.log('Form data submitted:', formData);
@@ -98,6 +94,7 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
       onClose(); 
     } catch (error) {
       console.error(error);
+      setShowErrors(true);
       // Handle errors here
     }
   };
@@ -112,16 +109,19 @@ const AddCounsellors = ({ isOpen, onClose, onAdd }) => {
 
 
   useEffect(() => {
-    validationSchema.validate(formData, { abortEarly: false })
-      .then(() => setErrors({})) // No errors initially
-      .catch((validationErrors) => {
-        const newErrors = {};
-        validationErrors.inner.forEach((error) => {
-          newErrors[error.path] = error.message;
+    if (showErrors) {
+      // Only validate when showErrors is true
+      validationSchema.validate(formData, { abortEarly: false })
+        .then(() => setErrors({})) // No errors initially
+        .catch((validationErrors) => {
+          const newErrors = {};
+          validationErrors.inner.forEach((error) => {
+            newErrors[error.path] = error.message;
+          });
+          setErrors(newErrors);
         });
-        setErrors(newErrors);
-      });
-  }, []);
+    }
+  }, [showErrors, formData]);
 
  
   
