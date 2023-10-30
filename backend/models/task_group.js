@@ -5,6 +5,7 @@ const {task_group,application_user} = require("../sequelize/models");
 const {group_user} = require("../sequelize/models");
 const { json } = require("sequelize");
 const { sendMail } = require("./core/email");
+const UserNotification = require("./user_notification");
 
 class TaskGroup{
     
@@ -22,19 +23,27 @@ class TaskGroup{
             
             const d = new Date();
             var date=d.toISOString();
+            
+
             // var res = pool.cQuery(`Insert into task_group (group_name,status,"creator_id") values('${this.group_name}','${this.status}',${this.creator_id}) RETURNING group_id`);
             // var res = pool.cQuery(`Insert into group_user ("group_id","user_id",member_status) values('${res}','${this.creator_id}','administrator')`);
             var group =await task_group.create({
                 creator_id:result.group.creator_id,
                 group_name:result.group.group_name,
+                description:result.group.description,
                 status:"Active",
             });
+           
             pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${result.group.creator_id},'member','${date}','${date}')`)
             var i=0;
           
             for(i;i<result.members.length;i++){
                 var val = result.members[i]
-                
+                UserNotification.createNotifcation({
+                    "user_id":val['user_id'],
+                    "group_id":group.dataValues.group_id,
+                    "type":"invite"
+                });
                 pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${val['user_id']},'member','${date}','${date}')`)
             };
             return true;
@@ -46,11 +55,20 @@ class TaskGroup{
         
     }
 
+    static async  editGroupUser(group_id, user_id ,status){
+        try{
+            pool.cQuery(`update group_user set previlage='${status}' where user_id=${user_id} and group_id=${group_id}`)
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
 
 
     async getTaskGroups(id){
         try{
-            var res =await pool.cQuery(`select * from task_group where "creator_id"=${id} or "group_id" in (select "group_id" from group_user where "user_id"=${id} );`)
+            var res =await pool.cQuery(`select * from task_group where "creator_id"=${id} or "group_id" in (select "group_id" from group_user where "user_id"=${id} and previlage<>'nonmember');`)
             var mem_count = await this.getGroupMemberCount(id);
             res = joinJson(res,mem_count,"group_id", "member_count","member_count");
             return res;
@@ -98,6 +116,11 @@ class TaskGroup{
             const d = new Date();
             var date=d.toISOString();
             pool.cQuery(`insert into group_user (user_id,group_id,created_at,updated_at,previlage) values(${userid},${groupid},'${date}','${date}','nonmember')`)
+            UserNotification.createNotifcation({
+                    "user_id":userid,
+                    "group_id":groupid,
+                    "type":"invite"
+                });
             sendMail(email,`
             <div>
                 <h1>Group Member Invitation</h1>

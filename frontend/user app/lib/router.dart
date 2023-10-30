@@ -9,7 +9,11 @@ import "package:focusmi/features/authentication/widgets/packages_widget.dart";
 import "package:focusmi/features/chat_application/screens/chat_page.dart";
 import "package:focusmi/features/group_task_planner/screens/single_task_view.dart";
 import "package:focusmi/features/group_task_planner/screens/task_plan_view.dart";
+import "package:focusmi/features/individual_task_planner/screens/calendar_task.dart";
+import "package:focusmi/features/individual_task_planner/screens/itask_plan_view.dart";
+import "package:focusmi/features/individual_task_planner/screens/single_itask_view.dart";
 import "package:focusmi/features/mainpage/screens/main_page.dart";
+import "package:focusmi/features/mainpage/screens/notification_page.dart";
 import "package:focusmi/features/mindfulness_courses/screens/cat_courses.dart";
 import "package:focusmi/features/mindfulness_courses/screens/course_content.dart";
 import "package:focusmi/features/mindfulness_courses/screens/course_media_player.dart";
@@ -44,7 +48,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => const CreateGroup(),
       );
-
+    case Calendar.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const Calendar(),
+      );
     case LandingPage.routeName:
       return MaterialPageRoute(
         settings: routeSettings,
@@ -60,6 +68,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         settings: routeSettings,
         builder: (_) => const GroupList(),
       );
+    case NotiList.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => const NotiList(),
+      );
     case EditTaskGroup.routeName:
       final TaskGroup args = routeSettings.arguments as TaskGroup;
       return MaterialPageRoute(
@@ -67,16 +80,36 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => EditTaskGroup(group: args),
       );
     case GroupTaskPlanner.routeName:
-      final TaskGroup args = routeSettings.arguments as TaskGroup;
+      final int group = (routeSettings.arguments as List<dynamic?>)[0];
+      final int? planid = (routeSettings.arguments as List<dynamic?>)[1];
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => GroupTaskPlanner(group: args),
+        builder: (context) => GroupTaskPlanner(
+          group: group,
+          plan_id: planid,
+        ),
+      );
+    case ITaskPlanner.routeName:
+      final int group = (routeSettings.arguments as List<dynamic?>)[0];
+      final int? planid = (routeSettings.arguments as List<dynamic?>)[1];
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => ITaskPlanner(
+          user_id: group,
+          plan_id: planid,
+        ),
       );
     case SingleTaskView.routeName:
       final Task args = routeSettings.arguments as Task;
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (context) => SingleTaskView(task: args),
+      );
+    case ITaskView.routeName:
+      final Task args = routeSettings.arguments as Task;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => ITaskView(task: args),
       );
     case CounselorsListWidgetWidget.routeName:
       return MaterialPageRoute(
@@ -105,11 +138,16 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (context) => SubscriptionPackagesPage(),
       );
     case CourseMediaPlayer.routeName:
-      final  MindfulnessCourse course = (routeSettings.arguments as List<dynamic>)[1];
-      final MindfulnessCourseLevel level = (routeSettings.arguments as List<dynamic>)[0];
+      final MindfulnessCourse course =
+          (routeSettings.arguments as List<dynamic>)[1];
+      final MindfulnessCourseLevel level =
+          (routeSettings.arguments as List<dynamic>)[0];
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => CourseMediaPlayer(level: level,course: course,),
+        builder: (context) => CourseMediaPlayer(
+          level: level,
+          course: course,
+        ),
       );
     case ChatRoom.routeName:
       final int arg = routeSettings.arguments as int;
@@ -130,23 +168,28 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         ),
       );
     case LevelsWidget.routeName:
-      final MindfulnessCourse args = (routeSettings.arguments as MindfulnessCourse);
+      final MindfulnessCourse args =
+          (routeSettings.arguments as MindfulnessCourse);
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => LevelsWidget(course: args,),
+        builder: (context) => LevelsWidget(
+          course: args,
+        ),
       );
     case CourseContentWidget.routeName:
-      final MindfulnessCourse args = (routeSettings.arguments as MindfulnessCourse);
+      final MindfulnessCourse args =
+          (routeSettings.arguments as MindfulnessCourse);
       return MaterialPageRoute(
         settings: routeSettings,
-        builder: (context) => CourseContentWidget(course:args),
+        builder: (context) => CourseContentWidget(course: args),
       );
     case CatLevelWidget.routeName:
       final String args = (routeSettings.arguments as String);
       return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (context) => CatLevelWidget(type: args,)
-      );
+          settings: routeSettings,
+          builder: (context) => CatLevelWidget(
+                type: args,
+              ));
     default:
       return MaterialPageRoute(
         settings: routeSettings,

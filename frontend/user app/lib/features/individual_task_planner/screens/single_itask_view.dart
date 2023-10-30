@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/group_task_planner/widget/dropdown.dart';
-import 'package:focusmi/features/group_task_planner/widget/mydropdown.dart';
 import 'package:focusmi/features/group_task_planner/widget/userimage.dart';
 import 'package:focusmi/features/mainpage/screens/main_page.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
@@ -21,20 +20,20 @@ import 'package:focusmi/models/task.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:focusmi/widgets/texts.dart';
 
-class SingleTaskView extends StatefulWidget {
-  static const routeName = '/single_task_view';
+class ITaskView extends StatefulWidget {
+  static const routeName = '/single_itask_view';
   final Task task;
 
-  SingleTaskView({
+  ITaskView({
     Key? key,
     required this.task,
   }) : super(key: key);
 
   @override
-  State<SingleTaskView> createState() => _SingleTaskViewState();
+  State<ITaskView> createState() => _ITaskViewState();
 }
 
-class _SingleTaskViewState extends State<SingleTaskView> {
+class _ITaskViewState extends State<ITaskView> {
   late List<SubTask> subTasks;
   late List<GroupMember> memberList;
   late List<GroupMember> showMemeberList;
@@ -128,7 +127,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           "reminder_date", widget.task.task_id);
       var reminderDate = json.decode(date.body)['value'];
       var reminderTime = json.decode(time.body)['value'];
-
+     
       if (reminderDate != null && reminderTime != null) {
         setState(() {
           reminder_date = reminderDate;
@@ -148,7 +147,8 @@ class _SingleTaskViewState extends State<SingleTaskView> {
   void chanageDeadlineApi(taskid, deadline_time, deadline_date) {
     try {
       GTaskPlannerServices.setTaskAttr('deadline_date', taskid, deadline_date);
-      GTaskPlannerServices.setTaskAttr('deadline_time', taskid, deadline_time);
+      GTaskPlannerServices.setTaskAttr('deadline_time', taskid,
+          "${(deadline_time?.hour)?.toString().padLeft(2, '0')}:${(deadline_time?.minute)?.toString().padLeft(2, '0')}");
       setState(() {});
     } catch (e) {
       print(e);
@@ -360,7 +360,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     if (resultDate != null) {
       TimeOfDay? resultTime = await pickTime();
       setState(() {
-        showDateTime = resultDate.toString().split(" ")[0];
+        showDateTime = resultDate.toString();
       });
       if (resultDate != null) {
         setState(() {
@@ -387,8 +387,6 @@ class _SingleTaskViewState extends State<SingleTaskView> {
           chanageReminderApi(
               widget.task.task_id, resultTime?.format(context), showDateTime2);
         });
-        GTaskPlannerServices.setAlarm(
-            reminder_date, reminder_time, widget.task.task_id);
       }
     }
   }
@@ -537,39 +535,13 @@ class _SingleTaskViewState extends State<SingleTaskView> {
     return AlertDialog(
       backgroundColor: Colors.white,
       title: const Text("Move Task"),
-      content: Container(
-        height: 300,
-        alignment: Alignment.topCenter,
-        child: StatefulBuilder(
-          builder: (BuildContext, StateSetter setState) {
-            return Container(
-              alignment: Alignment.topCenter,
-              child: DropDownList(
-                  items: taskNames,
-                  taskplanid: widget.task.plan_id,
-                  taskid: widget.task.task_id),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _changeMyPlanPopup(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.white,
-      title: const Text("Move Task"),
-      content: Container(
-        height: 300,
-        alignment: Alignment.topCenter,
-        child: StatefulBuilder(
-          builder: (BuildContext, StateSetter setState) {
-            return Container(
-              alignment: Alignment.topCenter,
-              child: MyDropDownList(taskid: widget.task.task_id),
-            );
-          },
-        ),
+      content: StatefulBuilder(
+        builder: (BuildContext, StateSetter setState) {
+          return DropDownList(
+              items: taskNames,
+              taskplanid: widget.task.plan_id,
+              taskid: widget.task.task_id);
+        },
       ),
     );
   }
@@ -777,21 +749,13 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                             )
                                           : Row(
                                               children: [
-                                                Text(
-                                                  (reminder_date)
-                                                          ?.split(' ')[0] ??
-                                                      '',
-                                                  style:
-                                                      TextStyle(fontSize: 12),
-                                                ),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text(
-                                                  reminder_time ?? '',
-                                                  style:
-                                                      TextStyle(fontSize: 12),
-                                                ),
+                                                Text((reminder_date)?.split(' ')[0]
+                                                         ??
+                                                    '',style: TextStyle(fontSize: 12),),
+                                                SizedBox(width: 5,),
+                                                Text(reminder_time
+                                                        ??
+                                                    '',style: TextStyle(fontSize: 12),),
                                               ],
                                             )
                                     ],
@@ -833,30 +797,22 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                             const SizedBox(
                               width: 21,
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        _changeMyPlanPopup(context));
-                              },
-                              child: Container(
-                                child: const Column(
-                                  children: [
-                                    CircleAvatar(
-                                        backgroundColor: Colors.amber,
-                                        child: Icon(
-                                          Icons.move_to_inbox,
-                                          color: Colors.white,
-                                        )),
-                                    Text(
-                                      "Add to My Tasks",
-                                      style: TextStyle(
-                                          color: GlobalVariables.greyFontColor,
-                                          fontSize: 12),
-                                    )
-                                  ],
-                                ),
+                            Container(
+                              child: const Column(
+                                children: [
+                                  CircleAvatar(
+                                      backgroundColor: Colors.amber,
+                                      child: Icon(
+                                        Icons.move_to_inbox,
+                                        color: Colors.white,
+                                      )),
+                                  Text(
+                                    "Add to My Tasks",
+                                    style: TextStyle(
+                                        color: GlobalVariables.greyFontColor,
+                                        fontSize: 12),
+                                  )
+                                ],
                               ),
                             )
                           ],
@@ -927,7 +883,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                     height: 10,
                   ),
                   Container(
-                    height: 150,
+                    height: 120,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -950,16 +906,10 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     SizedBox(
                                       width: 5,
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setDeadline();
-                                      },
-                                      child: Text(
-                                        "Edit Deadline",
-                                        style: TextStyle(
-                                            color:
-                                                GlobalVariables.greyFontColor),
-                                      ),
+                                    Text(
+                                      "Edit Deadline",
+                                      style: TextStyle(
+                                          color: GlobalVariables.greyFontColor),
                                     ),
                                   ],
                                 )
@@ -1007,7 +957,9 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                     ),
                               (showDateTime == null)
                                   ? Row(children: [
-                                    
+                                      SizedBox(
+                                        width: 5,
+                                      ),
                                       GestureDetector(
                                           onTap: () {
                                             setDeadline();
@@ -1058,10 +1010,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                         apiKey:
                                             "AIzaSyDp9s9hdUOnbOBIQQjR1_goCMPJYsDEukk",
                                         onPlacePicked: (PickResult result) {
-                                          setState(() {
-                                            taskLocation =
-                                                result.formattedAddress;
-                                          });
+                                         
                                           addTaskLocation(
                                               "${result.formattedAddress}");
                                           Navigator.of(context).pop();
@@ -1092,9 +1041,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                                   .width *
                                                               0.8,
                                                       child: Text(
-                                                          '${taskLocation}',style: TextStyle(
-                                                            color: GlobalVariables.greyFontColor
-                                                          ),)))
+                                                          '${taskLocation}')))
                                             ],
                                           )
                                         : Text(
@@ -1194,18 +1141,7 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                                                               );
                                                             },
                                                             child: Container(
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                      color: Colors
-                                                                          .white),
-                                                              child:
-                                                                  const Center(
-                                                                child: Icon(
-                                                                  Icons.add,
-                                                                  color: GlobalVariables
-                                                                      .primaryColor,
-                                                                ),
-                                                              ),
+                                                              
                                                             )),
                                                       )
                                                     ],

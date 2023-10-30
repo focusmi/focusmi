@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/features/mindfulness_courses/screens/course_content.dart';
 import 'package:focusmi/features/mindfulness_courses/screens/flutter_flow/flutter_flow_theme.dart';
 import 'package:focusmi/features/mindfulness_courses/screens/levels.dart';
 import 'package:focusmi/features/mindfulness_courses/services/mindfulness_main_page_services.dart';
@@ -53,14 +54,14 @@ class _CatLevelWidgetState extends State<CatLevelWidget> {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, LevelsWidget.routeName,arguments: courses[index]);
+                  Navigator.pushNamed(context, CourseContentWidget.routeName,arguments: courses[index]);
                 },
                 child: LevelCard(
                     imageUrl:
                         '$uri/api/assets/image/mind-course/${courses[index].image}' ??
                             '',
-                    title: courses[index].title ?? '',
-                    subtitle: courses[index].description ?? ''),
+                    title: (courses[index].title ?? '').trim(),
+                    subtitle: (((courses[index].description ?? '').substring(0,100))+"....").trim()),
               );
             }),
         widget.type);
@@ -82,7 +83,7 @@ class LevelCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: GlobalVariables.backgroundColor,
+      color: const Color.fromARGB(255, 255, 255, 255),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),

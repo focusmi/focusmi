@@ -252,7 +252,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   void completeTask(task_id) async {
     try {
-      GTaskPlannerServices.setTaskAttr('status', task_id, 'completed');
+      GTaskPlannerServices.updateSubTask( task_id, 'completed');
       refreshTaskAllocation();
     } catch (e) {
       print(e);
@@ -619,12 +619,13 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                   child: Row(
                                     children: [
                                       Radio(
+                                        
                                           activeColor: Colors.white,
                                           value: subtasks[index].task_id,
                                           groupValue: "",
                                           onChanged: (value) {
                                             completeTask(
-                                              subtasks[index].task_id,
+                                              subtasks[index].stask_id,
                                             );
                                           }),
                                       Container(

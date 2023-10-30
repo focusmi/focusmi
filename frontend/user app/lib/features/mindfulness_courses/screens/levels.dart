@@ -90,74 +90,78 @@ class _LevelsWidgetState extends State<LevelsWidget> {
   @override
   Widget build(BuildContext context) {
     LayOut layOut = LayOut();
-    return layOut.mainLayoutWithDrawer(
-        context,
-        ListView.builder(
-            itemCount: levels.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, CourseMediaPlayer.routeName,
-                      arguments: [levels[index], widget.course]);
-                },
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 5,
-                    ),
-                    CustomContainer.normalContainer(
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, CourseMediaPlayer.routeName,
-                                      arguments: [
-                                        levels[index],
-                                        widget.course
-                                      ]);
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(levels[index].level_name ?? ''),
-                                    Text(((levels[index]
-                                                    .level_description
-                                                    ?.substring(0, 15) ??
-                                                '') +
-                                            '......') ??
-                                        ''),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                width: 200,
-                              ),
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                   
-                                      child: Icon(Icons.play_circle_outlined,)
-                                      ),
-                                    Text(durations[index].split('.')[0],style: TextStyle(fontSize: 10),),
-                                  ],
-                                ),
-                              )
-                            ]),
-                          ),
-                        ),
-                        70,
-                        MediaQuery.of(context).size.width * 0.8),
-                  ],
+    return ListView.builder(
+        itemCount: levels.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, CourseMediaPlayer.routeName,
+                  arguments: [levels[index], widget.course]);
+            },
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 5,
                 ),
-              );
-            }),
-        widget.course.title);
+                CustomContainer.normalContainer(
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(children: [
+                           Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    child: Icon(
+                                  Icons.play_circle_outlined,
+                                  size: 40,
+                                )),
+                                Text(
+                                  durations[index].split('.')[0],
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, CourseMediaPlayer.routeName,
+                                  arguments: [levels[index], widget.course]);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    child: Text(
+                                        levels[index].level_name?.trim() ??
+                                            '',style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight:FontWeight.bold,
+                                              color: GlobalVariables.greyFontColor
+                                            ),)),
+                                Text(((levels[index].level_description ?? '') +
+                                        '......') ??
+                                    '',style: TextStyle(color: GlobalVariables.greyFontColor),),
+                              ],
+                            ),
+                          ),
+                          
+                         
+                        ]),
+                      ),
+                    ),
+                    80,
+                    MediaQuery.of(context).size.width * 0.8),
+              ],
+            ),
+          );
+        });
   }
 }
 

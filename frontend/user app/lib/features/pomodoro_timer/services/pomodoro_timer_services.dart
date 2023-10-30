@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 
 class PomodoroTimerServices {
   static Future getTime(context) async {
-    print("Dfdf");
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       final userProvider = Provider.of<UserProvider>(context, listen: false);

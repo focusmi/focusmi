@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/individual_task_planner/screens/calendar_task.dart';
+import 'package:focusmi/features/individual_task_planner/screens/single_itask_view.dart';
 import 'package:http/http.dart';
 
 import 'package:focusmi/constants/global_variables.dart';
@@ -18,22 +20,22 @@ import 'package:focusmi/models/task.dart';
 import 'package:focusmi/models/taskgroup.dart';
 import 'package:focusmi/models/taskplan.dart';
 
-class GroupTaskPlanner extends StatefulWidget {
-  static const String routeName = '/task_plan_view';
-  final int group;
+class ITaskPlanner extends StatefulWidget {
+  static const String routeName = '/itask_plan_view';
+  final int user_id;
   final int? plan_id;
 
-  const GroupTaskPlanner({
+  const ITaskPlanner({
     Key? key,
-    required this.group,
+    required this.user_id,
     required this.plan_id,
   }) : super(key: key);
 
   @override
-  State<GroupTaskPlanner> createState() => _GroupTaskPlannerState();
+  State<ITaskPlanner> createState() => _ITaskPlannerState();
 }
 
-class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
+class _ITaskPlannerState extends State<ITaskPlanner> {
   late Map<int, double> planHeight;
   int _selectedIndex = 0;
   Task entryTask = new Task(
@@ -95,9 +97,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   }
 
   void goToTaskPlan() async {
-    try {
-     
-    } catch (e) {}
+    try {} catch (e) {}
   }
 
   void completeTask(task_id) async {
@@ -128,14 +128,11 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
 
   void addTaskPlan() async {
     var taskplanid = taskPlans.length + 1;
-    var groupid = widget.group;
+    var groupid = widget.user_id;
     var name = 'Task Plan - $taskplanid';
-    taskplanid = await GTaskPlannerServices.createTaskPlan(TaskPlan(
-        plan_id: taskplanid,
-        group_id: groupid,
-        plan_name: name,
-        is_edit: true));
-    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
+    taskplanid = await GTaskPlannerServices.createTaskPlan(
+        TaskPlan(plan_id: taskplanid, plan_name: name, is_edit: true));
+    Response response = await GTaskPlannerServices.getITaskPlanByUser(groupid);
     setState(() {
       Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
@@ -207,8 +204,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   }
 
   void _addTaskPlanName(index) async {
-    var groupid = widget.group;
-    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
+    var groupid = widget.user_id;
+    Response response = await GTaskPlannerServices.getITaskPlanByUser(groupid);
     setState(() {
       taskPlans[index].plan_name = taskPlanControllers[index].text;
       print(taskPlans[index].plan_name);
@@ -229,8 +226,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
   }
 
   void _getTaskPlan() async {
-    var groupid = widget.group;
-    Response response = await GTaskPlannerServices.getTaskPlanByGroup(groupid);
+    var groupid = widget.user_id;
+    Response response = await GTaskPlannerServices.getITaskPlanByUser(groupid);
     Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
     setState(() {
       taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
@@ -239,10 +236,10 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
         taskMap[plans.plan_id] = List.empty(growable: true);
       }
       refreshTaskAllocation();
-       if (widget.plan_id != null) {
+      if (widget.plan_id != null) {
         int index = taskPlans
             .indexWhere((element) => element.plan_id == widget.plan_id);
-       
+
         setState(() {
           hcontroller.animateTo(MediaQuery.of(context).size.width * index,
               duration: Duration(milliseconds: 800), curve: Curves.easeInOut);
@@ -377,10 +374,8 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                   bottom: 0),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  Navigator.pushNamed(
-                                                          context,
-                                                          SingleTaskView
-                                                              .routeName,
+                                                  Navigator.pushNamed(context,
+                                                          ITaskView.routeName,
                                                           arguments: (taskMap[
                                                                   taskPlans[
                                                                           index]
@@ -389,7 +384,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                                       .then((value) => {
                                                             Navigator.pushNamed(
                                                                 context,
-                                                                GroupTaskPlanner
+                                                                ITaskPlanner
                                                                     .routeName)
                                                           });
                                                 },
@@ -580,7 +575,12 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
           curveSize: 100,
           top: -40,
           items: [
-            TabItem(icon: Icons.group, title: 'Group'),
+            TabItem(
+                icon: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, Calendar.routeName);
+                    },
+                    child: Icon(Icons.calendar_month_outlined))),
             TabItem(
                 icon: ElevatedButton(
                   child: const Icon(
@@ -597,20 +597,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                   },
                 ),
                 title: 'Add'),
-            TabItem(
-              icon: GestureDetector(
-                child: Container(
-                    child: Icon(
-                  Icons.chat,
-                  color: Colors.white,
-                )),
-                onTap: () {
-                  Navigator.pushNamed(context, ChatRoom.routeName,
-                      arguments: widget.group);
-                },
-              ),
-              title: 'Chat',
-            ),
+            TabItem(icon: Icon(Icons.group_sharp))
           ],
           onTap: (int i) => print('click index=$i'),
         ),

@@ -19,13 +19,14 @@ class GroupService{
     required BuildContext context,
     required String group_name,
     required String status,
+    required String description,
     required int member_count,
     required int group_id,
     required List<GroupMember> members
 
   })async{
       
-      TaskGroup group = TaskGroup(group_id: group_id,group_name: group_name, status: status, member_count:member_count.toString(),created_at: '',creator_id: Provider.of<UserProvider>(context,listen: false).user.user_id);
+      TaskGroup group = TaskGroup(group_id: group_id,description: description,group_name: group_name, status: status, member_count:member_count.toString(),created_at: '',creator_id: Provider.of<UserProvider>(context,listen: false).user.user_id);
       group_info groupInfo = new group_info(group: group, members: members);
       http.Response res = await http.post(Uri.parse('$uri/api/create-group'), body:groupInfo.toJson(), headers:<String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

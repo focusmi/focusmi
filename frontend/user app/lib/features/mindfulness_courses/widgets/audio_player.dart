@@ -1,18 +1,21 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+
+import 'package:focusmi/constants/global_variables.dart';
+import 'package:focusmi/models/course_level.dart';
 
 class AudioPlayera extends StatefulWidget {
   final String musicUrl;
   final String imageUrl;
-
+  final MindfulnessCourseLevel level;
   const AudioPlayera({
     Key? key,
     required this.musicUrl,
     required this.imageUrl,
+    required this.level,
   }) : super(key: key);
 
   @override
@@ -71,144 +74,134 @@ class _AudioPlayeraState extends State<AudioPlayera> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-
-      ),
-      body: Stack(
-        children: <Widget>[
-             Container(child: WaveBackground(),
-              alignment: Alignment.bottomCenter,
-             ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.circular(12),
-              // image: DecorationImage(
-                  // image: NetworkImage(
-                  //     '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'),
-            ),
-
-            child: Column(
-              children: [
-
-                const Spacer(
-                  flex: 2,
-                ),
-
-                const Spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: StreamBuilder(
-                      stream: player.positionStream,
-                      builder: (context, snapshot1) {
-                        final Duration duration = loaded
-                            ? snapshot1.data as Duration
-                            : const Duration(seconds: 0);
-                        return StreamBuilder(
-                            stream: player.bufferedPositionStream,
-                            builder: (context, snapshot2) {
-                              final Duration bufferedDuration = loaded
-                                  ? snapshot2.data as Duration
-                                  : const Duration(seconds: 0);
-                              return SizedBox(
-                                height: 30,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  child: ProgressBar(
-                                    progress: duration,
-                                    total:
-                                        player.duration ?? const Duration(seconds: 0),
-                                    buffered: bufferedDuration,
-                                    timeLabelPadding: -1,
-                                    timeLabelTextStyle: const TextStyle(
-                                        fontSize: 14, color: Colors.black),
-                                    progressBarColor: Colors.red,
-                                    baseBarColor: Colors.grey[200],
-                                    bufferedBarColor: Colors.grey[350],
-                                    thumbColor: Colors.red,
-                                    onSeek: loaded
-                                        ? (duration) async {
-                                            await player.seek(duration);
-                                          }
-                                    
-                                        : null,
-                                  ),
-                                ),
-                              );
-                            });
-                      }),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    IconButton(
-                        onPressed: loaded
-                            ? () async {
-                                if (player.position.inSeconds >= 10) {
-                                  await player.seek(Duration(
-                                      seconds: player.position.inSeconds - 10));
-                                } else {
-                                  await player.seek(const Duration(seconds: 0));
-                                }
-                              }
-                            : null,
-                        icon: const Icon(Icons.fast_rewind_rounded)),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.red),
-                      child: IconButton(
-                          onPressed: loaded
-                              ? () {
-                                  if (playing) {
-                                    pauseMusic();
-                                  } else {
-                                    playMusic();
-                                  }
-                                }
-                              : null,
-                          icon: Icon(
-                            playing ? Icons.pause : Icons.play_arrow,
-                            color: Colors.white,
-                          )),
-                    ),
-                    IconButton(
-                        onPressed: loaded
-                            ? () async {
-                                if (player.position.inSeconds + 10 <=
-                                    player.duration!.inSeconds) {
-                                  await player.seek(Duration(
-                                      seconds: player.position.inSeconds + 10));
-                                } else {
-                                  await player.seek(const Duration(seconds: 0));
-                                }
-                              }
-                            : null,
-                        icon: const Icon(Icons.fast_forward_rounded)),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                ),
-                const Spacer(
-                  flex: 2,
-                )
-              ],
-            ),
+    return Stack(
+      children: <Widget>[
+        Container(
+          child: WaveBackground(),
+          alignment: Alignment.bottomCenter,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            // image: DecorationImage(
+            // image: NetworkImage(
+            //     '$uri/api/assets/image/mind-course/${featuredCourse[index].image}'),
           ),
-        
-        ],
-      ),
+          child: Column(
+            children: [
+              const Spacer(
+                flex: 2,
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: StreamBuilder(
+                    stream: player.positionStream,
+                    builder: (context, snapshot1) {
+                      final Duration duration = loaded
+                          ? snapshot1.data as Duration
+                          : const Duration(seconds: 0);
+                      return StreamBuilder(
+                          stream: player.bufferedPositionStream,
+                          builder: (context, snapshot2) {
+                            final Duration bufferedDuration = loaded
+                                ? snapshot2.data as Duration
+                                : const Duration(seconds: 0);
+                            return SizedBox(
+                              height: 30,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: ProgressBar(
+                                  progress: duration,
+                                  total: player.duration ??
+                                      const Duration(seconds: 0),
+                                  buffered: bufferedDuration,
+                                  timeLabelPadding: -1,
+                                  timeLabelTextStyle: const TextStyle(
+                                      fontSize: 14, color: Colors.black),
+                                  progressBarColor: Colors.red,
+                                  baseBarColor: Colors.grey[200],
+                                  bufferedBarColor: Colors.grey[350],
+                                  thumbColor: Colors.red,
+                                  onSeek: loaded
+                                      ? (duration) async {
+                                          await player.seek(duration);
+                                        }
+                                      : null,
+                                ),
+                              ),
+                            );
+                          });
+                    }),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  IconButton(
+                      onPressed: loaded
+                          ? () async {
+                              if (player.position.inSeconds >= 10) {
+                                await player.seek(Duration(
+                                    seconds: player.position.inSeconds - 10));
+                              } else {
+                                await player.seek(const Duration(seconds: 0));
+                              }
+                            }
+                          : null,
+                      icon: const Icon(Icons.fast_rewind_rounded)),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.red),
+                    child: IconButton(
+                        onPressed: loaded
+                            ? () {
+                                if (playing) {
+                                  pauseMusic();
+                                } else {
+                                  playMusic();
+                                }
+                              }
+                            : null,
+                        icon: Icon(
+                          playing ? Icons.pause : Icons.play_arrow,
+                          color: Colors.white,
+                        )),
+                  ),
+                  IconButton(
+                      onPressed: loaded
+                          ? () async {
+                              if (player.position.inSeconds + 10 <=
+                                  player.duration!.inSeconds) {
+                                await player.seek(Duration(
+                                    seconds: player.position.inSeconds + 10));
+                              } else {
+                                await player.seek(const Duration(seconds: 0));
+                              }
+                            }
+                          : null,
+                      icon: const Icon(Icons.fast_forward_rounded)),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                ],
+              ),
+              const Spacer(
+                flex: 2,
+              )
+            ],
+          ),
+        ),
+      ],
     );
-    
   }
 }
 
@@ -242,7 +235,7 @@ class _WaveBackgroundState extends State<WaveBackground>
   Widget _buildAnimation(BuildContext context, Widget? widget) {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height*0.2,
+      height: MediaQuery.of(context).size.height * 0.2,
       child: CustomPaint(
         painter:
             WavePainter(controller: _controller, waves: 2, waveAmplitude: 25),

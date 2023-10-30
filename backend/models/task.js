@@ -80,6 +80,20 @@ class Task{
         return result
     }
 
+    static async getPlanTaskByUser(taskplan,user){
+ 
+        var result = await pool.cQuery(`Select * from user_task left join task on task.task_id=user_task.task_id where task.plan_id=${taskplan} and user_task.user_id=${user} and task.group_id IS NOT NULL`)
+        console.log(result)
+        return result
+    }
+
+    static async getiPlanTaskByUser(user){
+ 
+        var result = await pool.cQuery(`Select * from task_plan where user_id=${user} and group_id IS NULL`)
+        console.log(result)
+        return result
+    }
+
     static async getCompletedGroupTasks(){
         var result = await task.findAll({
             where:{
@@ -178,6 +192,7 @@ class Task{
                 })
             }
             else if(type == 'plan_id'){
+                console.log("dffdf");
                 task.update({plan_id:val},{
                     where:{
                         task_id:taskid

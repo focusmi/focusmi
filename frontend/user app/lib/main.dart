@@ -11,13 +11,19 @@ import 'package:focusmi/providers/user_provider.dart';
 import 'package:focusmi/router.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async{
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(
       create: (context) => UserProvider(),
     )
   ], child: const MyApp()));
-  AndroidAlarmManager.initialize();
+  await AndroidAlarmManager.initialize();
+   
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), 0, (){
+    final DateTime now = DateTime.now();
+ 
+  print("[$now] Hello, world!");
+  });
   
 }
 
@@ -52,3 +58,6 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
+
+

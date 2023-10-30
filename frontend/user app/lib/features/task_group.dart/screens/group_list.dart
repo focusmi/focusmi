@@ -63,7 +63,7 @@ class _GroupListState extends State<GroupList> {
                         context, 
                         GroupTaskPlanner.routeName,
                         arguments: (
-                          characterList[index]
+                          [characterList[index].group_id, null]
                         )
                       );
                     } ,
@@ -91,7 +91,7 @@ class _GroupListState extends State<GroupList> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text("Group : ${characterList[index].group_name}",style: TextStyle(color: GlobalVariables.greyFontColor),),
-                                              Text("Member Count : ${characterList[index].member_count}",style: TextStyle(color: GlobalVariables.greyFontColor),),
+                                              Text("Member Count : ${int.parse(characterList[index].member_count)-1}",style: TextStyle(color: GlobalVariables.greyFontColor),),
                                               Text("Created On : ${((characterList[index].created_at).split("T"))[0]}",style: TextStyle(color: GlobalVariables.greyFontColor),),
                                               
                                             ],

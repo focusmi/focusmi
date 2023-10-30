@@ -1,45 +1,61 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/constants/utils.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
+import 'package:focusmi/constants/global_variables.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/models/taskplan.dart';
+import 'package:focusmi/providers/user_provider.dart';
 
-class DropDownList extends StatefulWidget {
-  List<TaskPlan> items;
-  int taskplanid;
+class MyDropDownList extends StatefulWidget {
   int taskid;
-  DropDownList({
+  MyDropDownList({
     Key? key,
-    required this.items,
-    required this.taskplanid,
     required this.taskid,
   }) : super(key: key);
 
   @override
-  State<DropDownList> createState() => _DropDownListState();
+  State<MyDropDownList> createState() => _MyDropDownListState();
 }
 
-class _DropDownListState extends State<DropDownList> {
+class _MyDropDownListState extends State<MyDropDownList> {
   void getTaskPlan() {}
+  late List<TaskPlan> taskPlans;
   List<TaskPlan> items = [];
   String? selectedValue;
   late int taskplanid;
   @override
   void initState() {
+    taskPlans = List<TaskPlan>.empty(growable: true);
     // TODO: implement initState
-    items = widget.items;
-    taskplanid = widget.taskplanid;
+    _getTaskPlan()
+    ;
     super.initState();
   }
 
+  void _getTaskPlan() async {
+    var user_id =
+        Provider.of<UserProvider>(context, listen: false).user.user_id;
+    Response response = await GTaskPlannerServices.getITaskPlanByUser(user_id);
+    Iterable list = json.decode(response.body).cast<Map<String?, dynamic>>();
+    setState(() {
+      taskPlans = list.map((model) => TaskPlan.fromJson(model)).toList();
+    });
+  }
+
   void moveTask(planid) async {
+
     try {
       GTaskPlannerServices.setTaskAttr('plan_id', widget.taskid, planid);
       showSuccessSnackBar(context, "Task Moved Successfully");
     } catch (e) {
+      print("move task");
+      print(e);
     }
   }
 
@@ -73,7 +89,7 @@ class _DropDownListState extends State<DropDownList> {
               ),
             ],
           ),
-          items: items
+          items: taskPlans
               .map((TaskPlan item) => DropdownMenuItem<String>(
                     value: item.plan_id.toString(),
                     child: Text(

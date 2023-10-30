@@ -59,6 +59,19 @@ gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    next();
 })
 
+
+gTaskRoutes.get('/api/change-prevs/:userid/:groupid/:prev',auth,async(req,res,next)=>{
+   try{
+      TaskGroup.editGroupUser(req.params.groupid,req.params.userid,req.params.prev)
+   }
+   catch (e){
+      res.status(400);
+      res.send({'msg':'User not verified'});
+ 
+   }
+   next();
+})
+
 gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
    try{
       var taskGroup =new TaskGroup();
@@ -73,6 +86,8 @@ gTaskRoutes.post('/api/create-group',async(req,res,next)=>{
    }
    next();
 })
+
+
 
 gTaskRoutes.post('/api/add-group-user',async(req,res,next)=>{
    try{
@@ -283,6 +298,26 @@ gTaskRoutes.get('/api/get-task-by-plan-user/:planid',auth,async(req,res,next)=>{
    }
    next()
 })
+
+gTaskRoutes.get('/api/get-task-by-iplan-user/:planid',auth,async(req,res,next)=>{
+   var user = (req.user)[0];
+   try{
+      var result = await Task.getiPlanTaskByUser(user.user_id)
+      if(result == 0){
+         res.status(200).send([])
+      }
+      else{
+         res.status(200).send(result)
+
+      }
+   }
+   catch(e){
+      console.log(e)
+      res.send(400).send({})
+   }
+   next()
+})
+
 gTaskRoutes.post('/api/update-task-name/',auth,async(req,res,next)=>{
    try{
       var result =await Task.updateTask(req.body.user_id, 'task_name', req.body.task_name)
@@ -552,7 +587,7 @@ gTaskRoutes.get('/api/get-stask-attr/:task/:attr',auth, async(req, res, next)=>{
 
 gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
    try{
-      var subtask=await pool.cQuery(`Select * from sub_task where task_id=${req.params.taskid}`);
+      var subtask=await pool.cQuery(`Select * from sub_task where task_id=${req.params.taskid} and sub_status='pending'`);
       
       var result = subtask
       if(result ==0){
@@ -562,6 +597,20 @@ gTaskRoutes.get('/api/get-all-sub-task/:taskid', auth, async(req, res, next)=>{
          res.send(result)
 
       }
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
+})
+
+gTaskRoutes.get('/api/update-sub-task/:staskid/:status', auth, async(req, res, next)=>{
+   try{
+      sub_task.update({sub_status:req.params.status},{
+         where:{
+            stask_id:req.params.staskid
+         }
+      })
    }
    catch(e){
       console.log(e)

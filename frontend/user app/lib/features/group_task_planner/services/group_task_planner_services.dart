@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
@@ -56,6 +57,20 @@ class GTaskPlannerServices {
     } catch (e) {}
   }
 
+  static Future getITaskPlanByUser(int userid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-by-iplan-user/$userid'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {}
+  }
+
   static void renameTaskPlan(TaskPlan taskPlan) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -101,6 +116,7 @@ class GTaskPlannerServices {
           'authorization': 'Bearer ' + token.toString()
         },
       );
+
       return res;
     } catch (e) {
       print("error");
@@ -124,6 +140,38 @@ class GTaskPlannerServices {
       print(e);
     }
   }
+    static Future editGroupMember( groupid, status,context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      var userid = Provider.of<UserProvider>(context, listen: false).user.user_id;
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/change-prevs/${userid}/${groupid}/${status}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+    static Future changeNoti(notid, status) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/change-noti-status/${notid}/${status}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+ // static Future createNotificatio()
 
   static Future getTaskByPlanFilterByUser(taskplanid) async {
     try {
@@ -253,6 +301,22 @@ class GTaskPlannerServices {
       var token = prefs.getString('auth-token');
       http.Response res = await http.get(
           Uri.parse('$uri/api/get-all-sub-task/${taskid}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print(e);
+    }
+  }
+  
+    static Future updateSubTask(staskid,status) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/update-sub-task/${staskid}/${status}'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
@@ -401,7 +465,6 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
-      
     } catch (e) {
       print("error in get task plans by plan");
     }
@@ -422,10 +485,65 @@ class GTaskPlannerServices {
       print("error in get task plans by plan");
     }
   }
+  static Future getEndTask(context) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      var user = Provider.of<UserProvider>(context, listen: false).user.user_id;
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-end-task/${user}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print("error in get task plans by plan");
+    }
+  }
 
-  static void setAlarm() {
-    try {} catch (e) {
+  
+
+  static void setAlarm(date, time, id) async{
+    var dat = date.split(" ")[0];
+    Map<String, int> elements = getDateParts(dat);
+    int year = elements['year'] ?? 2023;
+    int month = elements['month'] ?? 11;
+    int day = elements['date'] ?? 2;
+    var tim = time;
+    List<int> timlist = extractHourAndMinute(tim);
+    int hour = timlist[0];
+    int minute = timlist[1];
+    try {
+      print("alarm set at ${hour} ${year}");
+      AndroidAlarmManager.oneShotAt(
+          DateTime(year, month, day, hour, minute), id, () {
+        print("hello");
+      });
+    } catch (e) {
       print(e);
     }
+  }
+
+  static Map<String, int> getDateParts(String dateString) {
+    List<String> dateParts = dateString.split("-");
+    int year = int.parse(dateParts[0]);
+    int month = int.parse(dateParts[1]);
+    int day = int.parse(dateParts[2]);
+
+    return {
+      'year': year,
+      'month': month,
+      'day': day,
+    };
+  }
+
+
+
+  static List<int> extractHourAndMinute(String time) {
+    List<String> parts = time.split(':');
+    int hour = int.parse(parts[0]);
+    int minute = int.parse(parts[1]);
+    return [hour, minute];
   }
 }

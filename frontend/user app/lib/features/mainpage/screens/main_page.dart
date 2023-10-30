@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:focusmi/features/authentication/screens/auth_screen.dart';
+import 'package:focusmi/features/group_task_planner/screens/task_plan_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
+import 'package:focusmi/features/individual_task_planner/screens/itask_plan_view.dart';
+import 'package:focusmi/features/mainpage/screens/notification_page.dart';
 import 'package:focusmi/features/mainpage/services/main_page_services.dart';
+import 'package:focusmi/features/mainpage/services/noti_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
 import 'package:focusmi/features/mindfulness_courses/screens/cat_courses.dart';
 import 'package:focusmi/features/mindfulness_courses/screens/course_content.dart';
@@ -44,20 +49,21 @@ class _MainScreenState extends State<MainScreen> {
   late List<AdministrativeUser> therapists;
   late bool isNoti;
   late Notifications notification;
+  List<Notifications> characterList = List<Notifications>.empty();
   List<String> images = [
     "med.jpg",
     "stress.jpg",
-    "Sleep Well",
-    "Focus",
-    "Realtionship",
-    "Applied Mindfulness"
+    "sleepwell.jpg",
+    "focus.jpg",
+    "relationship.jpg",
+    "applied.jpg"
   ];
   List<String> pageNames = [
     "meditation",
     "stress relief",
     "sleep well",
     "focus",
-    "realtionship",
+    "relationship",
     "applied mindfulness"
   ];
   List<String> name = [
@@ -65,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
     "Stress Relief",
     "Sleep Well",
     "Focus",
-    "Realtionship",
+    "Relationship",
     "Applied Mindfulness"
   ];
   void getTaskPlanApi() async {
@@ -110,7 +116,9 @@ class _MainScreenState extends State<MainScreen> {
           notification = result[0];
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   void onScroll() {
@@ -143,25 +151,60 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  void getNotifromApi() async {
+    var response = await NotiServices.getNotification(context);
+    setState(() {
+      try {
+        Iterable list =
+            json.decode(response.body).cast<Map<String?, dynamic>>();
+        characterList =
+            list.map((model) => Notifications.fromJson(model)).toList();
+      } catch (e) {}
+      print("dfdfd");
+      print(characterList.length);
+    });
+  }
+
   @override
   void initState() {
     taskPlan = List<TaskPlan>.empty(growable: true);
     blogs = List<Blog>.empty(growable: true);
     therapists = [];
     featuredCourse = [];
+
     bval = 0;
+    getNotifromApi();
     getTaskPlanApi();
     getFeatured();
     getTherapist();
+
     notification = Notifications();
     isNoti = false;
     controller.addListener(onScroll);
     // TODO: implement initState
+    
     super.initState();
+      Future.delayed(Duration(seconds: 3), () {
+      if (characterList.length != 0)
+        ElegantNotification.success(
+                animation: AnimationType.fromTop,
+                notificationPosition: NotificationPosition.topCenter,
+                toastDuration: Duration(seconds: 10),
+                title: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, NotiList.routeName);
+                    },
+                    child: Container(
+                        child: Text(
+                            "You have ${characterList.length} notifcation"))),
+                description: Text(notification.text ?? ''))
+            .show(context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+  
     LayOut layout = LayOut();
     final width = MediaQuery.of(context).size.width;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -202,22 +245,27 @@ class _MainScreenState extends State<MainScreen> {
                   controller: controller,
                   child: Container(
                     child: Column(children: [
-                      GestureDetector(
-                        onTap: () {
-                          ElegantNotification.success(
-                                  title: Text(notification.type ?? ''),
-                                  description: Text(notification.text ?? ''))
-                              .show(context);
-                        },
-                        child: Container(
-                          child: Icon(
-                            Icons.notifications,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         height: 250,
+                      ),
+                      // GestureDetector(
+                      //   onTap: () {
+
+                      //   },
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      //     child: Container(
+                      //       alignment: Alignment.centerRight,
+                      //       child: Icon(
+                      //         Icons.email,
+                      //         color: const Color.fromARGB(255, 255, 255, 255),
+                      //         size: 50,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      SizedBox(
+                        height: 10,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -228,8 +276,19 @@ class _MainScreenState extends State<MainScreen> {
                                 SizedBox(
                                   width: screenWidth * 0.005,
                                 ),
-                                MainPageCatTile.greenPageTile(
-                                    "        Task Planner", screenWidth * 0.45),
+                                GestureDetector(
+                                    onTap: () {
+                                      var user = Provider.of<UserProvider>(
+                                              context,
+                                              listen: false)
+                                          .user;
+                                      Navigator.pushNamed(
+                                          context, ITaskPlanner.routeName,
+                                          arguments: [user.user_id, null]);
+                                    },
+                                    child: MainPageCatTile.greenPageTile(
+                                        "        Task Planner",
+                                        screenWidth * 0.45)),
                                 SizedBox(
                                   width: 5,
                                   height: 0,
@@ -239,6 +298,7 @@ class _MainScreenState extends State<MainScreen> {
                                       "        Task Groups",
                                       screenWidth * 0.45),
                                   onTap: () {
+                                    // NotiServices.ShowNotification(id: 1,title: "fdfdf",body: "dfdfdf",payload: "dfdfdf");
                                     Navigator.pushNamed(
                                         context, GroupList.routeName);
                                   },
@@ -268,11 +328,21 @@ class _MainScreenState extends State<MainScreen> {
                                   itemCount: taskPlan.length,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: MainPageCatTile.greenPageTile(
-                                          taskPlan[index].plan_name,
-                                          width * 0.1),
+                                    return GestureDetector(
+                                      onTap: () => {
+                                        Navigator.pushNamed(
+                                            context, GroupTaskPlanner.routeName,
+                                            arguments: [
+                                              taskPlan[index].group_id,
+                                              taskPlan[index].plan_id
+                                            ])
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: MainPageCatTile.greenPageTile(
+                                            taskPlan[index].plan_name,
+                                            width * 0.1),
+                                      ),
                                     );
                                   }),
                             ),
@@ -392,7 +462,9 @@ class _MainScreenState extends State<MainScreen> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(context, CatLevelWidget.routeName,arguments: pageNames[index]);
+                                        Navigator.pushNamed(
+                                            context, CatLevelWidget.routeName,
+                                            arguments: pageNames[index]);
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -403,14 +475,24 @@ class _MainScreenState extends State<MainScreen> {
                                               0.43,
                                           height: 70,
                                           decoration: BoxDecoration(
-                                         
                                               borderRadius:
                                                   BorderRadius.circular(12),
                                               image: DecorationImage(
                                                   image: NetworkImage(
                                                       '$uri/api/assets/image/mind-course/${images[index]}'),
                                                   fit: BoxFit.cover)),
-                                          child: Text(name[index]),
+                                          child: Container(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  name[index],
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20),
+                                                ),
+                                              )),
                                         ),
                                       ),
                                     );

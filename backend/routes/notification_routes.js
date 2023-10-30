@@ -32,10 +32,10 @@ nRouter.get("/api/get-noti/:userid", async(req, res, next)=>{
     try{
         var result = await UserNotification.getNotification(req.params.userid)
         if(result==0){
-            res.send({"noitem":true})
+            res.send([])
         }
         else{
-            res.send({"noitem":false,"value":result})
+            res.send(result)
         }
     }
     catch(e){
@@ -44,6 +44,17 @@ nRouter.get("/api/get-noti/:userid", async(req, res, next)=>{
     next()
 })
 
+nRouter.get("/api/get-end-task/:userid",async(req, res, next)=>{
+    try{
+        var result = await UserNotification.getSettedTasks(req.params.userid)
+        res.send(result)
+        
+    }
+    catch(e){
+        console.log(e)
+    }
+    next()
+})
 
 
 

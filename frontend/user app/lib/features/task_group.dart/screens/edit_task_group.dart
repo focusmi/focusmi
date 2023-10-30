@@ -181,11 +181,19 @@ class _EditTaskGroupState extends State<EditTaskGroup> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  "Group ${widget.group.group_name}",
-                  style: const TextStyle(
-                    fontSize: 20
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Group ${widget.group.group_name}",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: GlobalVariables.greyFontColor
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Text(widget.group.description??'',style: TextStyle(color: GlobalVariables.greyFontColor))
+                  ],
                 ),
               ),
               Padding(
