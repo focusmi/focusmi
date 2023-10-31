@@ -57,6 +57,20 @@ class GTaskPlannerServices {
     } catch (e) {}
   }
 
+   static Future getChatByGroup(int groupid) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-chat-by-group/$groupid'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {}
+  }
+
   static Future getITaskPlanByUser(int userid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();

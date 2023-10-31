@@ -611,7 +611,7 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                               ChatPage()
+                                               ChatPage(groupid: widget.group,)
                                           ),
                                         );
                 },

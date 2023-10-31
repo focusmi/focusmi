@@ -6,6 +6,7 @@ const {group_user} = require("../sequelize/models");
 const { json } = require("sequelize");
 const { sendMail } = require("./core/email");
 const UserNotification = require("./user_notification");
+const UserChat = require("./user_chat");
 
 class TaskGroup{
     
@@ -33,7 +34,7 @@ class TaskGroup{
                 description:result.group.description,
                 status:"Active",
             });
-           
+            UserChat.createChat(group.dataValues.group_id)
             pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${result.group.creator_id},'member','${date}','${date}')`)
             var i=0;
           
@@ -75,6 +76,16 @@ class TaskGroup{
         }
         catch (e){
             return e;
+        }
+    }
+
+    async getChatBygroup(id){
+        try{
+            var result =await pool.cQuery(`select chat_id from chat where group_id=${id}`)
+            return result
+        }
+        catch(e){
+
         }
     }
 

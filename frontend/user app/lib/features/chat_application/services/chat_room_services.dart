@@ -33,8 +33,9 @@ class ChatRoomServices {
     } catch (e) {}
   }
 
-  static Future createChatMessage(IO.Socket socket, ChatMessage message) async {
+  static Future createChatMessage(chat_id,ChatMessage message) async {
     try {
+      
     } catch (e) {}
   }
 }

@@ -196,8 +196,19 @@ gTaskRoutes.post('/api/add-task',auth,async(req, res, next)=>{
       })     
    }
    catch(e){
-      print(e)
+      console.log(e)
    }
+})
+
+gTaskRoutes.get('/api/get-chat-by-group/:groupid',auth,async(req, res, next)=>{
+   try{
+     var result = await UserChat.getChatByGroup(req.params.groupid)    
+     res.send([result])
+   }
+   catch(e){
+      console.log(e)
+   }
+   next()
 })
 
 gTaskRoutes.get('/api/search-group-member',auth,async(req, res, next)=>{
