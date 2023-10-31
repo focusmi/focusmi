@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:therapist_app/features/blog/service/blogService.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EditBlog extends StatefulWidget {
   final int blogID;
@@ -14,7 +15,7 @@ class EditBlog extends StatefulWidget {
 }
 
 class _EditBlogState extends State<EditBlog> {
-  late String title, subTitle, desc;
+  late String title, subTitle, desc, imgUrl = 'assets/images/blogs-images/default.png';
   File? selectedImage;
   bool _isLoading = false;
   BlogService crudMethods = new BlogService();
@@ -24,7 +25,7 @@ class _EditBlogState extends State<EditBlog> {
 
   Future getImage() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedImage != null) {
@@ -38,22 +39,19 @@ class _EditBlogState extends State<EditBlog> {
       setState(() {
         _isLoading = true;
       });
+        Map<String, String> blogMap = {
+          "title": title,
+          "sub_title": subTitle,
+          "desc": desc,
+          "blogID": widget.blogID.toString(),
+        };
 
-      Map<String, String> blogMap = {
-        "title": title,
-        "sub_title": subTitle,
-        "desc": desc,
-        "blogID": widget.blogID.toString(),
-      };
-
-      crudMethods
-           .updateBlogDataAndImage(blogMap, context, selectedImage!)
-           .then((result) {
-         Navigator.pop(context, true);
-       });
-    } else {
-
-    }
+        crudMethods
+             .updateBlogDataAndImage(blogMap, context, selectedImage!)
+             .then((result) {
+           Navigator.pop(context, true);
+         });
+    } else {}
   }
 
   @override
@@ -73,6 +71,10 @@ class _EditBlogState extends State<EditBlog> {
           titleController.text = desiredBlog['title'];
           desController.text = desiredBlog['description'];
           subTitleController.text = desiredBlog['subtitle'];
+          title = desiredBlog['title'];
+          desc = desiredBlog['description'];
+          subTitle = desiredBlog['subtitle'];
+          imgUrl = desiredBlog['image'];
         });
       } else {
         print('Blog not found.');
@@ -149,8 +151,11 @@ class _EditBlogState extends State<EditBlog> {
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(6)),
                                 width: MediaQuery.of(context).size.width,
-                                child: Lottie.asset('assets/images/blog.json',
-                                    fit: BoxFit.contain),
+                                child: CachedNetworkImage(
+                                  imageUrl: uri + '/' + imgUrl ?? '' ,
+                                  width: MediaQuery.of(context).size.width,
+                                  fit: BoxFit.cover,
+                                ),
                               )),
                     SizedBox(
                       height: 8,
