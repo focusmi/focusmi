@@ -183,7 +183,7 @@ class ScheduleCard extends StatelessWidget {
                                   'Waiting') {
                                 jumpToMeetingPage(
                                   context,
-                                  conferenceId: '${appointmentId*pow(10,9)}',
+                                  conferenceId: '${appointmentId * pow(10, 9)}',
                                   userName: user.name,
                                   userId: '${user.id}',
                                 );
@@ -216,7 +216,6 @@ class ScheduleCard extends StatelessWidget {
                                 compareTime(appointmentEndDateTime),
                             child: GestureDetector(
                               onTap: () async {
-
                                 try {
                                   final user = Provider.of<UserProvider>(
                                           context,
@@ -296,7 +295,6 @@ class ScheduleCard extends StatelessWidget {
   }
 }
 
-
 class CompleteScheduleCard extends StatelessWidget {
   final String patientName;
   final String appointmentTime;
@@ -358,7 +356,6 @@ class CompleteScheduleCard extends StatelessWidget {
           data: Theme.of(context).copyWith(
             dividerColor: Colors.transparent, // Remove the divider line
             expansionTileTheme: ExpansionTileThemeData(),
-
           ),
           child: ExpansionTile(
             shape: RoundedRectangleBorder(
@@ -410,8 +407,7 @@ class CompleteScheduleCard extends StatelessWidget {
                           left: 5, top: 8, bottom: 8, right: 30),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                        ],
+                        children: [],
                       ),
                     ),
                   ],
@@ -423,5 +419,4 @@ class CompleteScheduleCard extends StatelessWidget {
       ),
     );
   }
-
 }
