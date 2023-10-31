@@ -41,7 +41,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   convex_bottom_bar: ^3.2.0
   flutter_datetime_picker: ^1.5.1
-  google_fonts: ^5.1.0
+  google_fonts: ^5.0.1
   intl: ^0.18.1
   json_path: ^0.6.2
   timeago: ^3.5.0
@@ -60,7 +60,7 @@ dependencies:
   android_alarm_manager_plus: ^3.0.2
   elegant_notification: ^1.11.2
   neon_circular_timer: ^0.0.7
-  google_maps_place_picker_mb: ^3.1.2
+  #google_maps_place_picker_mb: ^3.0.2
   socket_io_client: ^1.0.1
   google_maps_flutter: ^2.0.11
   story_view: ^0.15.0
@@ -69,7 +69,10 @@ dependencies:
   carousel_slider: ^4.2.1
   loading_indicator: ^3.1.1
   flutter_local_notifications: ^7.0.0
-  
+  loading_animation_widget: ^1.2.0+4
+  zego_uikit_prebuilt_video_conference: ^2.5.0
+  web_socket_channel: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -131,4 +134,5 @@ flutter:
     - assets/images/down.png
     - assets/images/stars.jpg
     - assets/images/pomo_waiting.json
+    - assets/images/grad.png
     

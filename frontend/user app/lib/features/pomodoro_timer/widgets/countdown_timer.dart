@@ -9,6 +9,7 @@ import 'package:focusmi/features/group_task_planner/screens/single_task_view.dar
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/mainpage/widgets/category_tile.dart';
 import 'package:focusmi/features/pomodoro_timer/screens/break_view.dart';
+import 'package:focusmi/features/pomodoro_timer/screens/splash-wating-screen.dart';
 import 'package:focusmi/features/pomodoro_timer/services/pomodoro_timer_services.dart';
 import 'package:focusmi/models/subtask.dart';
 import 'package:focusmi/models/task.dart';
@@ -134,10 +135,10 @@ class _CountdownTimerState extends State<CountdownTimer> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  BreakView(task: widget.task, btime: bduration),
+              builder: (context) =>WaitingSplash(task: widget.task, bduration: bduration),
             ),
           );
+          
         });
       },
     );

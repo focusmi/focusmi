@@ -605,8 +605,15 @@ class _GroupTaskPlannerState extends State<GroupTaskPlanner> {
                   color: Colors.white,
                 )),
                 onTap: () {
-                  Navigator.pushNamed(context, ChatRoom.routeName,
-                      arguments: widget.group);
+                  // Navigator.pushNamed(context, ChatRoom.routeName,
+                  //     arguments: widget.group);
+                 Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                               ChatPage()
+                                          ),
+                                        );
                 },
               ),
               title: 'Chat',

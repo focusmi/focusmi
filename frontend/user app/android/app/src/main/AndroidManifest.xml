@@ -14,6 +14,10 @@
  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permissin.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 
 
@@ -22,7 +26,7 @@
 <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <application 
         
-        android:label="therapist_app"
+        android:label="Focusmi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">

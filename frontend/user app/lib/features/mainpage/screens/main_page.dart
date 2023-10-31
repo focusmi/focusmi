@@ -5,6 +5,7 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:focusmi/features/appointment/screens/view_appointments.dart';
 import 'package:focusmi/features/authentication/screens/auth_screen.dart';
 import 'package:focusmi/features/group_task_planner/screens/task_plan_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
@@ -309,6 +310,43 @@ class _MainScreenState extends State<MainScreen> {
                               height: 20,
                               width: 0,
                             ),
+                              Container(
+                              height: 40,
+                              width: width,
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Recent Task Plans",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.topLeft,
+                              width: 500,
+                              height: 180,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: taskPlan.length,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () => {
+                                        Navigator.pushNamed(
+                                            context, GroupTaskPlanner.routeName,
+                                            arguments: [
+                                              taskPlan[index].group_id,
+                                              taskPlan[index].plan_id
+                                            ])
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: MainPageCatTile.greenPageTile(
+                                            taskPlan[index].plan_name,
+                                            width * 0.1),
+                                      ),
+                                    );
+                                  }),
+                            ),
                             Container(
                               height: 40,
                               width: width,
@@ -404,10 +442,27 @@ class _MainScreenState extends State<MainScreen> {
                               height: 40,
                               width: width,
                               alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "Meet Our Professionals",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: (){
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                               ViewAppointmentsWidget()
+                                          ),
+                                        );
+                                    },
+                                    child: Text(
+                                      "Meet Our Professionals",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
+                                    ),
+                                  ),
+                          
+                                  // Text("Set Appointment Now",style: TextStyle(color: Colors.white),)
+                                ],
                               ),
                             ),
                             Container(

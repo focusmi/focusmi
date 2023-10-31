@@ -34,4 +34,18 @@ class PomodoroTimerServices {
       print(e);
     }
   }
+
+  static Future getTipsByDay(day)async{
+     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-tips-by-day/$day'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {}
+  }
 }

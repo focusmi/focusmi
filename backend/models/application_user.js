@@ -25,7 +25,7 @@ class ApplicationUser {
 
     static listCounciloors = async () => {
         try {
-            const query = `SELECT * FROM public.administrative_user
+            const query = `SELECT * FROM  administrative_user
             ORDER BY user_id ASC`;
             const users = await pool.cQuery(query);
             console.log(users)
@@ -37,7 +37,28 @@ class ApplicationUser {
 
     static listAppointments = async (userId) => {
         try {
-            const query = `SELECT * FROM public.appointment WHERE user_id=${userId}`;
+            const query = `SELECT * FROM  appointment WHERE user_id=${userId}`;
+            const users = await pool.cQuery(query);
+            return users;
+        } catch (error) {
+            throw new Error('Error Finding Councillors:', error);
+        }
+    }
+
+    static listAppointmentDetails = async (sessionId) => {
+        try {
+            const query = `SELECT * FROM  therapy_session WHERE session_id=${sessionId}`;
+            const users = await pool.cQuery(query);
+            return users;
+        } catch (error) {
+            throw new Error('Error Finding Councillors:', error);
+        }
+    }
+
+    static listCouncillorDetails = async (userId) => {
+        try {
+            console.log("Dfdf")
+            const query = `SELECT full_name FROM  administrative_user WHERE user_id=${userId}`;
             const users = await pool.cQuery(query);
             return users;
         } catch (error) {
@@ -48,7 +69,8 @@ class ApplicationUser {
     static listtimeslots = async (userId) => {
         try {
 
-            const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
+            const query = `SELECT * FROM therapy_session WHERE user_id=${userId} AND booking_status='false'`;
+            console.log(query)
             const slot_list = await pool.cQuery(query);
             return slot_list;
 
@@ -60,8 +82,8 @@ class ApplicationUser {
 
     static updateSession = async (sessionId, userId) => {
         try {
-            const query1 = `UPDATE public.therapy_session SET booking_status=true WHERE session_id=${sessionId}`;
-            const query2 = `INSERT INTO public.appointment (user_id, session_id, complete) VALUES (${userId},${sessionId}, 'false');`;
+            const query1 = `UPDATE  therapy_session SET booking_status=true WHERE session_id=${sessionId}`;
+            const query2 = `INSERT INTO  appointment (user_id, session_id, complete) VALUES (${userId},${sessionId}, 'false');`;
             console.log(query1);
             console.log(query2);
             await pool.cQuery(query1);
@@ -72,6 +94,7 @@ class ApplicationUser {
     }
 
     static getUserDetail = async()=>{
+        console.log("Dfdf")
         try{
             var activeresult =  await application_user.findAll({
                 where:{

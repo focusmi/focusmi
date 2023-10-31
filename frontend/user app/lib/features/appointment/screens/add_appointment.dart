@@ -85,7 +85,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                 spacing: 8,
                 children: timeslotlist.map(
                   (slot) {
-                    final sessionTime = DateTime.parse(slot['session_time']).toLocal();
+                    final sessionTime =
+                        DateTime.parse(slot['session_time']).toLocal();
                     final sessionEndTime =
                         DateTime.parse(slot['session_end_time']).toLocal();
                     final isSelected = selectedSessionId == slot['session_id'];
@@ -115,14 +116,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             // Process the form data
-                            print('Selected Session ID: $selectedSessionId');
-                            print('Full Name: ${_fullNameController.text}');
-                            print(
-                                'Problem Description: ${_problemDescriptionController.text}');
                             // ... other form processing logic ...
                             var user = Provider.of<UserProvider>(context,
                                     listen: false)
                                 .user;
+
                             AppointmentService.updateSession(
                                 selectedSessionId!, user.user_id);
                           }

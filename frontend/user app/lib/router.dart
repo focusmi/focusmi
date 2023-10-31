@@ -149,14 +149,15 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
           course: course,
         ),
       );
-    case ChatRoom.routeName:
-      final int arg = routeSettings.arguments as int;
-      return MaterialPageRoute(
-        settings: routeSettings,
-        builder: (context) => ChatRoom(
-          group_id: arg,
-        ),
-      );
+    // case ChatRoom.routeName:
+    //   final int arg = routeSettings.arguments as int;
+    //   return MaterialPageRoute(
+    //     settings: routeSettings,
+    //     builder: (context) => ChatRoom(
+    //       group_id: arg,
+    //     ),
+    //   );
+    
     case BreakView.routeName:
       final Task args = (routeSettings.arguments as List<dynamic>)[0];
       final int btime = (routeSettings.arguments as List<dynamic>)[1];

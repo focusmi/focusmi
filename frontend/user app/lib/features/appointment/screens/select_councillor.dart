@@ -12,10 +12,12 @@ class CounselorsListWidgetWidget extends StatefulWidget {
   static const String routeName = '/select_councillor';
 
   @override
-  _CounselorsListWidgetWidgetState createState() => _CounselorsListWidgetWidgetState();
+  _CounselorsListWidgetWidgetState createState() =>
+      _CounselorsListWidgetWidgetState();
 }
 
-class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget> {
+class _CounselorsListWidgetWidgetState
+    extends State<CounselorsListWidgetWidget> {
   late List<dynamic> councillorData; // To store the fetched data
 
   @override
@@ -23,15 +25,14 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
     super.initState();
     fetchCouncillorData();
     councillorData = [];
-    
   }
 
   Future<void> fetchCouncillorData() async {
     try {
       final data = await AppointmentService.getCouncillorList();
-      print(data);
       setState(() {
         councillorData = data;
+        print(councillorData);
       });
     } catch (e) {
       print('Error fetching data: $e');
@@ -48,10 +49,8 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
           backgroundColor: const Color(0xFF83DE70),
           automaticallyImplyLeading: false,
           title: Text(
-            'Councelors',
-            style: TextStyle(
-              color: Colors.white
-            ),
+            'Counsellors',
+            style: TextStyle(color: Colors.white),
             // style: FlutterFlowTheme.of(context).bodyText1.override(
             //       fontFamily: 'Outfit',
             //       color: Colors.white,
@@ -63,26 +62,27 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
           elevation: 2,
         ),
         body: SafeArea(
-          top: true,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                for (var councillor in councillorData ?? [])
-                  CouncillorCard(
-                    imageUrl: 'https://picsum.photos/seed/87/600',
-                    username: councillor['full_name'],
-                    about: councillor['about'],
-                    email: councillor['email'],
-                    exp: councillor['years_of_experience'],
-                    tot_clients: councillor['tot_clients'],
-                    user_id: councillor['user_id'],
-                  ),
-              ],
-            ),
-          ),
-        ),
+            top: true,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    for (var councillor in councillorData ?? [])
+                      CouncillorCard(
+                        imageUrl: '$uri/' + councillor['image'],
+                        username: councillor['full_name'],
+                        about: councillor['about'],
+                        email: councillor['email'],
+                        exp: councillor['years_of_experience'],
+                        tot_clients: councillor['tot_clients'],
+                        user_id: councillor['user_id'],
+                      ),
+                  ],
+                ),
+              ),
+            )),
       ),
     );
   }
@@ -92,6 +92,7 @@ class CouncillorCard extends StatelessWidget {
   final String? imageUrl;
   final String? username;
   final String? about;
+  final String? title;
   final String? email;
   final String? exp;
   final int? tot_clients;
@@ -102,6 +103,7 @@ class CouncillorCard extends StatelessWidget {
     this.imageUrl,
     this.username,
     this.about,
+    this.title,
     this.email,
     this.exp,
     this.tot_clients,
@@ -129,7 +131,7 @@ class CouncillorCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(imageUrl??''),
+                        image: NetworkImage(imageUrl ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -139,20 +141,14 @@ class CouncillorCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        username??'',
+                        username ?? '',
                         style: FlutterFlowTheme.of(context).bodyText1.override(
                               fontFamily: 'Readex Pro',
                               fontSize: 18,
                               fontWeight: FontWeight.normal,
                             ),
                       ),
-                      Text(
-                        about??'',
-                        style:TextStyle(
-                          fontSize: 14
-
-                        )
-                      )
+                      Text(title ?? '', style: TextStyle(fontSize: 14))
                     ],
                   ),
                 ],
@@ -167,11 +163,14 @@ class CouncillorCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DetailsWidget(
-                        name: username??'',
-                        about: about??'',
-                        experience: exp??'',
-                        totcustomer: tot_clients??0,
-                        userId: user_id??0,
+                        name: username ?? '',
+                        email: email ?? '',
+                        about: about ?? '',
+                        title: title ?? '',
+                        experience: exp ?? '',
+                        image: imageUrl ?? '',
+                        totcustomer: tot_clients ?? 0,
+                        userId: user_id ?? 0,
                       ),
                     ),
                   );

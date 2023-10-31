@@ -27,6 +27,19 @@ dRouter.post('/api/create-daily-tips',imageUpload.single('image'),async(req, res
     next();
 })
 
+dRouter.get('/api/get-all-tips',async(req, res, next)=>{
+    try{
+        var result =  await daily_tip.findAll({
+
+        })
+        res.send(result)
+    }
+    catch(e){
+        console.log(e)
+    }
+    next()
+})
+
 dRouter.get('/api/get-tips-by-day/:day',async(req, res, next)=>{
     try{
         var result =  await DailyTip.getByTipsDay(req.params.day);

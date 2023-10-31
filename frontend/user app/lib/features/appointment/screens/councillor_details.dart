@@ -8,7 +8,10 @@ export 'councillor_details_model.dart';
 
 class DetailsWidget extends StatefulWidget {
   final String name;
+  final String email;
+  final String image;
   final String about;
+  final String title;
   final String experience;
   final int totcustomer;
   final int userId;
@@ -16,7 +19,10 @@ class DetailsWidget extends StatefulWidget {
   DetailsWidget({
     Key? key,
     required this.name,
+    required this.image,
+    required this.email,
     required this.about,
+    required this.title,
     required this.experience,
     required this.totcustomer,
     required this.userId,
@@ -49,7 +55,7 @@ class _DetailsWidgetState extends State<DetailsWidget> {
           backgroundColor: const Color(0xFF83DE70),
           automaticallyImplyLeading: false,
           title: Text(
-            'Councillor Profile',
+            'Counsellor Profile',
             style: FlutterFlowTheme.of(context).bodyText1.override(
                   fontFamily: 'Outfit',
                   color: Colors.white,
@@ -61,169 +67,151 @@ class _DetailsWidgetState extends State<DetailsWidget> {
           elevation: 2,
         ),
         body: SafeArea(
-          top: true,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-              Text(
-                '${widget.name}',
-                style: FlutterFlowTheme.of(context).bodyText1.override(
-                      fontFamily: 'Readex Pro',
-                      fontSize: 20,
-                    ),
-              ),
-              Text(
-                '${widget.about}',
-                style: FlutterFlowTheme.of(context).bodyText1.override(
-                      fontFamily: 'Readex Pro',
-                      color: const Color(0xFF505056),
-                    ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(
-                      Icons.people,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24,
-                    ),
-                    Icon(
-                      Icons.explicit,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24,
-                    ),
-                    Icon(
-                      Icons.star_rate_sharp,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24,
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            top: true,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Text(
-                    '${widget.totcustomer}+ Patients',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    '${widget.experience} Yrs Experience',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    '4.5 Ratings',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'About Doctor',
-                  textAlign: TextAlign.start,
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Readex Pro',
-                        fontSize: 20,
-                      ),
-                ),
-              ),
-              Text(
-                'Mental Health Counselors, facilitating positive change through compassionate communication in a safe environment',
-                style: FlutterFlowTheme.of(context).bodyText1,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Working Time',
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Readex Pro',
-                        fontSize: 20,
-                      ),
-                ),
-              ),
-              Text(
-                'Mon - Sat (8.00 AM - 5.00 PM)',
-                style: FlutterFlowTheme.of(context).bodyText1,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                child: Text(
-                  'Contact',
-                  style: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Readex Pro',
-                        fontSize: 20,
-                      ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.message_rounded,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    'Messaging',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: FFButtonWidget(
-                  onPressed: () {
-                    print('Button pressed ...');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            AppointmentPage(userId: widget.userId),
-                      ),
-                    );
-                  },
-                  text: 'Book Appointment',
-                  options: FFButtonOptions(
-                    height: 40,
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    iconPadding: const EdgeInsets.symmetric(horizontal: 0),
-                    color: const Color(0xFF83DE70),
-                    textStyle: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Readex Pro',
-                          color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(widget.image),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                    elevation: 3,
-                    borderSide: const BorderSide(
-                      color: Colors.transparent,
-                      width: 1,
+                      ),
                     ),
-                    borderRadius: 8,
                   ),
-                ),
+                  Text(
+                    '${widget.name}',
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Readex Pro',
+                          fontSize: 20,
+                        ),
+                  ),
+                  Text(
+                    '${widget.title}',
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Readex Pro',
+                          color: const Color(0xFF505056),
+                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Icon(
+                          Icons.people,
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                          size: 24,
+                        ),
+                        Icon(
+                          Icons.explicit,
+                          color: FlutterFlowTheme.of(context).secondaryText,
+                          size: 24,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '${widget.totcustomer}+ Patients',
+                        style: FlutterFlowTheme.of(context).bodyText1,
+                      ),
+                      const SizedBox(width: 30),
+                      Text(
+                        '${widget.experience} Yrs Experience',
+                        style: FlutterFlowTheme.of(context).bodyText1,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'About ',
+                      textAlign: TextAlign.start,
+                      style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Readex Pro',
+                            fontSize: 20,
+                          ),
+                    ),
+                  ),
+                  Text(
+                    '${widget.about}',
+                    style: FlutterFlowTheme.of(context).bodyText1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'Contact',
+                      style: FlutterFlowTheme.of(context).bodyText1.override(
+                            fontFamily: 'Readex Pro',
+                            fontSize: 20,
+                          ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.email_rounded,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.email,
+                        style: FlutterFlowTheme.of(context).bodyText1,
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: FFButtonWidget(
+                      onPressed: () {
+                        print('Button pressed ...');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AppointmentPage(userId: widget.userId),
+                          ),
+                        );
+                      },
+                      text: 'Book Appointment',
+                      options: FFButtonOptions(
+                        height: 40,
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        iconPadding: const EdgeInsets.symmetric(horizontal: 0),
+                        color: const Color(0xFF83DE70),
+                        textStyle:
+                            FlutterFlowTheme.of(context).bodyText1.override(
+                                  fontFamily: 'Readex Pro',
+                                  color: Colors.white,
+                                ),
+                        elevation: 3,
+                        borderSide: const BorderSide(
+                          color: Colors.transparent,
+                          width: 1,
+                        ),
+                        borderRadius: 8,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            )),
       ),
     );
   }

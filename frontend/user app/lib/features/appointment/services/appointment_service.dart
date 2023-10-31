@@ -89,4 +89,48 @@ class AppointmentService {
       throw Exception('Error fetching data: $e');
     }
   }
+
+  static Future<List<dynamic>> getAppointmentDetails(sessionId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$uri/api/full_appointment_details/$sessionId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse and return the data from the response
+        List<dynamic> data = json.decode(response.body);
+
+        return data;
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching data: $e');
+    }
+  }
+
+  static Future<List<dynamic>> getCouncillorDetails(userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$uri/api/councillor_details/$userId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse and return the data from the response
+        List<dynamic> data = json.decode(response.body);
+
+        return data;
+      } else {
+        throw Exception('Failed to fetch data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching data: $e');
+    }
+  }
 }

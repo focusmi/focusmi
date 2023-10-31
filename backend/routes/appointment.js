@@ -29,5 +29,16 @@ appointmentRouter.get('/api/view_appointments/:userId',async (req,res)=>{
     res.json(appointments);
 })
 
-module.exports = appointmentRouter;
+appointmentRouter.get('/api/full_appointment_details/:userId',async (req,res)=>{
+    const userId = req.params.userId;
+    const appointments = await ApplicationUser.listAppointmentDetails(userId);
+    res.json(appointments);
+})
 
+appointmentRouter.get('/api/councillor_details/:userId',async (req,res)=>{
+    const userId = req.params.userId;
+    const appointments = await ApplicationUser.listCouncillorDetails(userId);
+    res.json(appointments);
+})
+
+module.exports = appointmentRouter;

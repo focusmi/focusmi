@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     } ,
     day: DataTypes.STRING,
     text: DataTypes.STRING,
-    content_location: DataTypes.STRING
+    content_location:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'daily_tip',
