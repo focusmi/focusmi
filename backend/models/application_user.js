@@ -23,47 +23,65 @@ class ApplicationUser {
         return result
     }
 
-}
-
-const AUser = {
-
-    listCounciloors: async () => {
+    static listCounciloors = async () => {
         try {
             const query = `SELECT * FROM public.administrative_user
             ORDER BY user_id ASC`;
             const users = await pool.cQuery(query);
+            console.log(users)
             return users;
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    listAppointments: async () => {
+    static listAppointments = async (userId) => {
         try {
-            const query = `SELECT * FROM public.appointment
-            ORDER BY appointment_id ASC`;
+            const query = `SELECT * FROM public.appointment WHERE user_id=${userId}`;
             const users = await pool.cQuery(query);
             return users;
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    listtimeslots: async (userId) => {
+    static listAppointmentDetails = async (sessionId) => {
         try {
-            const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
-            console.log(query);
-            const slot_list = await pool.cQuery(query);
-            return slot_list;
+            const query = `SELECT * FROM public.therapy_session WHERE session_id=${sessionId}`;
+            const users = await pool.cQuery(query);
+            return users;
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
         }
-    },
+    }
 
-    updateSession: async (sessionId,userId) => {
+    static listCouncillorDetails = async (userId) => {
+        try {
+            const query = `SELECT full_name FROM public.administrative_user WHERE user_id=${userId}`;
+            const users = await pool.cQuery(query);
+            return users;
+        } catch (error) {
+            throw new Error('Error Finding Councillors:', error);
+        }
+    }
+
+    static listtimeslots = async (userId) => {
+        try {
+
+            const query = `SELECT * FROM public.therapy_session WHERE user_id=${userId} AND booking_status='false'`;
+            const slot_list = await pool.cQuery(query);
+            return slot_list;
+
+        } catch (error) {
+
+            throw new Error('Error Finding Councillors:', error);
+        }
+    }
+
+    static updateSession = async (sessionId, userId) => {
         try {
             const query1 = `UPDATE public.therapy_session SET booking_status=true WHERE session_id=${sessionId}`;
-            const query2 = `INSERT INTO public.appointment (user_id, session_id, appointment_status) VALUES (${userId},${sessionId}, 'Not Completed');`;
+            const query2 = `INSERT INTO public.appointment (user_id, session_id, complete) VALUES (${userId},${sessionId}, 'false');`;
             console.log(query1);
             console.log(query2);
             await pool.cQuery(query1);
@@ -73,7 +91,32 @@ const AUser = {
         }
     }
 
+    static getUserDetail = async()=>{
+        try{
+            var activeresult =  await application_user.findAll({
+                where:{
+                    account_status:'inactive'
+                }
+            });
+
+            var inactiveresult = await application_user.findAll({
+                where:{
+                    account_status:{
+                        [Op.not] : 'inactive'
+                    }
+                }
+            })
+            return {
+                actv_users:activeresult,
+                inactv_users:inactiveresult
+            }
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+
 }
 
 module.exports = ApplicationUser;
-module.exports = AUser;
+
