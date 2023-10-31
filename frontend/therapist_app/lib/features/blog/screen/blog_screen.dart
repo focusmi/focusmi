@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:therapist_app/constants/global_variables.dart';
-import 'package:therapist_app/constants/util.dart';
 import 'package:therapist_app/features/blog/screen/create_blog_screen.dart';
 import 'package:therapist_app/features/blog/screen/edit_blog_screen.dart';
 import 'package:therapist_app/features/blog/service/blogService.dart';
@@ -32,53 +31,21 @@ class _BlogScreenState extends State<BlogScreen> {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: Key(index.toString()),
-                      direction: DismissDirection.startToEnd,
-                      background: Container(
-                        margin: EdgeInsets.only(bottom: 20, top: 5),
-                        decoration: BoxDecoration(
-                          color:
-                              Color.fromARGB(255, 77, 228, 87).withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 80,
-                              child: Lottie.asset(
-                                  'assets/images/whnYa9wCTG.json',
-                                  fit: BoxFit.fitHeight),
-                            ),
-                            Text(
-                              'Archive Blog',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                      child: BlogsTile(
-                        subTitle: blogsData[index]['subtitle'] ?? 'null',
-                        title: blogsData[index]['title'],
-                        description: blogsData[index]['description'],
-                        blogId: blogsData[index]['blog_id'],
-                        imgUrl: '${uri}/${blogsData[index]['image']}',
-                        onLongPress: () {
-                          // Toggle the toolbar visibility on blog tile tap
-                          toggleToolbarVisibility();
-                          // Set the selected blog ID when a blog tile is long-pressed
-                          setSelectedBlogId(blogsData[index]['blog_id']);
-                        },
-                        onTap: () {
-                          hideToolbar();
-                        },
-                      ),
-                      onDismissed: (direction) =>
-                          {showSnackBar(context, 'Archived')},
+                    return BlogsTile(
+                      subTitle: blogsData[index]['subtitle'] ?? 'null',
+                      title: blogsData[index]['title'],
+                      description: blogsData[index]['description'],
+                      blogId: blogsData[index]['blog_id'],
+                      imgUrl: '${uri}/${blogsData[index]['image']}',
+                      onLongPress: () {
+                        // Toggle the toolbar visibility on blog tile tap
+                        toggleToolbarVisibility();
+                        // Set the selected blog ID when a blog tile is long-pressed
+                        setSelectedBlogId(blogsData[index]['blog_id']);
+                      },
+                      onTap: () {
+                        hideToolbar();
+                      },
                     );
                   },
                 ),
@@ -93,8 +60,7 @@ class _BlogScreenState extends State<BlogScreen> {
             child: Container(
             height: 200,
             margin: const EdgeInsets.only(top: 200),
-            child: Lottie.asset('assets/images/Comp.json',
-                fit: BoxFit.cover),
+            child: Lottie.asset('assets/images/Comp.json', fit: BoxFit.cover),
           ));
   }
 
@@ -283,7 +249,7 @@ class _BlogsTileState extends State<BlogsTile> {
           widget.onLongPress!();
         }
       },
-      onTap: () {
+      onTap: () async {
         setState(() {
           isOnTap = false;
           isLongPressed = false;
@@ -291,6 +257,12 @@ class _BlogsTileState extends State<BlogsTile> {
         if (widget.onTap != null) {
           widget.onTap!();
         }
+
+        var push = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SliverAppBarExample(BlogId: widget.blogId),
+            ));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 16),
@@ -334,28 +306,32 @@ class _BlogsTileState extends State<BlogsTile> {
                     SizedBox(
                       height: 4,
                     ),
-                    widget.subTitle != 'null' ?
-                    Text(
-                      widget.subTitle,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ): SizedBox(height: 0,),
+                    widget.subTitle != 'null'
+                        ? Text(
+                            widget.subTitle,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        : SizedBox(
+                            height: 0,
+                          ),
                     SizedBox(
                       height: 4,
                     ),
-                    Text(
-                      "″${widget.description}″",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    Text("″${widget.description}″",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        overflow: TextOverflow
+                            .ellipsis, // Handle overflow by showing "..."
+                        maxLines: 2),
                     SizedBox(
                       height: 4,
                     ),
@@ -365,6 +341,117 @@ class _BlogsTileState extends State<BlogsTile> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class SliverAppBarExample extends StatefulWidget {
+  late final int BlogId;
+  SliverAppBarExample({required this.BlogId});
+
+  @override
+  _SliverAppBarExampleState createState() => _SliverAppBarExampleState();
+}
+
+class _SliverAppBarExampleState extends State<SliverAppBarExample> {
+  bool _pinned = false;
+  bool _snap = false;
+  bool _floating = false;
+  String imgUrl = 'assets/images/blogs-images/default.png', title = '', description = '', subTitle = '';
+
+  Future<void> fetchBlogs() async {
+    try {
+      List data = await BlogService.getData(context);
+      Map blogWithId = data.firstWhere(
+          (blog) => blog['blog_id'] == widget.BlogId,
+          orElse: () => null);
+
+      if (blogWithId != null) {
+        setState(() {
+          title = blogWithId['title'] ?? '';
+          description = blogWithId['description'] ?? '';
+          subTitle = blogWithId['subtitle'] ?? '';
+          imgUrl = blogWithId['image'] ?? '';
+        });
+      } else {
+        print('Blog not found.');
+      }
+    } catch (e) {
+      print('Error fetching blog data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    fetchBlogs();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            pinned: _pinned,
+            snap: _snap,
+            floating: _floating,
+            expandedHeight: 240.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                '${title}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              background: CachedNetworkImage(
+                imageUrl: uri + '/' + imgUrl,
+                width: MediaQuery.of(context).size.width,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                child: Center(
+                  child: Text(
+                    '${subTitle}',
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Text(
+                          '${description}',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(height: 5),
+                        Text('˗ˏˋ ★★★ ˎˊ˗'),
+                        SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              childCount: 1,
+            ),
+          ),
+        ],
       ),
     );
   }
