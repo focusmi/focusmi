@@ -20,7 +20,7 @@ class _CreateBlogState extends State<CreateBlog> {
 
   Future getImage() async {
     final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedImage != null) {
