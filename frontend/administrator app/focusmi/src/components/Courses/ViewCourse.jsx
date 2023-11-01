@@ -83,6 +83,18 @@ const ViewCourse =() => {
             setLevelToEdit(null);
             window.location.reload();
           }
+
+          const handleLaunch = async () => {
+            try {
+              const response = await axios.get(`http://localhost:3001/api/publish-course/${courseID}`);
+              // Handle the response, if needed
+              console.log('Course published successfully:', response.data);
+              window.location.reload();
+            } catch (error) {
+              // Handle errors here
+              console.error('Error publishing the course:', error);
+            }
+          };
           
 
   return (
@@ -163,12 +175,14 @@ const ViewCourse =() => {
                         Save as Draft
                       </button>
                       </Link>
+                      <Link to="/courses">
                       <button
-                        // onClick={handleLaunch}
+                        onClick={handleLaunch }
                         className="bottom-0 right-0 mt-10 mr-6 mb-5 text-white px-4 py-2 rounded bg-[#83DE70] hover:bg-[#55a06a]"
                       >
                         Launch the Course
                       </button>
+                      </Link>
                     </div>
                   </section>
                 ) : null}

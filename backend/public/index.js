@@ -21,6 +21,7 @@ const appointmentRouter = require("../routes/appointment");
 const userTRoutes = require("../routes/adminitrator");
 const mRouter = require("../routes/mindfulness_courses");
 const nRouter = require("../routes/notification_routes");
+const dRouter = require("../routes/daily_tips");
 
 dotenv.config()
 
@@ -46,6 +47,7 @@ app.use(appointmentRouter)
 app.use(userTRoutes)
 app.use(mRouter)
 app.use(nRouter)
+app.use(dRouter)
 
 
 
@@ -60,12 +62,19 @@ const PORT = process.env.PORT || 3000
         
     });
     io.on('connection', (socket)=>{
+                socket.broadcast.emit("messageback","hello")
         console.log("connnected successfully",socket.id);
         socket.on('disconnect',()=>{
             console.log("Disconnected", socket.id)
         });
         socket.on("message", (data)=>{
             console.log(data);
-            socket.broadcast.emit("message-receive",data)
+            try{
+
+                socket.broadcast.emit("messageback","hu")
+            }
+            catch(e){
+                console.log(e)
+            }
         })
     });

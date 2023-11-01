@@ -191,6 +191,32 @@ mRouter.get('/api/get-course-level-by-courselevel/:level',  async(req, res, next
    next()
 })
 
+mRouter.get('/api/publish-course/:courseid',(req, res, next)=>{
+    try{
+        mindfulness_course.update({course_status:'published'},{
+            where:{
+                course_id:req.params.courseid
+            }
+        })
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+mRouter.get('/api/draft-course/:courseid',(req, res, next)=>{
+    try{
+        mindfulness_course.update({course_status:'drafted'},{
+            where:{
+                course_id:req.params.courseid
+            }
+        })
+    }
+    catch(e){
+
+    }
+})
 
 
 module.exports = mRouter

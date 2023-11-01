@@ -1,196 +1,153 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
  import { Link } from 'react-router-dom';
  import { FaPlus } from 'react-icons/fa';
 import TipCard from './TipCard';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import axios from 'axios';
+import DailyTipsAdmin, { createTips } from './CreateTips';
+import { FiXSquare } from 'react-icons/fi';
 
 
 
-
-const PostedTips = [
-    {
-      id: 1,
-      title: 'Tip 1',
-      day: 'Monday',
-      description:' Eat healthy.  It will make you feel better',
-      image: require ('../../Assets/m2.jpeg'),
-    },
-    {
-      id: 2,
-      title: 'Tip 2',
-      day: 'Tuesday',
-      description: 'Did you know meditating every day is good.',
-      image: require ('../../Assets/m4.jpeg'),
-    },
-    {
-      id: 3,
-      title: 'Tip 3',
-      day: 'Wednesday',
-      description: 'Are You a procastinator?',
-      image: require ('../../Assets/m3.jpeg'),
-    },
-    {
-      id: 4,
-      title: 'Tip 4',
-      day: 'Thursday',
-      description: 'Always think Positive',
-      image: require ('../../Assets/m5.jpeg'),
-    },
-    {
-      id: 5,
-      title: 'Tip 5',
-      day: 'Friday',
-      description: 'Always keep positive vibes',
-      image: require ('../../Assets/m7.jpeg'),
-    },
-    {
-      id: 6,
-      title: 'Tip 6',
-      day: 'Saturday',
-      description: 'Keep yor ambitions high',
-      image: require ('../../Assets/m6.jpeg'),
-    },
-    {
-      id: 7,
-      title: 'Tip 7',
-      day: 'Sunday',
-      description: 'Learn the fundamentals of React.js',
-      // image: require ('../assets/img3.jpg'),
-    },
-    {
-      id: 8,
-      title: 'JavaScript for Beginners',
-      description: 'A beginner-friendly guide to JavaScript programming',
-     
-    },
-    {
-      id: 9,
-      title: 'Advanced CSS Techniques',
-      description: 'Master advanced CSS concepts and techniques',
-    },
-    // Add more courses as needed
-  ];
-  
-  const DraftedTips = [
-      {
-        id: 1,
-        title: 'Tip 5',
-        description: 'How to manage ',
-        image: require ('../../Assets/m10.jpeg'),
-      },
-      {
-        id: 2,
-        title: 'Tip 10',
-        description: 'Work on time?',
-        image: require ('../../Assets/m11.jpeg'),
-      },
-      {
-        id: 3,
-        title: 'Tip 20',
-        description: 'YOGA',
-        
-        image: require ('../../Assets/m12.jpeg'),
-      },
-      {
-        id: 4,
-        title: 'Tip 25',
-        description: 'Effectivity is simple',
-
-        image: require ('../../Assets/m13.jpeg'),
-      },
-      {
-        id: 5,
-        title: 'Tip 21',
-        description: 'Keep chasing your aims',
-        image: require ('../../Assets/m14.jpeg'),
-      },
-      {
-        id: 6,
-        title: 'Tip 8',
-        description: 'Life is a valuable chance',
-        image: require ('../../Assets/m15.jpeg'),
-      },
-      {
-        id: 7,
-        title: 'Introduction to React',
-        description: 'Learn the fundamentals of React.js',
-        // image: require ('../assets/img3.jpg'),
-      },
-      {
-        id: 8,
-        title: 'JavaScript for Beginners',
-        description: 'A beginner-friendly guide to JavaScript programming',
-       
-      },
-      {
-        id: 9,
-        title: 'Advanced CSS Techniques',
-        description: 'Master advanced CSS concepts and techniques',
-      },
-      // Add more courses as needed
-    ];
-    
     
     
     const DailyTipsMain = () => {
+
+      
+    let userdata = window.localStorage.getItem('user');
+    const [user, setUser] = useState(JSON.parse(userdata));
+    const [tipData, setTipData] = useState([]);
+    const [isOpenPopup , setOpenPopup] = useState(false);
+    const [tip,setTip]=([]);
+
+    const openPopup=()=>{
+      setOpenPopup(true);
+    }
+    const closePopup =() =>{
+      setOpenPopup(false);
+    }
+
+
+    const requestData = () => {
+      axios.request({
+        headers: {
+          authorization: `Bearer ${user.token}`
+        },
+        method: "GET",
+        url: `http://localhost:3001/api/get-all-tips`
+      }).then(response => {
+        // console.log(response.data)
+        setTipData(response.data);
+        console.log(tipData);      
+      });
+      
+    };
+  
+      useEffect(()=>{
+        requestData();
+      },[])
+      useEffect(() => {
+        console.log(tipData); // Log tipData whenever it changes
+      }, [tipData]);
+
+      const mondayTip = tipData.filter(tip => tip.day === 'Monday');
+      const tuesdayTip = tipData.filter(tip => tip.day === 'Tuesday');
+      const wednesdayTip = tipData.filter(tip => tip.day === 'Wednesday');
+      const thursdayTip = tipData.filter(tip => tip.day === 'Thursday');
+      const fridayTip = tipData.filter(tip => tip.day === 'Friday');
+      const saturdayTip = tipData.filter(tip => tip.day === 'Saturday');
+      const sundayTip = tipData.filter(tip => tip.day === 'Sunday');
+
     
   return (
-    <div className="flex justify-center items-center max-h-screen pt-5 ">
-      <div className=" p-6 rounded-lg shadow-2xl w-3/4 bg-white  ">
-        <h1 className="text-2xl font-bold mb-4 flex flex-col items-center text-[#55a06a]">Daily Tips</h1>
-        <div className="flex flex-col items-end gap-4">
-          {/* <Link to="/posted-tips" className="text-blue-500">
-            Posted Tips
-          </Link> */}
-          {/* <Link to="/drafted-tips" className="text-blue-500">
-            Drafted Tips
-          </Link> */}
-          <div className="flex justify-between items-center mb-4 ">
-          <Link to={"/create-tips"}>
-          <button className="bg-[#83DE70] hover:bg-[#55a06a] top=0 right-0 text-white rounded px-4 py-2 flex items-center">
-            <FaPlus className="mr-2" />
-            Create New Tip
-          </button>
-          </Link> 
-          </div>
 
+    <div className="text-center w-full relative">
+      <h1 className='text-[25px] font-extrabold text-[#55a06a] m-4 uppercase'>Daily Tips </h1> 
+      
+
+      <Link to={""} className='no-underline'>
+      <button className="absolute top-0 right-0 mt-0 mr-4 flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring focus:border-green-700" onClick={openPopup}>
+              <FaPlus className="mr-2" />
+         Create New Tip 
+      </button>
+      </Link>
   
-<Tabs>
-    <div className="flex justify-center text-white ">
-        <TabList className="flex bg-gray-200 ml-6">
-          <Tab className="flex-grow px-4 py-2 cursor-pointer bg-[#606264] rounded-l ">Posted Tips</Tab>
-          <Tab className="flex-grow px-4 py-2 cursor-pointer bg-[#606264] rounded-r">Drafted Tips</Tab>
-        </TabList>
-     </div>
-    <TabPanel>
-    
-    <div className="flex flex-wrap justify-center max-h-[50vh] overflow-y-scroll">
-        
-      {DraftedTips.map((tip) => (
-        <TipCard key={tip.id} tip={tip} />
-      ))}
-    </div>
-    </TabPanel>
+      <div >
+      
+        <Tabs >
+          <TabList className="flex rounded-r border-2 justify-center">
+            <Tab className="p-2 cursor-pointer  border-2  w-1/2 ">Monday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Tuesday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Wednsday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Thursday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Friday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Saturday</Tab>
+            <Tab className="p-2 cursor-pointer border-2 w-1/2 ">Sunday</Tab>
+          </TabList>
+          <TabPanel className="relative">
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+            <TipCard tip={mondayTip} /> 
+           </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={tuesdayTip} />
+          </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={wednesdayTip} />
+          </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={thursdayTip} />
+          </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={fridayTip} />
+          </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={saturdayTip} />
+          </div>
+          </TabPanel>
+          <TabPanel>
+          <div className="flex flex-wrap justify-center max-h-[60vh] overflow-y-scroll">
+          <TipCard tip={sundayTip} />
+          </div>
+          </TabPanel>
+        </Tabs>
+      </div>
+      {isOpenPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div className="bg-white p-4 rounded-lg">
+          <div className='flex justify-center relative'>
+          <h2 className="text-2xl font-bold text-[#55a06a] mb-4 ">Create Daily Tip</h2>
 
-    <TabPanel>
-    
-    <div className="flex flex-wrap justify-center max-h-[50vh] overflow-y-scroll">
-        
-      {PostedTips.map((tip) => (
-        <TipCard key={tip.id} tip={tip} />
-      ))}
-    </div>
-    </TabPanel>
+              <button
+                  className="text-white bg-red-600 hover:bg-red-300 p-2 rounded absolute top-0 right-0 "
+                  onClick={closePopup}
+                >
+                  <FiXSquare className='text-2xl'/>
+                </button>
+          </div>
+          {/* Your edit form goes here */}
 
-
-
-    </Tabs>
+          <DailyTipsAdmin />
+          {/* Include an "Update" button to save the changes */}
           
         </div>
-        
       </div>
-    </div>
+      )}
+
+
+    </div> 
   );
 };
 
 export default DailyTipsMain;
+
+

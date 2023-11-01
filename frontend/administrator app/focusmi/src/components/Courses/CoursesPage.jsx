@@ -41,7 +41,7 @@ const CoursesPage = () => {
   
   return (
     <div className="text-center w-full relative">
-      <h1 className='text-[25px] font-extrabold text-[#55a06a] m-4 uppercase'>Courses</h1> 
+      <h1 className='text-[25px] font-extrabold text-[#55a06a] m-4 uppercase'>Courses </h1> 
 
       <Link to={"/add-courses"} className='no-underline'>
       <button className="absolute top-0 right-0 mt-0 mr-4 flex items-center px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring focus:border-green-700">
