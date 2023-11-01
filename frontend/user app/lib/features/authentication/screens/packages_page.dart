@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusmi/features/authentication/services/stripe_service.dart';
 import 'package:focusmi/features/authentication/widgets/packages_widget.dart';
 
 class SubscriptionPackagesPage extends StatefulWidget {
@@ -40,6 +41,7 @@ List<SubscriptionPackage> packages = [
 
 class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
   late SubscriptionPackage _selectedPackage;
+  bool packageSelected = false;
 
   @override
   void initState() {
@@ -53,7 +55,6 @@ class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: AnimatedContainer(
@@ -163,21 +164,70 @@ class _SubscriptionPackagesPageState extends State<SubscriptionPackagesPage> {
                       onTap: () {
                         setState(() {
                           _selectedPackage = package;
+                          packageSelected = true;
                         });
                       },
                     ))
                 .toList(),
           ),
-       Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 15),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
             child: Container(
               alignment: FractionalOffset.topCenter,
-              child: Text("Choose a package",
-                style: TextStyle(
-                  fontSize: 23
-              )),
+              child: ElevatedButton(
+                onPressed: packageSelected
+                    ? () async {
+                        var items = [
+                          {
+                            "productPrice": 4.99,
+                            "productName": "focusmi_Freedom",
+                            "qty": 1
+                          },
+                        ];
+                        double subtotal = 4.99;
+                        // items.forEach((element) {
+                        //   subtotal += (element["productPrice"].toDouble()) *
+                        //       (element["qty"] as double);
+                        // });
+                        await StripeService.stripePaymentCheckout(
+                          items,
+                          subtotal,
+                          context,
+                          mounted,
+                          onSuccess: () {
+                            print("Payment Success");
+                          },
+                          onCancel: () {
+                            print("Payment Cancelled");
+                          },
+                        );
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                    primary: packageSelected
+                        ? (_selectedPackage == packages[0]
+                            ? Colors.grey
+                            : (_selectedPackage == packages[2]
+                                ? Colors.white
+                                : Color(0xFF83DE70)))
+                        : Colors.grey,
+                    minimumSize: Size(450, 50)),
+                child: Text(
+                  packageSelected
+                      ? _selectedPackage == packages[0]
+                          ? 'You already have this'
+                          : 'Purchase'
+                      : 'Choose a package',
+                  style: TextStyle(
+                      fontSize: 23,
+                      color: _selectedPackage == packages[2]
+                          ? Color(0xFF83DE70)
+                          : Colors.white),
+                ),
+              ),
             ),
-          ) ],
+          )
+        ],
       ),
     );
   }
