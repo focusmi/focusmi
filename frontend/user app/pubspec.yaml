@@ -72,6 +72,7 @@ dependencies:
   loading_animation_widget: ^1.2.0+4
   zego_uikit_prebuilt_video_conference: ^2.5.0
   web_socket_channel: ^2.0.0
+  stripe_checkout: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -135,4 +136,5 @@ flutter:
     - assets/images/stars.jpg
     - assets/images/pomo_waiting.json
     - assets/images/grad.png
+    - assets/images/night.jpg
     

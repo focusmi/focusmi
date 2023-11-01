@@ -732,7 +732,13 @@ gTaskRoutes.post('/api/add-chat-message', auth, async(req, res, next)=>{
 gTaskRoutes.get('/api/get-chat-message/:groupid', auth,  async(req, res, next)=>{
    try{
      var result = await UserChat.getChatMessage(req.params.groupid)
-     res.send(result)
+      if(result==0){
+         res.send([])
+      }
+      else{
+
+         res.send(result)
+      }
    }
    catch(e){
       console.log("Error in get chat message")

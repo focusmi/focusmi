@@ -25,7 +25,7 @@ const mRouter = require("../routes/mindfulness_courses");
 const nRouter = require("../routes/notification_routes");
 const dRouter = require("../routes/daily_tips");
 const UserChat = require("../models/user_chat");
-
+const blogRouterTherapist = require("../routes/therapist_blog"); 
 dotenv.config()
 
 /* ************
@@ -51,7 +51,7 @@ app.use(userTRoutes)
 app.use(mRouter)
 app.use(nRouter)
 app.use(dRouter)
-
+app.use(blogRouterTherapist)
 
 
 
@@ -64,9 +64,13 @@ var  webSockets = new Map()
 const wss = new WebSocket.Server({ port: 6060 }) //run websocket server with port 6060
 wss.on('connection', function (ws, req)  {
     var userID = req.url.substr(1) //get userid from URL ip:6060/userid 
-    var user = userID.split("-")[0]
-    var chat = userID.split("-")[1]
+    var user = userID.split("-")[1]
+    var chat = userID.split("-")[0]
     var localMap=new Map()
+    console.log("chat")
+    console.log(chat)
+    console.log("user")
+    console.log(user)
     if(webSockets.has(chat)){
         webSockets.get(chat).set(user,ws)
     }
@@ -84,15 +88,19 @@ wss.on('connection', function (ws, req)  {
         if(datastring.charAt(0) == "{"){
             datastring = datastring.replace(/\'/g, '"');
             var data = JSON.parse(datastring)
-             var boardws = webSockets.get(chat) //check if there is reciever connection
+            
+            var boardws = webSockets.get(data.chat_id) //check if there is reciever connection
+            console.log("[]][[][]]")
+            console.log(data)        
+            console.log("[]][[][]]")
+             
+             UserChat.addMessage(data.chat_id,data.user_id,data.message_text)    
                     if (boardws!==undefined){
-                        
-                    webSockets.get(chat).forEach((value, key)=> {
-                        var cdata = chat + "-"+key+"-"+data.message_text;
+                    webSockets.get(data.chat_id).forEach((value, key)=> {
+                        var cdata = data.chat_id + "-"+data.user_id+"-"+data.message_text;
                         var client = value
                         if (client!=ws && client.readyState === WebSocket.OPEN) {
                                client.send(cdata);
-                               UserChat.addMessage(chat,key,data.message_text)
                                console.log("sending")
                         }
                         

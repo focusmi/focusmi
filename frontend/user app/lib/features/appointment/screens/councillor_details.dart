@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusmi/features/appointment/screens/add_appointment.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
 
-import 'councillor_details_model.dart';
-export 'councillor_details_model.dart';
-
-class DetailsWidget extends StatefulWidget {
+class DetailsWidget extends StatelessWidget {
   final String name;
   final String email;
   final String image;
@@ -29,190 +24,145 @@ class DetailsWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DetailsWidgetState createState() => _DetailsWidgetState();
-}
-
-class _DetailsWidgetState extends State<DetailsWidget> {
-  late DetailsModel _model;
-
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_model.unfocusNode),
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF83DE70),
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Counsellor Profile',
-            style: FlutterFlowTheme.of(context).bodyText1.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
-          ),
-          actions: [],
-          centerTitle: false,
-          elevation: 2,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF83DE70),
+        title: Text(
+          'Counsellor Profile',
+          style: TextStyle(color: Colors.white),
         ),
-        body: SafeArea(
-            top: true,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(widget.image),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '${widget.name}',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Readex Pro',
-                          fontSize: 20,
-                        ),
-                  ),
-                  Text(
-                    '${widget.title}',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Readex Pro',
-                          color: const Color(0xFF505056),
-                        ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(
-                          Icons.people,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          size: 24,
-                        ),
-                        Icon(
-                          Icons.explicit,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          size: 24,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${widget.totcustomer}+ Patients',
-                        style: FlutterFlowTheme.of(context).bodyText1,
-                      ),
-                      const SizedBox(width: 30),
-                      Text(
-                        '${widget.experience} Yrs Experience',
-                        style: FlutterFlowTheme.of(context).bodyText1,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      'About ',
-                      textAlign: TextAlign.start,
-                      style: FlutterFlowTheme.of(context).bodyText1.override(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 20,
-                          ),
-                    ),
-                  ),
-                  Text(
-                    '${widget.about}',
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Text(
-                      'Contact',
-                      style: FlutterFlowTheme.of(context).bodyText1.override(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 20,
-                          ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.email_rounded,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        widget.email,
-                        style: FlutterFlowTheme.of(context).bodyText1,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: FFButtonWidget(
-                      onPressed: () {
-                        print('Button pressed ...');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                AppointmentPage(userId: widget.userId),
-                          ),
-                        );
-                      },
-                      text: 'Book Appointment',
-                      options: FFButtonOptions(
-                        height: 40,
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        iconPadding: const EdgeInsets.symmetric(horizontal: 0),
-                        color: const Color(0xFF83DE70),
-                        textStyle:
-                            FlutterFlowTheme.of(context).bodyText1.override(
-                                  fontFamily: 'Readex Pro',
-                                  color: Colors.white,
-                                ),
-                        elevation: 3,
-                        borderSide: const BorderSide(
-                          color: Colors.transparent,
-                          width: 1,
-                        ),
-                        borderRadius: 8,
-                      ),
-                    ),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  colors: [const Color(0xFF83DE70), const Color(0xFF2E7D32)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
-            )),
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage(image),
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              name,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              title,
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconText(icon: Icons.people, text: '$totcustomer+ Patients'),
+                SizedBox(width: 20),
+                IconText(
+                    icon: Icons.explicit, text: '$experience Yrs Experience'),
+              ],
+            ),
+            SizedBox(height: 16),
+            SectionHeading(text: 'About'),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 5,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(16),
+              child: Text(
+                about,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 16),
+            SectionHeading(text: 'Contact'),
+            IconText(icon: Icons.email_rounded, text: email),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppointmentPage(userId: userId),
+                  ),
+                );
+              },
+              child: Text('Book Appointment'),
+              style: ElevatedButton.styleFrom(
+                primary: const Color(0xFF83DE70),
+                textStyle: TextStyle(fontSize: 18),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class IconText extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  IconText({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Colors.grey,
+          size: 24,
+        ),
+        SizedBox(width: 10),
+        Text(
+          text,
+          style: TextStyle(fontSize: 16),
+        ),
+      ],
+    );
+  }
+}
+
+class SectionHeading extends StatelessWidget {
+  final String text;
+
+  SectionHeading({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
 }

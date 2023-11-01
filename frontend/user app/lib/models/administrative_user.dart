@@ -66,7 +66,7 @@ class AdministrativeUser {
       tot_clients: map['tot_clients'] != null ? map['tot_clients'] as int : null,
       password: map['password'] != null ? map['password'] as String : null,
       title: map['title'] != null ? map['title'] as String : null,
-      image: map['image'] != null ? map['image'] as String : null,
+      image: map['profile_image'] != null ? map['profile_image'] as String : null,
       nic: map['nic'] != null ? map['nic'] as String : null,
     );
   }

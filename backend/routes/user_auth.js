@@ -178,6 +178,22 @@ authRoutes.get('/api/set-package/:package',auth,async(req, res, next)=>{
     }
     catch(e){
         console.log(e)
+
+    }
+    next()
+})
+
+authRoutes.get('/api/get-package/:package',auth,async(req, res, next)=>{
+    try{
+        var userID=req.user;
+        let userID_id =  ((userID)[0]).user_id
+        if(userID_id!=0){
+           //set package
+           AuthUser.changePackage(userID_id, req.params.package)
+        } 
+    }
+    catch(e){
+        console.log(e)
     }
     next()
 })

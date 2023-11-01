@@ -48,7 +48,7 @@ class AppointmentService {
     }
   }
 
-  static Future<void> updateSession(int sessionId, int userId) async {
+  static updateSession(int sessionId, int userId) async {
     try {
       final response = await http.post(
         Uri.parse('$uri/api/update_session/'),
@@ -131,6 +131,45 @@ class AppointmentService {
       }
     } catch (e) {
       throw Exception('Error fetching data: $e');
+    }
+  }
+
+  // static Future<List<dynamic>> getPreviousAppointments(userId) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$uri/api/previous_appointments/$userId'),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       // Parse and return the data from the response
+  //       return json.decode(response.body);
+  //     } else {
+  //       throw Exception('Failed to fetch data');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error fetching data: $e');
+  //   }
+  // }
+
+  static Future<List<dynamic>> getPreviousAppointments(userId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$uri/api/previous_appointments/$userId'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load schedule data');
+      }
+    } catch (e) {
+      throw Exception('Error fetching schedule data: $e');
     }
   }
 }

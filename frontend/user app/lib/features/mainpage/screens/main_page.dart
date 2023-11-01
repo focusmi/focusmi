@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:focusmi/features/appointment/screens/view_appointments.dart';
 import 'package:focusmi/features/authentication/screens/auth_screen.dart';
+import 'package:focusmi/features/authentication/screens/packages_page.dart';
 import 'package:focusmi/features/group_task_planner/screens/task_plan_view.dart';
 import 'package:focusmi/features/group_task_planner/services/group_task_planner_services.dart';
 import 'package:focusmi/features/individual_task_planner/screens/itask_plan_view.dart';
@@ -51,6 +52,8 @@ class _MainScreenState extends State<MainScreen> {
   late bool isNoti;
   late Notifications notification;
   List<Notifications> characterList = List<Notifications>.empty();
+  late String package;
+
   List<String> images = [
     "med.jpg",
     "stress.jpg",
@@ -103,6 +106,16 @@ class _MainScreenState extends State<MainScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void getUserPackage() async {
+    try {
+      var result = await MindFMainPageServices.getUserPackage(context);
+      var val = json.decode(result.body)[0]['account_status'];
+      setState(() {
+        package = val;
+      });
+    } catch (e) {}
   }
 
   void getNotificatoin() async {
@@ -172,8 +185,9 @@ class _MainScreenState extends State<MainScreen> {
     blogs = List<Blog>.empty(growable: true);
     therapists = [];
     featuredCourse = [];
-
     bval = 0;
+    package = 'free';
+    getUserPackage();
     getNotifromApi();
     getTaskPlanApi();
     getFeatured();
@@ -183,9 +197,9 @@ class _MainScreenState extends State<MainScreen> {
     isNoti = false;
     controller.addListener(onScroll);
     // TODO: implement initState
-    
+
     super.initState();
-      Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 3), () {
       if (characterList.length != 0)
         ElegantNotification.success(
                 animation: AnimationType.fromTop,
@@ -205,7 +219,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-  
     LayOut layout = LayOut();
     final width = MediaQuery.of(context).size.width;
     double screenWidth = MediaQuery.of(context).size.width;
@@ -306,11 +319,81 @@ class _MainScreenState extends State<MainScreen> {
                                 )
                               ],
                             ),
+                            (package == 'free')
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 0,
+                                  )
+                                : SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  ),
+                            (package == 'free')
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SubscriptionPackagesPage(),
+                                          ));
+                                    },
+                                    child: Container(
+                                        alignment: Alignment.centerLeft,
+                                          width: width*0.95,
+                                          height: 80,
+                                           decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(image:AssetImage('assets/images/night.jpg'),fit:BoxFit.cover)
+                                      ),
+                                      child:Center(
+                                        child: Text(
+                                            "Be A Premium Member", style: TextStyle(
+                                              color: Colors.white,fontSize: 20,
+                                            ),),
+                                      ),
+                                    ),
+                                  )
+                                : (package=='freedom')?
+                                
+                                Column(
+                                  children: [
+                                    SizedBox(height: 20,),
+                                    GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SubscriptionPackagesPage(),
+                                              ));
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          width: width*0.95,
+                                          height: 80,
+                                           decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                        image: DecorationImage(image:AssetImage('assets/images/night.jpg'),fit:BoxFit.cover)
+                                      ),
+                                      child:Center(
+                                        child: Text(
+                                            "Be Free With Extra Freedom", style: TextStyle(
+                                              color: Colors.white,fontSize: 20,
+                                            ),),
+                                      ),
+                                        ),
+                                      ),
+                                  ],
+                                )
+                                :SizedBox(
+                                    height: 0,
+                                    width: 0,
+                                  ),
                             SizedBox(
-                              height: 20,
-                              width: 0,
+                              height: 10,
                             ),
-                              Container(
+                            (taskPlan.length!=0)?Container(
                               height: 40,
                               width: width,
                               alignment: Alignment.topLeft,
@@ -319,8 +402,8 @@ class _MainScreenState extends State<MainScreen> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 24),
                               ),
-                            ),
-                            Container(
+                            ):SizedBox(width: 0,height: 0,),
+                            (taskPlan.length!=0)?Container(
                               alignment: Alignment.topLeft,
                               width: 500,
                               height: 180,
@@ -346,59 +429,35 @@ class _MainScreenState extends State<MainScreen> {
                                       ),
                                     );
                                   }),
-                            ),
-                            Container(
-                              height: 40,
-                              width: width,
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Recent Task Plans",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.topLeft,
-                              width: 500,
-                              height: 180,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: taskPlan.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () => {
-                                        Navigator.pushNamed(
-                                            context, GroupTaskPlanner.routeName,
-                                            arguments: [
-                                              taskPlan[index].group_id,
-                                              taskPlan[index].plan_id
-                                            ])
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: MainPageCatTile.greenPageTile(
-                                            taskPlan[index].plan_name,
-                                            width * 0.1),
-                                      ),
-                                    );
-                                  }),
-                            ),
+                            ):SizedBox(width: 0,height: 0,),
                             Container(
                               height: 40,
                               width: width,
                               alignment: Alignment.bottomLeft,
-                              child: Text(
+                              child: (package!='free')?Text(
+                                "Featured Content",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24),
+                              ):Row(children: [
+                                Text(
                                 "Featured Content",
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 24),
                               ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(Icons.lock,size: 30,color: Colors.white,)
+                              ]),
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, CourseContentWidget.routeName,
-                                    arguments: featuredCourse[0]);
+                                (package!='free')?{
+                                  Navigator.pushNamed(
+                                      context, CourseContentWidget.routeName,
+                                      arguments: featuredCourse[0])
+
+                                }:(){};
                               },
                               child: Container(
                                 // decoration: BoxDecoration(
@@ -445,14 +504,13 @@ class _MainScreenState extends State<MainScreen> {
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: (){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
                                             builder: (context) =>
-                                               ViewAppointmentsWidget()
-                                          ),
-                                        );
+                                                ViewAppointmentsWidget()),
+                                      );
                                     },
                                     child: Text(
                                       "Meet Our Professionals",
@@ -460,7 +518,7 @@ class _MainScreenState extends State<MainScreen> {
                                           color: Colors.white, fontSize: 24),
                                     ),
                                   ),
-                          
+
                                   // Text("Set Appointment Now",style: TextStyle(color: Colors.white),)
                                 ],
                               ),
@@ -480,7 +538,7 @@ class _MainScreenState extends State<MainScreen> {
                                             backgroundColor:
                                                 Colors.green, //color
                                             backgroundImage: NetworkImage(
-                                                '$uri/api/assets/image/user-profs/${therapists[index].image}'),
+                                                '$uri/api/assets/image/user-profs/${(therapists[index].image)?.split("images/")[1]}'),
                                           ),
                                           Text(
                                             therapists[index].full_name ?? '',

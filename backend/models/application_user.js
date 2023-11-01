@@ -39,6 +39,8 @@ class ApplicationUser {
         try {
             const query = `SELECT * FROM  appointment WHERE user_id=${userId}`;
             const users = await pool.cQuery(query);
+            console.log("[][][][]")
+            console.log(users)
             return users;
         } catch (error) {
             throw new Error('Error Finding Councillors:', error);
@@ -72,6 +74,7 @@ class ApplicationUser {
             const query = `SELECT * FROM therapy_session WHERE user_id=${userId} AND booking_status='false'`;
             console.log(query)
             const slot_list = await pool.cQuery(query);
+            console.log(slot_list)
             return slot_list;
 
         } catch (error) {
@@ -79,6 +82,49 @@ class ApplicationUser {
             throw new Error('Error Finding Councillors:', error);
         }
     }
+    static listPreviousAppointments= async (userId) => {
+        try {
+          const query = `SELECT
+          s."session_time",
+          s."session_end_time"
+      FROM
+          public.appointment AS a
+      JOIN
+          public.therapy_session AS s ON a."session_id" = s."session_id"
+      WHERE
+          a."user_id" = ${userId}
+      `;
+          const scheduleData = await pool.cQuery(query);
+          console.log(query)
+          return scheduleData;
+        } catch (error) {
+          throw new Error('Error getting schedule data:', error);
+        }
+      }
+
+
+  static listAppointments= async (userId) => {
+        try {
+            const query = `SELECT
+            s."session_time",
+            s."fee",
+            s."session_end_time",
+            u."full_name"
+        FROM
+            public.appointment AS a
+        JOIN
+            public.therapy_session AS s ON a."session_id" = s."session_id"
+        JOIN
+            public.administrative_user AS u ON s."user_id" = u."user_id"
+        WHERE
+            a."user_id" = ${userId}
+        `;
+            const scheduleData = await pool.cQuery(query);
+            return scheduleData;
+        }catch (error) {
+          throw new Error('Error getting schedule data:', error);
+        }
+      }
 
     static updateSession = async (sessionId, userId) => {
         try {

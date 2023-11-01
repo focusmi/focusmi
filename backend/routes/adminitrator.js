@@ -10,7 +10,7 @@ const auth = require('../tokens/auth');
 userTRoutes.post('/api/create-therapist', async(req,res,next) => {
     try{
         UserTherapist.createTherapist(req.body)
-        res.status(400).send(true)
+        res.status(200).send(true)
     }
     catch(e){
         console.log(e)
@@ -22,34 +22,35 @@ userTRoutes.post('/api/create-therapist', async(req,res,next) => {
 userTRoutes.get('/api/get-therapist', async(req,res,next)=>{
     try{
         var result =  await UserTherapist.getTherapist()
-        res.status(400).send(result)
+        res.status(200).send(result)
     }
     catch(e){
         console.log(e)
-        res.status(400).send([])
+        res.status(200).send([])
     }
     next()
 })
 
 userTRoutes.post('/api/update-therapist', async(req, res, next)=>{
+    
     try{
         UserTherapist.updateuser(req.body.user_id, req.body)
-        res.status(400).send(true)
+        res.status(200).send(true)
     }
     catch(e){
         console.log(e)  ``
-        res.status(400).send(false)
+        res.status(200).send(false)
     }
 })
 
 userTRoutes.get('/api/delete-therapist/:userid',async(req,res,next)=>{
     try{
         UserTherapist.deleteuser(req.params.userid)
-        res.status(400).send(true)
+        res.status(200).send(true)
     }
     catch(e){
         console.log(e)
-        req.status(400).send(false)
+        req.status(200).send(false)
     }
     next()
 })

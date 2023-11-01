@@ -3,7 +3,7 @@ let express = require('express')
 const pool = require('../database/dbconnection')
 const imageUpload = require('../middleware/multer')
 const CourseUser = require('../models/course_user')
-const {mindfulness_course, course_level} = require('../sequelize/models')
+const {mindfulness_course, course_level, application_user} = require('../sequelize/models')
 const auth = require('../tokens/auth')
 
 let mRouter = express.Router()
@@ -20,7 +20,7 @@ mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, ne
           duration:req.body.duration,
           rating:req.body.rating,
           image:req.file.filename,
-          course_status:req.body.course_status,
+          course_status:"drafted",
           subscription_type:req.body.subscription_type,
           course_type:req.body.course_type  
         })
@@ -36,11 +36,15 @@ mRouter.post('/api/create-course',imageUpload.single('image'),async(req, res, ne
 })
 
 mRouter.get('/api/get-course/:courseid',async(req, res, next)=>{
+    console.log(req.params.courseid)
     try{
         var result = await mindfulness_course.findOne({
-            course_id:req.params.courseid
-        })
+            where:{
+                course_id:req.params.courseid
 
+            }
+        })
+       
         res.send(result)
    
     }
@@ -134,6 +138,18 @@ mRouter.get('/api/get-all-courses/:category',async(req, res, next)=>{
     next()
 })
 
+mRouter.get('/api/get-all-courses',async(req, res, next)=>{
+    try{
+        var course =await pool.cQuery("Select * from mindfulness_course ")
+        res.send(course)
+
+    }
+    catch(e){
+        console.log("get all courses")
+    }
+    next()
+})
+
 mRouter.get('/api/get-all-featured-courses',async(req, res, next)=>{
     try{
         var course =await pool.cQuery("Select * from mindfulness_course where course_status='published' order by ratings desc")
@@ -193,6 +209,22 @@ mRouter.get('/api/get-course-level/:courseid',  async(req, res, next)=>{
     next()
 })
 
+mRouter.get('/api/get-course-levels/:courseid',  async(req, res, next)=>{
+    try{
+       var result =  await course_level.findAll({
+            where:{
+                course_id:req.params.courseid
+            }
+       }) 
+       res.send(result)
+    }
+    catch(e){
+        console.log(e)
+        console.log("create course level")
+    }
+    next()
+})
+
 mRouter.get('/api/get-course-level-by-courselevel/:level',  async(req, res, next)=>{
     try{
        var result =  await course_level.findOne({
@@ -225,6 +257,72 @@ mRouter.get('/api/get-similar-courses/:coursetype', auth,async(req, res, next)=>
     next()
 })
 
+mRouter.get('/api/get-similar-courses/:coursetype', auth,async(req, res, next)=>{
+    try{
+        var result = await mindfulness_course.findAll({
+            where:{
+                course_type:req.params.coursetype
+            }
+        })
+        result = result.map(course => course.dataValues);
+        res.send(result)
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+mRouter.get('/api/get-similar-courses/:coursetype', auth,async(req, res, next)=>{
+    try{
+        var result = await mindfulness_course.findAll({
+            where:{
+                course_type:req.params.coursetype
+            }
+        })
+        result = result.map(course => course.dataValues);
+        res.send(result)
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+mRouter.get('/api/set-user-package/:package/:userid',async(req, res, next)=>{
+    try{
+        var result = await application_user.update(
+            {account_status:req.params.package},{
+                where:{
+                    user_id:req.params.userid
+                }
+            }
+        )
+        result = result.map(course => course.dataValues);
+        res.send(result)
+    }
+    catch(e){
+
+    }
+    next()
+})
+
+mRouter.get('/api/get-user-package/:userid',async(req, res, next)=>{
+    try{
+        console.log("Dfd")
+        var result = await pool.cQuery(`select account_status from application_user where user_id=${req.params.userid}`)
+        if(result==0){
+            res.send([])
+        }
+        else{
+            res.send(result)
+        }
+    }
+    catch(e){
+
+    }
+    next()
+})
 
 
 

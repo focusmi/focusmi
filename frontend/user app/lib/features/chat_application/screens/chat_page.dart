@@ -272,6 +272,7 @@ class ChatPageState extends State<ChatPage> {
       var result = await GTaskPlannerServices.getChatByGroup(widget.groupid);
       setState(() {
         chatid = json.decode(result.body)[0];
+        
       });
       channelconnect(chatid);
     } catch (e) {
@@ -298,7 +299,7 @@ class ChatPageState extends State<ChatPage> {
               //on message recieve, add data to model
               message_text: jsondata[2],
               message_type: "text",
-              
+
               chat_id: int.parse(jsondata[0]),
             ));
             setState(() {
@@ -337,16 +338,24 @@ class ChatPageState extends State<ChatPage> {
           message_type: "text",
           user_id: user,
           chat_id: chatid,
-          
         ));
       });
-      channel.sink.add("{'user_id':'" +
+      print("//////////////");
+      print("{'user_id':'" +
           user.toString() +
-          "','group_id':'" +
+          "','chat_id':'" +
           chatid.toString() +
           "', 'message_text':'" +
           msg +
-          "'}"); //send message to reciever channel
+          "'}");
+      print("//////////////");
+      channel.sink.add("{'user_id':'" +
+          user.toString() +
+          "','chat_id':'" +
+          chatid.toString() +
+          "', 'message_text':'" +
+          msg +
+          "'}");
     } else {
       getChat();
       print("Websocket is not connected.");

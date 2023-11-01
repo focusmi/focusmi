@@ -4,8 +4,8 @@ const Schedule = {
 
   createSchedule: async (adminUserID, fee, sessionTime, sessionEndTime) => {
     try {
-      const query = `INSERT INTO therapy_session ("user_id", fee, session_time, session_end_time) 
-                     VALUES (${adminUserID},${fee},'${sessionTime}','${sessionEndTime}')`;
+      const query = `INSERT INTO therapy_session ("user_id", fee, session_time, session_end_time,booking_status) 
+                     VALUES (${adminUserID},${fee},'${sessionTime}','${sessionEndTime}','false')`;
       const insertedSchedule = await pool.cQuery(query);
       return insertedSchedule;
     } catch (error) {
@@ -62,7 +62,7 @@ const Schedule = {
     }
   },
 
-  completeAppointment:async (appointmentId) =>{
+  completeAppointment: async (appointmentId) => {
     try {
       const query = `UPDATE appointment SET "complete" = 'true' WHERE  "appointment_id" = '${appointmentId}'`;
       await pool.cQuery(query);
@@ -70,7 +70,28 @@ const Schedule = {
     } catch (error) {
       throw new Error('Error completing appointment:', error);
     }
-  }
+  },
+
+  getScheduleCount: async (userId) => {
+    try {
+        const query = `SELECT
+        COUNT(a."appointment_id")
+          FROM
+              appointment AS a
+          JOIN
+              therapy_session AS s ON a."session_id" = s."session_id"
+          JOIN
+              application_user AS u ON a."user_id" = u."user_id"
+          WHERE
+              s."user_id" = ${userId} AND a."complete" = 'false'
+    `;
+        const scheduleCount = await pool.cQuery(query);
+        return scheduleCount;
+      } catch (error) {
+        throw new Error('Error getting schedule count data:', error);
+      }
+  },
+
 };
 
 module.exports = Schedule;

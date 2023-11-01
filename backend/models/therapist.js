@@ -78,7 +78,55 @@ const User = {
       throw new Error('Failed to load profile picture:', error);
     }
   },
-  
+
+  updateUserStatus: async (id, status) => {
+    try {
+      const query = `UPDATE  administrative_user SET account_status = '${status}'  WHERE "user_id" = '${id}'`;
+      await pool.cQuery(query);
+    } catch (error) {
+      throw new Error('Error updating status:', error);
+    }
+  },
+
+  addBlog: async (user_id, title,subTitle, description, filePath) => {
+    try {
+      const query = `INSERT INTO  blog(user_id,title,subtitle,description,image) VALUES('${user_id}', '${title}','${subTitle}','${description}','${filePath}')`;
+      await pool.cQuery(query);
+    } catch (error) {
+      throw new Error('Error adding blog:', error);
+    }
+  },
+
+  fetchBlogs: async (id) => {
+    try {
+      const query = `SELECT * FROM blog WHERE "user_id" = '${id}'`;
+      const blogs = await pool.cQuery(query);
+      return blogs;
+    } catch (error) {
+      throw new Error('Error fetching blogs:', error);
+    }
+  },
+
+  deleteBlog: async (user_id,blog_id) => {
+    try {
+      const query = `DELETE FROM blog WHERE "blog_id" = '${blog_id}' and user_id = '${user_id}'`;
+      const blogs = await pool.cQuery(query);
+    } catch (error) {
+      throw new Error('Error deleting blogs:', error);
+    }
+  },
+
+  updateBlog: async (user_id, title,subTitle, description, filePath, blog) => {
+    try {
+      const query = `UPDATE  blog SET title = '${title}',subtitle = '${subTitle}', description = '${description}', image = '${filePath}'   WHERE "blog_id" = '${blog}' and user_id = '${user_id}'`;
+      await pool.cQuery(query);
+      console.log('Blog updated successfully');
+    } catch (error) {
+      throw new Error('Error updating blog:', error);
+    }
+  },
+
+
 };
 
 module.exports = User;

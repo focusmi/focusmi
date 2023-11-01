@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     tot_clients: DataTypes.INTEGER,
     password:DataTypes.STRING,
     title:DataTypes.TEXT,
-    image:DataTypes.STRING,
+    profile_image:DataTypes.STRING,
     nic:DataTypes.STRING,
 
   }, {

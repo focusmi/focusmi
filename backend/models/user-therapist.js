@@ -19,18 +19,19 @@ class UserTherapist{
     }
 
     static  async createTherapist(user){
+        console.log(user)
         administrative_user.create(
             {
-                username:user.username,
+                username:user.full_name,
                 full_name:user.full_name,
-                role:user.role,
+                role:"therapist",
                 email:user.email,
                 phone_number:user.phone_number,
                 about:user.about,
-                account_status:"inactive",
+                account_status:"active",
                 years_of_experience:user.years_of_experience,
                 tot_clients:user.tot_clients,
-                password:user.password,
+                password:'$2a$10$agGGVssihbvbYxnWYS2yE.QW8G6.8b0fypf.MFWvaYcqIV52MUXam',
                 title:user.title,
                 nic:user.nic,
                 image:user.image
@@ -54,6 +55,7 @@ class UserTherapist{
     }
 
     static async updateuser(userid, user){
+        console.log(userid)
         administrative_user.update({
             username:user.username,
             full_name:user.full_name,

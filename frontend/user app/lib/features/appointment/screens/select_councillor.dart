@@ -1,11 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
+import 'package:focusmi/features/appointment/screens/councillor_details.dart';
 import 'package:focusmi/features/appointment/services/appointment_service.dart';
 
 import '../../../constants/global_variables.dart';
-import 'councillor_details.dart';
 
 class CounselorsListWidgetWidget extends StatefulWidget {
   const CounselorsListWidgetWidget({Key? key}) : super(key: key);
@@ -41,48 +38,36 @@ class _CounselorsListWidgetWidgetState
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: GlobalVariables.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF83DE70),
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Counsellors',
-            style: TextStyle(color: Colors.white),
-            // style: FlutterFlowTheme.of(context).bodyText1.override(
-            //       fontFamily: 'Outfit',
-            //       color: Colors.white,
-            //       fontSize: 22,
-            //     ),
-          ),
-          actions: [],
-          centerTitle: false,
-          elevation: 2,
+    return Scaffold(
+      backgroundColor: GlobalVariables.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF83DE70),
+        title: Text(
+          'Counsellors',
+          style: TextStyle(color: Colors.white),
         ),
-        body: SafeArea(
-            top: true,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    for (var councillor in councillorData ?? [])
-                      CouncillorCard(
-                        imageUrl: '$uri/' + councillor['image'],
-                        username: councillor['full_name'],
-                        about: councillor['about'],
-                        email: councillor['email'],
-                        exp: councillor['years_of_experience'],
-                        tot_clients: councillor['tot_clients'],
-                        user_id: councillor['user_id'],
-                      ),
-                  ],
-                ),
-              ),
-            )),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ListView.builder(
+            itemCount: councillorData.length,
+            itemBuilder: (context, index) {
+              var councillor = councillorData[index];
+              return CouncillorCard(
+                imageUrl: '$uri/' + councillor['profile_image'] ?? '',
+                username: councillor['full_name'] ?? '',
+                title: councillor['title'] ?? '',
+                email: councillor['email'] ?? '',
+                about: councillor['about'] ?? '',
+                exp: councillor['years_of_experience'] ?? '',
+                tot_clients: councillor['tot_clients'] ?? 0,
+                user_id: councillor['user_id'] ?? 1,
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -91,9 +76,9 @@ class _CounselorsListWidgetWidgetState
 class CouncillorCard extends StatelessWidget {
   final String? imageUrl;
   final String? username;
-  final String? about;
   final String? title;
   final String? email;
+  final String? about;
   final String? exp;
   final int? tot_clients;
   final int? user_id;
@@ -102,8 +87,8 @@ class CouncillorCard extends StatelessWidget {
     Key? key,
     this.imageUrl,
     this.username,
-    this.about,
     this.title,
+    this.about,
     this.email,
     this.exp,
     this.tot_clients,
@@ -112,29 +97,25 @@ class CouncillorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Card(
-        elevation: 2,
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
-                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl ?? ''),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(imageUrl ?? ''),
                   ),
                   SizedBox(width: 10),
                   Column(
@@ -142,13 +123,15 @@ class CouncillorCard extends StatelessWidget {
                     children: [
                       Text(
                         username ?? '',
-                        style: FlutterFlowTheme.of(context).bodyText1.override(
-                              fontFamily: 'Readex Pro',
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                            ),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      Text(title ?? '', style: TextStyle(fontSize: 14))
+                      Text(
+                        title ?? '',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
                     ],
                   ),
                 ],
@@ -156,42 +139,49 @@ class CouncillorCard extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: FFButtonWidget(
-                onPressed: () {
-                  print('Button pressed ...');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailsWidget(
-                        name: username ?? '',
-                        email: email ?? '',
-                        about: about ?? '',
-                        title: title ?? '',
-                        experience: exp ?? '',
-                        image: imageUrl ?? '',
-                        totcustomer: tot_clients ?? 0,
-                        userId: user_id ?? 0,
-                      ),
-                    ),
-                  );
-                },
-                text: 'Details',
-                options: FFButtonOptions(
-                  height: 40,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  color: const Color(0xFF83DE70),
-                  textStyle: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.white,
-                      ),
-                  elevation: 3,
-                  borderSide: const BorderSide(
-                    color: Colors.transparent,
-                    width: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Experience: ${exp ?? 1} years',
+                    style: TextStyle(fontSize: 14),
                   ),
-                  borderRadius: 8,
-                ),
+                  Text(
+                    'Clients: ${tot_clients??0}+',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsWidget(
+                            name: username ?? '',
+                            email: email ?? '',
+                            title: title ?? '',
+                            about: about ?? '',
+                            experience: exp ?? '',
+                            image: imageUrl ?? '',
+                            totcustomer: tot_clients ?? 0,
+                            userId: user_id ?? 0,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('Details'),
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFF83DE70),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

@@ -8,6 +8,7 @@ const blog = require('../sequelize/models/blog')
 let bRouter = express.Router()
 
 bRouter.post('/api/create-blog', auth, async(req, res, next)=>{
+    console.log("dfdfdf")
     try{
         var userID = req.user;
         userID = ((userID)[0]).user_id

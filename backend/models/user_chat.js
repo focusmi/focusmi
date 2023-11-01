@@ -24,6 +24,7 @@ class UserChat{
     }
 
     static async addMessage(chat,user,message){
+        console.log(chat+"-"+user)
     
         try{
             user_chat.create({
@@ -59,7 +60,6 @@ class UserChat{
         try{
             var chat_id = await this.getChatByGroup(groupid)
             var result  = await pool.cQuery(`Select * from user_chat where chat_id=${chat_id}`)
-            console.log(result)
             return result;
         }
         catch(e){

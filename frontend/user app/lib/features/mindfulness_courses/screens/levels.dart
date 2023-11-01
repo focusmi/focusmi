@@ -78,10 +78,9 @@ class _LevelsWidgetState extends State<LevelsWidget> {
   @override
   void initState() {
     levels = [];
+    getCourseLevel();
     durations = [];
-    getCourseLevel();
     getDurations();
-    getCourseLevel();
     // TODO: implement initState
 
     super.initState();
