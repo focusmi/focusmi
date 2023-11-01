@@ -22,6 +22,7 @@ class GTaskPlannerServices {
             'Content-Type': 'application/json; charset=UTF-8',
             'authorization': 'Bearer ' + token.toString()
           });
+     
       return res;
     } catch (e) {}
   }
@@ -57,7 +58,7 @@ class GTaskPlannerServices {
     } catch (e) {}
   }
 
-   static Future getChatByGroup(int groupid) async {
+  static Future getChatByGroup(int groupid) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -154,11 +155,13 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-    static Future editGroupMember( groupid, status,context) async {
+
+  static Future editGroupMember(groupid, status, context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
-      var userid = Provider.of<UserProvider>(context, listen: false).user.user_id;
+      var userid =
+          Provider.of<UserProvider>(context, listen: false).user.user_id;
       http.Response res = await http.get(
           Uri.parse('$uri/api/change-prevs/${userid}/${groupid}/${status}'),
           headers: <String, String>{
@@ -170,7 +173,8 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-    static Future changeNoti(notid, status) async {
+
+  static Future changeNoti(notid, status) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -185,7 +189,7 @@ class GTaskPlannerServices {
       print(e);
     }
   }
- // static Future createNotificatio()
+  // static Future createNotificatio()
 
   static Future getTaskByPlanFilterByUser(taskplanid) async {
     try {
@@ -324,8 +328,8 @@ class GTaskPlannerServices {
       print(e);
     }
   }
-  
-    static Future updateSubTask(staskid,status) async {
+
+  static Future updateSubTask(staskid, status) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString('auth-token');
@@ -499,6 +503,7 @@ class GTaskPlannerServices {
       print("error in get task plans by plan");
     }
   }
+
   static Future getEndTask(context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -516,9 +521,7 @@ class GTaskPlannerServices {
     }
   }
 
-  
-
-  static void setAlarm(date, time, id) async{
+  static void setAlarm(date, time, id) async {
     var dat = date.split(" ")[0];
     Map<String, int> elements = getDateParts(dat);
     int year = elements['year'] ?? 2023;
@@ -551,8 +554,6 @@ class GTaskPlannerServices {
       'day': day,
     };
   }
-
-
 
   static List<int> extractHourAndMinute(String time) {
     List<String> parts = time.split(':');

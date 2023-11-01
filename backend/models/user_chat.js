@@ -23,15 +23,15 @@ class UserChat{
         }
     }
 
-    static async addMessage(message){
-        var chat_id = await this.getChatByGroup(message.group_id)
+    static async addMessage(chat,user,message){
+    
         try{
             user_chat.create({
-                user_id:message.user_id,
-                chat_id:chat_id,
-                message_text:message.message_text,
-                message_type:message.message_type,
-                image:message.image
+                user_id:user,
+                chat_id:chat,
+                message_text:message,
+                message_type:"text",
+                image:""
             })
         }
         catch(e){

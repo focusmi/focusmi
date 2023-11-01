@@ -53,17 +53,6 @@
 //     });
 //   }
 
-//   void getChatMessages() async {
-//     try {
-//       var result = await ChatPageServices.getChatMessage(widget.group_id);
-//       Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
-//       messages = list.map((model) => ChatMessage.fromJson(model)).toList();
-//       setState(() {
-//         messages = messages;
-//       });
-//     } catch (e) {}
-//   }
-
 //   void sendMessage() {
 //     try {
 //       var user = Provider.of<UserProvider>(context, listen: false).user;
@@ -145,37 +134,16 @@
 //       ),
 //       body: Stack(
 //         children: <Widget>[
-//           Container(
-//             child: ListView.builder(
-//               itemCount: messages.length,
-//               shrinkWrap: true,
-//               padding: EdgeInsets.only(top: 10, bottom: 10),
-//               physics: NeverScrollableScrollPhysics(),
-//               itemBuilder: (context, index) {
-//                 return Container(
-//                   padding:
-//                       EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-//                   child: Align(
-//                     alignment: (messages[index].user_id == user_id
-//                         ? Alignment.topLeft
-//                         : Alignment.topRight),
-//                     child: Container(
-//                       decoration: BoxDecoration(
-//                         borderRadius: BorderRadius.circular(20),
-//                         color: (messages[index].user_id == user_id
-//                             ? Colors.grey.shade200
-//                             : Colors.blue[200]),
-//                       ),
-//                       padding: EdgeInsets.all(16),
-//                       child: Text(
-//                         messages[index].message_text,
-//                         style: TextStyle(fontSize: 15),
-//                       ),
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
+// Container(
+//   child: ListView.builder(
+//     itemCount: messages.length,
+//     shrinkWrap: true,
+//     padding: EdgeInsets.only(top: 10, bottom: 10),
+//     physics: NeverScrollableScrollPhysics(),
+//     itemBuilder: (context, index) {
+//       return
+//     },
+//   ),
 //           ),
 //           Align(
 //             alignment: Alignment.bottomLeft,
@@ -245,6 +213,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:focusmi/features/chat_application/services/chat_room_services.dart';
 import 'package:focusmi/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
@@ -282,57 +251,59 @@ class ChatPageState extends State<ChatPage> {
     connected = false;
     msgtext.text = "";
     chatid = 0;
-    channelconnect();
     getChat();
+    getChatMessages();
     super.initState();
+  }
+
+  void getChatMessages() async {
+    try {
+      var result = await ChatRoomServices.getChatMessage(widget.groupid);
+      Iterable list = json.decode(result.body).cast<Map<String?, dynamic>>();
+      var message = list.map((model) => ChatMessage.fromJson(model)).toList();
+      setState(() {
+        msglist = message;
+      });
+    } catch (e) {}
   }
 
   getChat() async {
     try {
       var result = await GTaskPlannerServices.getChatByGroup(widget.groupid);
       setState(() {
-        chatid = json.decode(result)[0];
+        chatid = json.decode(result.body)[0];
       });
+      channelconnect(chatid);
     } catch (e) {
       print(e);
     }
   }
 
-  channelconnect() {
+  channelconnect(ch) {
     //function to connect
     try {
-      channel = IOWebSocketChannel.connect(
-          "ws://192.168.222.55:6060/$myid"); //channel IP : Port
+      connected = true;
+      channel = IOWebSocketChannel.connect("ws://192.168.222.55:6060/$ch" +
+          "-" +
+          Provider.of<UserProvider>(context, listen: false)
+              .user
+              .user_id
+              .toString()); //channel IP : Port
       channel.stream.listen(
         (message) {
           setState(() {
-            if (message == "connected") {
-              connected = true;
-              setState(() {});
-              print("Connection establised.");
-            } else if (message == "send:success") {
-              print("Message send success");
-              setState(() {
-                msgtext.text = "";
-              });
-            } else if (message == "send:error") {
-              print("Message send error");
-            } else if (message.substring(0, 6) == "{'cmd'") {
-              print("Message data");
-              message = message.replaceAll(RegExp("'"), '"');
-              var jsondata = json.decode(message);
-
-              msglist.add(ChatMessage(
-                user_id: jsondata['user_id'],
-                //on message recieve, add data to model
-                message_text: jsondata["message_text"],
-                message_type: "text",
-                group_id: jsondata["group_id"],
-              ));
-              setState(() {
-                //update UI after adding data to message model
-              });
-            }
+            var jsondata = message.split("-");
+            msglist.add(ChatMessage(
+              user_id: int.parse(jsondata[1]),
+              //on message recieve, add data to model
+              message_text: jsondata[2],
+              message_type: "text",
+              
+              chat_id: int.parse(jsondata[0]),
+            ));
+            setState(() {
+              //update UI after adding data to message model
+            });
           });
         },
         onDone: () {
@@ -352,16 +323,32 @@ class ChatPageState extends State<ChatPage> {
   }
 
   Future<void> sendmsg(String sendmsg, String id) async {
+    var result = await GTaskPlannerServices.getChatByGroup(widget.groupid);
+
+    int chatid = json.decode(result.body)[0];
+
     if (connected == true) {
       String msg = sendmsg;
       int user = Provider.of<UserProvider>(context, listen: false).user.user_id;
       setState(() {
         msgtext.text = "";
-        msglist.add(ChatMessage(message_text: msg, message_type: "text",user_id: user,group_id: widget.groupid,));
+        msglist.add(ChatMessage(
+          message_text: msg,
+          message_type: "text",
+          user_id: user,
+          chat_id: chatid,
+          
+        ));
       });
-      channel.sink.add(msg); //send message to reciever channel
+      channel.sink.add("{'user_id':'" +
+          user.toString() +
+          "','group_id':'" +
+          chatid.toString() +
+          "', 'message_text':'" +
+          msg +
+          "'}"); //send message to reciever channel
     } else {
-      channelconnect();
+      getChat();
       print("Websocket is not connected.");
     }
   }
@@ -369,6 +356,7 @@ class ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     LayOut layOut = LayOut();
+    int user = Provider.of<UserProvider>(context, listen: false).user.user_id;
     return layOut.mainLayoutWithDrawer(
         context,
         Container(
@@ -388,29 +376,28 @@ class ChatPageState extends State<ChatPage> {
                             child: Column(
                           children: msglist.map((onemsg) {
                             return Container(
-                               
-                                child: Card(
-                                    color: (onemsg.user_id== Provider.of<UserProvider>(context, listen: false).user.user_id)
-                                        ? Colors.blue[100]
-                                        : Colors.red[100],
-                                    //if its my message then, blue background else red background
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.all(15),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: 10, bottom: 10),
-                                            child: Text(
-                                                "Message: " + onemsg.message_text,
-                                                style: TextStyle(fontSize: 17)),
-                                          ),
-                                        ],
-                                      ),
-                                    )));
+                                child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 14, right: 14, top: 10, bottom: 10),
+                              child: Align(
+                                alignment: (onemsg.user_id == user
+                                    ? Alignment.topLeft
+                                    : Alignment.topRight),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: (onemsg.user_id == user
+                                        ? Colors.grey.shade200
+                                        : Colors.blue[200]),
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  child: Text(
+                                    onemsg.message_text,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                            ));
                           }).toList(),
                         ))
                       ],

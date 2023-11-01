@@ -24,6 +24,7 @@ const userTRoutes = require("../routes/adminitrator");
 const mRouter = require("../routes/mindfulness_courses");
 const nRouter = require("../routes/notification_routes");
 const dRouter = require("../routes/daily_tips");
+const UserChat = require("../models/user_chat");
 
 dotenv.config()
 
@@ -59,11 +60,21 @@ const PORT = process.env.PORT || 3000
 //connection
 
 app.listen(PORT,() => console.log(`Server has started on ${PORT}`))
-var  webSockets = {}
+var  webSockets = new Map()
 const wss = new WebSocket.Server({ port: 6060 }) //run websocket server with port 6060
 wss.on('connection', function (ws, req)  {
     var userID = req.url.substr(1) //get userid from URL ip:6060/userid 
-    webSockets[userID] = ws //add new user to the connection list
+    var user = userID.split("-")[0]
+    var chat = userID.split("-")[1]
+    var localMap=new Map()
+    if(webSockets.has(chat)){
+        webSockets.get(chat).set(user,ws)
+    }
+    else{
+        webSockets.set(chat,localMap.set(user,ws))
+    }
+    
+    console.log(webSockets)
 
     console.log('User ' + userID + ' Connected ') 
 
@@ -73,30 +84,27 @@ wss.on('connection', function (ws, req)  {
         if(datastring.charAt(0) == "{"){
             datastring = datastring.replace(/\'/g, '"');
             var data = JSON.parse(datastring)
-            if(data.auth == "chatapphdfgjd34534hjdfk"){
-                if(data.cmd == 'send'){ 
-                    var boardws = webSockets[222] //check if there is reciever connection
-                    if (boardws){
-                        var cdata = "{'cmd':'" + data.cmd + "','userid':'"+data.userid+"', 'msgtext':'"+data.msgtext+"'}";
-                       wss.clients.forEach(function each(client) {
-                        console.log("Dfdf")
-                            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                                client.send(cdata);
-                            }
-                            });
-                        ws.send(data.cmd + ":success");
+             var boardws = webSockets.get(chat) //check if there is reciever connection
+                    if (boardws!==undefined){
+                        
+                    webSockets.get(chat).forEach((value, key)=> {
+                        var cdata = chat + "-"+key+"-"+data.message_text;
+                        var client = value
+                        if (client!=ws && client.readyState === WebSocket.OPEN) {
+                               client.send(cdata);
+                               UserChat.addMessage(chat,key,data.message_text)
+                               console.log("sending")
+                        }
+                        
+                    });
+
+                      
                     }else{
                         console.log("No reciever user found.");
-                        ws.send(data.cmd + ":error");
+                        
                     }
-                }else{
-                    console.log("No send command");
-                    ws.send(data.cmd + ":error");
-                }
-            }else{
-                console.log("App Authincation error");
-                ws.send(data.cmd + ":error");
-            }
+                
+         
         }else{
             console.log("Non JSON type data");
             ws.send(data.cmd + ":error");

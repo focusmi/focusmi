@@ -30,12 +30,21 @@ class ChatRoomServices {
             'authorization': 'Bearer ' + token.toString()
           });
       return res;
-    } catch (e) {}
+    } catch (e) {
+      
+    }
   }
 
-  static Future createChatMessage(chat_id,ChatMessage message) async {
-    try {
-      
-    } catch (e) {}
-  }
+  // static Future createChatMessage(chat_id,ChatMessage message) async {
+  //   try {
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     var token = prefs.getString('auth-token');
+  //     http.Response res = await http.get(
+  //         Uri.parse('$uri/api/create-chat/$groupid'),
+  //         headers: <String, String>{
+  //           'Content-Type': 'application/json; charset=UTF-8',
+  //           'authorization': 'Bearer ' + token.toString()
+  //         });
+  //   } catch (e) {}
+  // }
 }
