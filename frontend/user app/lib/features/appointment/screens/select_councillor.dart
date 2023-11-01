@@ -1,21 +1,20 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_theme.dart';
-import 'package:focusmi/features/appointment/screens/flutter_flow/flutter_flow_widgets.dart';
+import 'package:focusmi/features/appointment/screens/councillor_details.dart';
 import 'package:focusmi/features/appointment/services/appointment_service.dart';
 
 import '../../../constants/global_variables.dart';
-import 'councillor_details.dart';
 
 class CounselorsListWidgetWidget extends StatefulWidget {
   const CounselorsListWidgetWidget({Key? key}) : super(key: key);
   static const String routeName = '/select_councillor';
 
   @override
-  _CounselorsListWidgetWidgetState createState() => _CounselorsListWidgetWidgetState();
+  _CounselorsListWidgetWidgetState createState() =>
+      _CounselorsListWidgetWidgetState();
 }
 
-class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget> {
+class _CounselorsListWidgetWidgetState
+    extends State<CounselorsListWidgetWidget> {
   late List<dynamic> councillorData; // To store the fetched data
 
   @override
@@ -23,15 +22,14 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
     super.initState();
     fetchCouncillorData();
     councillorData = [];
-    
   }
 
   Future<void> fetchCouncillorData() async {
     try {
       final data = await AppointmentService.getCouncillorList();
-      print(data);
       setState(() {
         councillorData = data;
+        print(councillorData);
       });
     } catch (e) {
       print('Error fetching data: $e');
@@ -40,44 +38,34 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: GlobalVariables.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF83DE70),
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Councillors',
-            style: FlutterFlowTheme.of(context).bodyText1.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
-          ),
-          actions: [],
-          centerTitle: false,
-          elevation: 2,
+    return Scaffold(
+      backgroundColor: GlobalVariables.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF83DE70),
+        title: Text(
+          'Counsellors',
+          style: TextStyle(color: Colors.white),
         ),
-        body: SafeArea(
-          top: true,
-          child: Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                for (var councillor in councillorData ?? [])
-                  CouncillorCard(
-                    imageUrl: 'https://picsum.photos/seed/87/600',
-                    username: councillor['full_name'],
-                    about: councillor['about'],
-                    email: councillor['email'],
-                    exp: councillor['years_of_experience'],
-                    tot_clients: councillor['tot_clients'],
-                    user_id: councillor['user_id'],
-                  ),
-              ],
-            ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: ListView.builder(
+            itemCount: councillorData.length,
+            itemBuilder: (context, index) {
+              var councillor = councillorData[index];
+              return CouncillorCard(
+                imageUrl: '$uri/' + councillor['image'],
+                username: councillor['full_name'],
+                title: councillor['title'],
+                email: councillor['email'],
+                about: councillor['about'],
+                exp: councillor['years_of_experience'],
+                tot_clients: councillor['tot_clients'],
+                user_id: councillor['user_id'],
+              );
+            },
           ),
         ),
       ),
@@ -88,8 +76,9 @@ class _CounselorsListWidgetWidgetState extends State<CounselorsListWidgetWidget>
 class CouncillorCard extends StatelessWidget {
   final String? imageUrl;
   final String? username;
-  final String? about;
+  final String? title;
   final String? email;
+  final String? about;
   final String? exp;
   final int? tot_clients;
   final int? user_id;
@@ -98,6 +87,7 @@ class CouncillorCard extends StatelessWidget {
     Key? key,
     this.imageUrl,
     this.username,
+    this.title,
     this.about,
     this.email,
     this.exp,
@@ -107,77 +97,91 @@ class CouncillorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Card(
-        elevation: 2,
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
-                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(imageUrl??''),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(imageUrl ?? ''),
                   ),
                   SizedBox(width: 10),
-                  Text(
-                    username??'',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                          fontFamily: 'Readex Pro',
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        username ?? '',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
+                      ),
+                      Text(
+                        title ?? '',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(10),
-              child: FFButtonWidget(
-                onPressed: () {
-                  print('Button pressed ...');
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailsWidget(
-                        name: username??'',
-                        about: about??'',
-                        experience: exp??'',
-                        totcustomer: tot_clients??0,
-                        userId: user_id??0,
-                      ),
-                    ),
-                  );
-                },
-                text: 'Details',
-                options: FFButtonOptions(
-                  height: 40,
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  color: const Color(0xFF83DE70),
-                  textStyle: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.white,
-                      ),
-                  elevation: 3,
-                  borderSide: const BorderSide(
-                    color: Colors.transparent,
-                    width: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Experience: $exp years',
+                    style: TextStyle(fontSize: 14),
                   ),
-                  borderRadius: 8,
-                ),
+                  Text(
+                    'Clients: $tot_clients+',
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsWidget(
+                            name: username ?? '',
+                            email: email ?? '',
+                            title: title ?? '',
+                            about: about ?? '',
+                            experience: exp ?? '',
+                            image: imageUrl ?? '',
+                            totcustomer: tot_clients ?? 0,
+                            userId: user_id ?? 0,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text('Details'),
+                    style: ElevatedButton.styleFrom(
+                      primary: const Color(0xFF83DE70),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
