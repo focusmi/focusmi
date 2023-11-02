@@ -2,13 +2,13 @@ import 'dart:convert';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class TaskGroup {
-  final int group_id;
-  final String group_name;
-  final String status;
-  final String member_count;
+  final int? group_id;
+  final String? group_name;
+  final String? status;
+  final String? member_count;
   String? description;
-  final int creator_id;
-  final String created_at;
+  final int? creator_id;
+  final String? created_at;
 
   TaskGroup({
     required this.group_id,
@@ -34,13 +34,13 @@ class TaskGroup {
 
   factory TaskGroup.fromMap(Map<String, dynamic> map) {
     return TaskGroup(
-      group_id: map['group_id'] as int,
-      group_name: map['group_name'] as String,
-      status: map['status'] as String,
-      member_count: map['member_count'] as String,
+      group_id: map['group_id'] != null ? map['group_id'] as int : null,
+      group_name: map['group_name'] != null ? map['group_name'] as String : null,
+      status: map['status'] != null ? map['status'] as String : null,
+      member_count: map['member_count'] != null ? map['member_count'] as String : null,
       description: map['description'] != null ? map['description'] as String : null,
-      creator_id: map['creator_id'] as int,
-      created_at: map['created_at'] as String,
+      creator_id: map['creator_id'] != null ? map['creator_id'] as int : null,
+      created_at: map['created_at'] != null ? map['created_at'] as String : null,
     );
   }
 
@@ -48,6 +48,7 @@ class TaskGroup {
 
   factory TaskGroup.fromJson(Map<String, dynamic> source) =>
       TaskGroup.fromMap(source as Map<String, dynamic>);
+
 
 
 }

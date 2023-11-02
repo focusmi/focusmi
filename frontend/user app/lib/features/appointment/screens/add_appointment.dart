@@ -149,12 +149,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       backgroundColor: Colors.green,
                     ));
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ViewAppointmentsWidget(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const ViewAppointmentsWidget(),
+                    //   ),
+                    // );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Please select a time slot.'),

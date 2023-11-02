@@ -20,6 +20,7 @@ import "package:focusmi/features/mindfulness_courses/screens/course_media_player
 import "package:focusmi/features/mindfulness_courses/screens/levels.dart";
 import "package:focusmi/features/pomodoro_timer/screens/break_view.dart";
 import "package:focusmi/features/pomodoro_timer/screens/pomodoro_timer_view.dart";
+import "package:focusmi/features/pomodoro_timer/widgets/countdown_timer.dart";
 import "package:focusmi/features/task_group.dart/screens/create_group.dart";
 import "package:focusmi/features/task_group.dart/screens/edit_task_group.dart";
 import "package:focusmi/features/task_group.dart/screens/group_list.dart";
@@ -131,6 +132,12 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
       return MaterialPageRoute(
         settings: routeSettings,
         builder: (context) => PomodoroTimerScreen(task: args),
+      );
+    case CountdownTimer.routeName:
+      final Task args = routeSettings.arguments as Task;
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (context) => CountdownTimer(task: args),
       );
     case SubscriptionPackagesPage.routeName:
       return MaterialPageRoute(

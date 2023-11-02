@@ -60,7 +60,7 @@ dependencies:
   android_alarm_manager_plus: ^3.0.2
   elegant_notification: ^1.11.2
   neon_circular_timer: ^0.0.7
-  #google_maps_place_picker_mb: ^3.0.2
+  google_maps_place_picker_mb: ^3.0.2
   socket_io_client: ^1.0.1
   google_maps_flutter: ^2.0.11
   story_view: ^0.15.0
@@ -70,7 +70,6 @@ dependencies:
   loading_indicator: ^3.1.1
   flutter_local_notifications: ^7.0.0
   loading_animation_widget: ^1.2.0+4
-  zego_uikit_prebuilt_video_conference: ^2.5.0
   web_socket_channel: ^2.0.0
   stripe_checkout: ^1.0.0
 

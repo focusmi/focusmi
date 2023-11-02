@@ -18,6 +18,7 @@ import 'package:neon_circular_timer/neon_circular_timer.dart';
 
 class CountdownTimer extends StatefulWidget {
   const CountdownTimer({super.key, required this.task});
+  static const String routeName = '/countdown_timer.dart';
   final Task task;
 
   @override
@@ -118,7 +119,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
   Widget createTimer(duration) {
     return NeonCircularTimer(
       width: 200,
-      duration: 5,
+      duration: duration * 60,
       controller: controller,
       autoStart: false,
       neumorphicEffect: false,
@@ -129,16 +130,15 @@ class _CountdownTimerState extends State<CountdownTimer> {
       isReverse: true,
       textStyle: TextStyle(color: Colors.white, fontSize: 45),
       onComplete: () {
-        print("dfnvvnvnvnv");
         reduceTurn(context);
         setState(() {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>WaitingSplash(task: widget.task, bduration: bduration),
+              builder: (context) =>
+                  WaitingSplash(task: widget.task, bduration: bduration),
             ),
           );
-          
         });
       },
     );
@@ -181,13 +181,20 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   void setBreakDuration(durationh) async {
     try {
+    
       GTaskPlannerServices.setTimerAttr("break_duration", durationh, context);
     } catch (e) {}
   }
 
   void setDuration(bdurationh) async {
     try {
+       if (bdurationh == 5) {
+        bdurationh = 1;
+      }
       GTaskPlannerServices.setTimerAttr("total_duration", bdurationh, context);
+      setState(() {
+        createTimer(bdurationh);
+      });
     } catch (e) {}
   }
 
@@ -232,7 +239,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   void reduceTurn(context) async {
     try {
-      // GTaskPlannerServices.reduceTurns(context);
+      GTaskPlannerServices.reduceTurns(context);
     } catch (e) {
       print(e);
     }
@@ -242,6 +249,23 @@ class _CountdownTimerState extends State<CountdownTimer> {
     try {
       var totMinutes =
           (int.parse(hcontroller.text) * 60) + int.parse(mcontroller.text);
+      print("mini");
+      print(totMinutes);
+      var value = (totMinutes / (duration + bduration)).ceil();
+      setState(() {
+        remPomodoros = value;
+        totPomodoros = value;
+      });
+      print(value);
+    } catch (e) {}
+  }
+
+  void CalculatePomodoros2() async {
+    try {
+      var totMinutes =
+          (int.parse(hcontroller.text) * 60) + int.parse(mcontroller.text);
+      print("mini");
+      print(totMinutes);
       var value = (totMinutes / (duration + bduration)).ceil();
       setState(() {
         remPomodoros = value;
@@ -253,7 +277,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
 
   void completeTask(task_id) async {
     try {
-      GTaskPlannerServices.updateSubTask( task_id, 'completed');
+      GTaskPlannerServices.updateSubTask(task_id, 'completed');
       refreshTaskAllocation();
     } catch (e) {
       print(e);
@@ -286,7 +310,7 @@ class _CountdownTimerState extends State<CountdownTimer> {
     Widget _setDurationPopup(BuildContext context) {
       return AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text("Move Task"),
+        title: const Text("Set Pomodoros"),
         content: StatefulBuilder(
           builder: (BuildContext, StateSetter setState) {
             return Container(
@@ -495,10 +519,17 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                     ],
                                     onSelectedItemChanged: (int value) {
                                       print(value);
-                                      setState(() {
-                                        bduration = (value + 1) * 5;
-                                        setBreakDuration(bduration);
-                                      });
+                                      if (value == 10) {
+                                        setState(() {
+                                          bduration = 1;
+                                          setBreakDuration(bduration);
+                                        });
+                                      } else {
+                                        setState(() {
+                                          bduration = (value + 1) * 5;
+                                          setBreakDuration(bduration);
+                                        });
+                                      }
                                     },
                                   ),
                                 ));
@@ -620,7 +651,6 @@ class _CountdownTimerState extends State<CountdownTimer> {
                                   child: Row(
                                     children: [
                                       Radio(
-                                        
                                           activeColor: Colors.white,
                                           value: subtasks[index].task_id,
                                           groupValue: "",

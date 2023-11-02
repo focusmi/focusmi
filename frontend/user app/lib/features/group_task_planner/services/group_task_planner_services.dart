@@ -503,6 +503,22 @@ class GTaskPlannerServices {
       print("error in get task plans by plan");
     }
   }
+  static Future getGroupById(group) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('auth-token');
+      http.Response res = await http.get(
+          Uri.parse('$uri/api/get-task-groupsa/${group}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'authorization': 'Bearer ' + token.toString()
+          });
+      return res;
+    } catch (e) {
+      print("error in get task plans by plan");
+    }
+  }
+
 
   static Future getEndTask(context) async {
     try {

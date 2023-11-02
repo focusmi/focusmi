@@ -52,7 +52,10 @@ class NotiServices {
           'authorization': 'Bearer ' + token.toString()
         },
       );
-   
+
+      print("-=-=-=");
+      print(res.body);
+      print("-=-=-=");
       return res;
     } catch (e) {
       print(e);

@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:focusmi/constants/global_variables.dart';
 
 class TextualCTimer extends StatefulWidget {
   final int minutes;
@@ -80,16 +81,24 @@ class _TextualCTimerState extends State<TextualCTimer> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: GlobalVariables.primaryColor
+                ),
                 onPressed: startTimer,
                 child: Text(
                   'Start',
+
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 25,
+                    color:Colors.white
                   ),
                 ),
               ),
               // Step 10
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: GlobalVariables.primaryColor
+                ),
                 onPressed: () {
                   if (countdownTimer == null || countdownTimer!.isActive) {
                     stopTimer();
@@ -98,19 +107,24 @@ class _TextualCTimerState extends State<TextualCTimer> {
                 child: Text(
                   'Stop',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 25,
+                    color:Colors.white
                   ),
                 ),
               ),
               // Step 11
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: GlobalVariables.primaryColor
+                ),
                   onPressed: () {
                     resetTimer();
                   },
                   child: Text(
                     'Reset',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
+                      color:Colors.white
                     ),
                   )),
             ],

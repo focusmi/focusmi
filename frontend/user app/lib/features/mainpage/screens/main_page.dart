@@ -259,27 +259,24 @@ class _MainScreenState extends State<MainScreen> {
                   controller: controller,
                   child: Container(
                     child: Column(children: [
-                      SizedBox(
-                        height: 250,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, NotiList.routeName);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(180, 30, 10, 0),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Icon(
+                              Icons.email,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              size: 50,
+                            ),
+                          ),
+                        ),
                       ),
-                      // GestureDetector(
-                      //   onTap: () {
-
-                      //   },
-                      //   child: Padding(
-                      //     padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                      //     child: Container(
-                      //       alignment: Alignment.centerRight,
-                      //       child: Icon(
-                      //         Icons.email,
-                      //         color: const Color.fromARGB(255, 255, 255, 255),
-                      //         size: 50,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       SizedBox(
-                        height: 10,
+                        height: 200,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -339,125 +336,157 @@ class _MainScreenState extends State<MainScreen> {
                                           ));
                                     },
                                     child: Container(
-                                        alignment: Alignment.centerLeft,
-                                          width: width*0.95,
-                                          height: 80,
-                                           decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                        image: DecorationImage(image:AssetImage('assets/images/night.jpg'),fit:BoxFit.cover)
-                                      ),
-                                      child:Center(
+                                      alignment: Alignment.centerLeft,
+                                      width: width * 0.95,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  'assets/images/night.jpg'),
+                                              fit: BoxFit.cover)),
+                                      child: Center(
                                         child: Text(
-                                            "Be A Premium Member", style: TextStyle(
-                                              color: Colors.white,fontSize: 20,
-                                            ),),
+                                          "Be A Premium Member",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   )
-                                : (package=='freedom')?
-                                
-                                Column(
-                                  children: [
-                                    SizedBox(height: 20,),
-                                    GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SubscriptionPackagesPage(),
-                                              ));
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.centerLeft,
-                                          width: width*0.95,
-                                          height: 80,
-                                           decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8),
-                                        image: DecorationImage(image:AssetImage('assets/images/night.jpg'),fit:BoxFit.cover)
+                                : (package == 'freedom')
+                                    ? Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SubscriptionPackagesPage(),
+                                                  ));
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.centerLeft,
+                                              width: width * 0.95,
+                                              height: 80,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/images/night.jpg'),
+                                                      fit: BoxFit.cover)),
+                                              child: Center(
+                                                child: Text(
+                                                  "Be Free With Extra Freedom",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox(
+                                        height: 0,
+                                        width: 0,
                                       ),
-                                      child:Center(
-                                        child: Text(
-                                            "Be Free With Extra Freedom", style: TextStyle(
-                                              color: Colors.white,fontSize: 20,
-                                            ),),
-                                      ),
-                                        ),
-                                      ),
-                                  ],
-                                )
-                                :SizedBox(
-                                    height: 0,
-                                    width: 0,
-                                  ),
                             SizedBox(
                               height: 10,
                             ),
-                            (taskPlan.length!=0)?Container(
-                              height: 40,
-                              width: width,
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                "Recent Task Plans",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
-                              ),
-                            ):SizedBox(width: 0,height: 0,),
-                            (taskPlan.length!=0)?Container(
-                              alignment: Alignment.topLeft,
-                              width: 500,
-                              height: 180,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: taskPlan.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () => {
-                                        Navigator.pushNamed(
-                                            context, GroupTaskPlanner.routeName,
-                                            arguments: [
-                                              taskPlan[index].group_id,
-                                              taskPlan[index].plan_id
-                                            ])
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: MainPageCatTile.greenPageTile(
-                                            taskPlan[index].plan_name,
-                                            width * 0.1),
-                                      ),
-                                    );
-                                  }),
-                            ):SizedBox(width: 0,height: 0,),
+                            (taskPlan.length != 0)
+                                ? Container(
+                                    height: 40,
+                                    width: width,
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Recent Task Plans",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    width: 0,
+                                    height: 0,
+                                  ),
+                            (taskPlan.length != 0)
+                                ? Container(
+                                    alignment: Alignment.topLeft,
+                                    width: 500,
+                                    height: 180,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: taskPlan.length,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () => {
+                                              Navigator.pushNamed(context,
+                                                  GroupTaskPlanner.routeName,
+                                                  arguments: [
+                                                    taskPlan[index].group_id,
+                                                    taskPlan[index].plan_id
+                                                  ])
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child:
+                                                  MainPageCatTile.greenPageTile(
+                                                      taskPlan[index].plan_name,
+                                                      width * 0.1),
+                                            ),
+                                          );
+                                        }),
+                                  )
+                                : SizedBox(
+                                    width: 0,
+                                    height: 0,
+                                  ),
                             Container(
                               height: 40,
                               width: width,
                               alignment: Alignment.bottomLeft,
-                              child: (package!='free')?Text(
-                                "Featured Content",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
-                              ):Row(children: [
-                                Text(
-                                "Featured Content",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 24),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Icon(Icons.lock,size: 30,color: Colors.white,)
-                              ]),
+                              child: (package != 'free')
+                                  ? Text(
+                                      "Featured Content",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 24),
+                                    )
+                                  : Row(children: [
+                                      Text(
+                                        "Featured Content",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 24),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(
+                                        Icons.lock,
+                                        size: 30,
+                                        color: Colors.white,
+                                      )
+                                    ]),
                             ),
                             GestureDetector(
                               onTap: () {
-                                (package!='free')?{
-                                  Navigator.pushNamed(
-                                      context, CourseContentWidget.routeName,
-                                      arguments: featuredCourse[0])
-
-                                }:(){};
+                                (package != 'free')
+                                    ? {
+                                        Navigator.pushNamed(context,
+                                            CourseContentWidget.routeName,
+                                            arguments: featuredCourse[0])
+                                      }
+                                    : () {};
                               },
                               child: Container(
                                 // decoration: BoxDecoration(

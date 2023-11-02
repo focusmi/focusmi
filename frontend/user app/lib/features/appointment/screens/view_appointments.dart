@@ -144,16 +144,16 @@ class AppointmentCard extends StatelessWidget {
       {required String conferenceId,
       required String userName,
       required String userId}) {
-    Navigator.push(
-      context,
-      PageTransition(
-          type: PageTransitionType.topToBottom,
-          child: VideoConferencePage(
-            conferenceID: conferenceId,
-            userName: userName,
-            userId: userId,
-          )),
-    );
+    // Navigator.push(
+    //   context,
+    //   PageTransition(
+    //       type: PageTransitionType.topToBottom,
+    //       child: VideoConferencePage(
+    //         conferenceID: conferenceId,
+    //         userName: userName,
+    //         userId: userId,
+    //       )),
+    // );
   }
 
   @override

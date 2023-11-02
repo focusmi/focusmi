@@ -59,6 +59,27 @@ gTaskRoutes.get('/api/task-groups',auth,async(req,res,next)=>{
    next();
 })
 
+gTaskRoutes.get('/api/get-task-groupsa/:groupid',async(req,res,next)=>{
+   try{
+      var result =await pool.cQuery(`select * from task_group where group_id=${req.params.groupid}`)
+      console.log("lllll")
+      console.log(req.params.groupid)
+      if(result==0){
+         res.send([])
+      }
+      else{
+         res.send(result)
+      }
+   }
+   catch (e){
+      res.status(400);
+      res.send({'msg':'User not verified'});
+ 
+   }
+   next();
+})
+
+
 
 gTaskRoutes.get('/api/change-prevs/:userid/:groupid/:prev',auth,async(req,res,next)=>{
    try{
@@ -157,12 +178,17 @@ gTaskRoutes.get('/api/get-group-members-by-task/:taskID',auth,async(req,res,next
       var result = await task.findOne({task_id:req.params.taskID});
       result = await task_plan.findOne({plan_id:result.dataValues.plan_id})
       result = await pool.cQuery(`Select * from application_user left join group_user on group_user.user_id=application_user.user_id where group_id=${result.dataValues.group_id} and application_user.user_id<>${id}`)
-      console.log(result)
-      res.send(result)
+      if(result==0){
+         res.send([])
+      }
+      else{
+         res.send(result)
+
+      }
    }
    catch(e){
       console.log(e);
-      res.send({})
+      res.send([])
    }
 })
 

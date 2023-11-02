@@ -41,7 +41,7 @@ class _BreakViewState extends State<BreakView> {
                   )));
     });
 
-    refreshTips('saturday');
+    refreshTips('Thursday');
     super.initState();
   }
 

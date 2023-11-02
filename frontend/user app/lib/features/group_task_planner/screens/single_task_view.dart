@@ -8,7 +8,7 @@ import 'package:focusmi/features/mainpage/screens/main_page.dart';
 import 'package:focusmi/features/task_group.dart/services/set_group_services.dart';
 import 'package:focusmi/models/taskplan.dart';
 import 'package:tap_canvas/tap_canvas.dart';
-//import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -1051,29 +1051,29 @@ class _SingleTaskViewState extends State<SingleTaskView> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => PlacePicker(
-                                  //       apiKey:
-                                  //           "AIzaSyDp9s9hdUOnbOBIQQjR1_goCMPJYsDEukk",
-                                  //       onPlacePicked: (PickResult result) {
-                                  //         setState(() {
-                                  //           taskLocation =
-                                  //               result.formattedAddress;
-                                  //         });
-                                  //         addTaskLocation(
-                                  //             "${result.formattedAddress}");
-                                  //         Navigator.of(context).pop();
-                                  //       },
-                                  //       initialPosition: kInitialPosition,
-                                  //       useCurrentLocation: true,
-                                  //       ignoreLocationPermissionErrors: true,
-                                  //       resizeToAvoidBottomInset:
-                                  //           false, // only works in page mode, less flickery, remove if wrong offsets
-                                  //     ),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PlacePicker(
+                                        apiKey:
+                                            "AIzaSyDp9s9hdUOnbOBIQQjR1_goCMPJYsDEukk",
+                                        onPlacePicked: (PickResult result) {
+                                          setState(() {
+                                            taskLocation =
+                                                result.formattedAddress;
+                                          });
+                                          addTaskLocation(
+                                              "${result.formattedAddress}");
+                                          Navigator.of(context).pop();
+                                        },
+                                        initialPosition: kInitialPosition,
+                                        useCurrentLocation: true,
+                                        ignoreLocationPermissionErrors: true,
+                                        resizeToAvoidBottomInset:
+                                            false, // only works in page mode, less flickery, remove if wrong offsets
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: Column(
                                   children: [

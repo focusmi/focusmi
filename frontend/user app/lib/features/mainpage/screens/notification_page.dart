@@ -42,8 +42,24 @@ class _NotiListState extends State<NotiList> {
     });
   }
 
+  Future getGroup(groupid) async {
+    try {
+      var result = await GTaskPlannerServices.getGroupById(groupid);
+      var res = json.decode(result.body)[0];
+      return TaskGroup(
+          group_id: res['group_id'],
+          group_name: res['group_name'],
+          status: res['status'],
+          member_count: res['member_count'],
+          creator_id: res['creator_id'],
+          created_at: res['created_at']);
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void getNotifromApi() async {
-    NotiServices.getNotification(context).then((response) {
+    NotiServices.getNotification(context).then((response) async {
       setState(() {
         try {
           Iterable list =
@@ -51,14 +67,27 @@ class _NotiListState extends State<NotiList> {
           characterList =
               list.map((model) => Notifications.fromJson(model)).toList();
         } catch (e) {
-          characterList = List.empty();
+          print(e);
         }
       });
+
       for (Notifications element in characterList) {
+        print("dfdfdfdfd");
+        print(element.noti_id);
+        var result = await getGroup(element.group_id);
+        print(result);
+        print("elemnt");
+        // print(result);
         setState(() {
-          thisgroup.add(group.firstWhere(
-              (TaskGroup elemento) => elemento.group_id == element.group_id));
+          thisgroup.add(result);
         });
+        // print(element.group_id.toString() +
+        //     "-" +
+        //     elemento.group_id.toString());
+        // if (elemento.group_id == element.group_id) {
+        //   thisgroup.add(elemento);
+        //   break;
+        // }
       }
     });
   }
@@ -74,119 +103,127 @@ class _NotiListState extends State<NotiList> {
     LayOut layout = LayOut();
     return layout.mainLayoutWithDrawer(
         context,
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18),
-          child: ListView.builder(
-              itemCount: characterList.length,
-              itemBuilder: (context, index) {
-                return (characterList[index].type == "invite")
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Container(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, GroupTaskPlanner.routeName,
-                                  arguments: ([
-                                    characterList[index].group_id,
-                                    null
-                                  ]));
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 3.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color:
-                                            GlobalVariables.textFieldBgColor)),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: ListView.builder(
+                  itemCount: characterList.length,
+                  itemBuilder: (context, index) {
+                    return (characterList[index].type == "invite")
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Container(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                      context, GroupTaskPlanner.routeName,
+                                      arguments: ([
+                                        characterList[index].group_id,
+                                        null
+                                      ]));
+                                },
                                 child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        width:
-                                            (MediaQuery.of(context).size.width),
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              12, 5, 12, 0),
-                                          child: Column(
-                                            children: [
-                                              Row(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 3.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color:
+                                                GlobalVariables.textFieldBgColor)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            width:
+                                                (MediaQuery.of(context).size.width),
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  12, 5, 12, 0),
+                                              child: Column(
                                                 children: [
-                                                  SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Container(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            "${characterList[index].text}",
-                                                            style: TextStyle(
-                                                                color: GlobalVariables
-                                                                    .greyFontColor),
+                                                  Row(
+                                                    children: [
+                                                      SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        child: Container(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                "${characterList[index].text}",
+                                                                style: TextStyle(
+                                                                    color: GlobalVariables
+                                                                        .greyFontColor),
+                                                              ),
+                                                              Text(
+                                                                "Group Name: ${thisgroup[index].group_name}",
+                                                                style: TextStyle(
+                                                                    color: GlobalVariables
+                                                                        .greyFontColor),
+                                                              ),
+                                                              Text(
+                                                                "Created On : ${((thisgroup[index].created_at)?.split("T"))?[0]}",
+                                                                style: TextStyle(
+                                                                    color: GlobalVariables
+                                                                        .greyFontColor),
+                                                              ),
+                                                            ],
                                                           ),
-                                                          Text(
-                                                            "Group Name: ${thisgroup[index].group_name}",
-                                                            style: TextStyle(
-                                                                color: GlobalVariables
-                                                                    .greyFontColor),
-                                                          ),
-                                                          Text(
-                                                            "Created On : ${((thisgroup[index].created_at).split("T"))[0]}",
-                                                            style: TextStyle(
-                                                                color: GlobalVariables
-                                                                    .greyFontColor),
-                                                          ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      Container(
-                                          alignment: Alignment.center,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      GlobalVariables
-                                                          .primaryColor),
-                                              onPressed: () {
-                                                GTaskPlannerServices
-                                                    .editGroupMember(
+                                          Container(
+                                              alignment: Alignment.center,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                          GlobalVariables
+                                                              .primaryColor),
+                                                  onPressed: () {
+                                                    GTaskPlannerServices
+                                                        .editGroupMember(
+                                                            characterList[index]
+                                                                .group_id,
+                                                            "member",
+                                                            context);
+                                                    GTaskPlannerServices.changeNoti(
                                                         characterList[index]
-                                                            .group_id,
-                                                        "member",
-                                                        context);
-                                                GTaskPlannerServices.changeNoti(
-                                                    characterList[index]
-                                                        .noti_id,
-                                                    "inactive");
-                                                Navigator.pushNamed(context,
-                                                    GroupList.routeName);
-                                              },
-                                              child: Text(
-                                                "Join Group",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              )))
-                                    ],
+                                                            .noti_id,
+                                                        "inactive");
+                                                   Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    GroupList(),
+                                              ));
+                                                  },
+                                                  child: Text(
+                                                    "Join Group",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  )))
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      )
-                    : Container();
-              }),
+                          )
+                        : Container();
+                  }),
+            ),
+          ],
         ),
         "Notifications");
   }

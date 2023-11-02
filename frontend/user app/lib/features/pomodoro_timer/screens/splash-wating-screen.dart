@@ -91,10 +91,10 @@ class _WaitingSplashState extends State<WaitingSplash> {
                       animatedTexts: [
                         FadeAnimatedText('Take Breather',
                             textStyle: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.normal)),
+                                fontSize: 32, fontWeight: FontWeight.normal)),
                         FadeAnimatedText('Your Break Starts Now',
                             textStyle: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.normal)),
+                                fontSize: 32, fontWeight: FontWeight.normal)),
                       ],
                       onTap: () {
                         print("Tap Event");

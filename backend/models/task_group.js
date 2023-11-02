@@ -45,7 +45,7 @@ class TaskGroup{
                     "group_id":group.dataValues.group_id,
                     "type":"invite"
                 });
-                pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${val['user_id']},'member','${date}','${date}')`)
+                pool.cQuery(`Insert into group_user ("group_id","user_id","previlage",created_at,updated_at) values(${group.dataValues.group_id},${val['user_id']},'nonmember','${date}','${date}')`)
             };
             return true;
         }
@@ -62,6 +62,7 @@ class TaskGroup{
         }
         catch(e){
             console.log(e)
+            
         }
     }
 
