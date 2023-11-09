@@ -97,7 +97,9 @@ class Body extends StatelessWidget {
             press: () {
               Navigator.push(
                 context,
-                PageTransition(type: PageTransitionType.leftToRight, child: ProfileDetailsPage()),
+                PageTransition(
+                    type: PageTransitionType.leftToRight,
+                    child: ProfileDetailsPage()),
               );
             },
           ),
@@ -112,7 +114,9 @@ class Body extends StatelessWidget {
             press: () {
               Navigator.push(
                 context,
-                PageTransition(type: PageTransitionType.leftToRight, child: SetTimeScheduleScreen()),
+                PageTransition(
+                    type: PageTransitionType.leftToRight,
+                    child: SetTimeScheduleScreen()),
               );
             },
           ),
@@ -269,9 +273,8 @@ class _ProfilePicState extends State<ProfilePic> {
             backgroundImage: _selectedImage != null
                 ? FileImage(_selectedImage!)
                 : (_profilePictureUrl != null
-                    // ? NetworkImage(_profilePictureUrl!)
-                    ?const AssetImage("assets/images/doctor1.jpg")
-                    : const AssetImage("assets/images/doctor1.jpg")
+                    ? NetworkImage(uri + '/' + _profilePictureUrl!)
+                    : const AssetImage("assets/images/profile-empty.png")
                         as ImageProvider<Object>),
           ),
           Positioned(

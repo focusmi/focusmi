@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:therapist_app/common/widgets/custom_button.dart';
 import 'package:therapist_app/constants/global_variables.dart';
 import 'package:lottie/lottie.dart';
-import 'package:therapist_app/features/auth/screens/reset_password/email_verification_screen.dart';
+import 'package:therapist_app/features/auth/screens/reset_password/services/reset_pwd_service.dart';
 import 'package:therapist_app/validation/form_validators.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -106,16 +106,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     text: "Send Code",
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
-                        // Handle forgot password logic here
-                        // For this example, let's just print the email
-                        print('Reset Password for email: $_email');
-                        // Navigate to the phone verification screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EmailVerificationScreen(),
-                          ),
-                        );
+                        ResetPwdService.findEmail(
+                            context: context, email: _email);
                       }
                     },
                   ),

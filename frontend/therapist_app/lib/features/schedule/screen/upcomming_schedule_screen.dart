@@ -26,14 +26,14 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
   }
 
   String formatAppointmentDateTime(String isoDateTime) {
-    DateTime dateTime = DateTime.parse(isoDateTime);
+    DateTime dateTime = DateTime.parse(isoDateTime).toLocal();
     return DateFormat('yyyy-MM-dd').format(dateTime) +
         ', ' +
         DateFormat('hh:mm a').format(dateTime);
   }
 
   String formatAppointmentTime(String isoDateTime) {
-    DateTime dateTime = DateTime.parse(isoDateTime);
+    DateTime dateTime = DateTime.parse(isoDateTime).toLocal();
     return DateFormat('hh:mm a').format(dateTime);
   }
 
@@ -65,8 +65,9 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UpcomingScheduleData =
-        scheduleData.where((schedule) => schedule['complete'] == false).toList();
+    final UpcomingScheduleData = scheduleData
+        .where((schedule) => schedule['complete'] == false)
+        .toList();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -239,12 +240,12 @@ class _UpcomingScheduleScreenState extends State<UpcomingScheduleScreen> {
                       return true; // Show all by default
                     }).map((schedule) {
                       return ScheduleCard(
-                        patientName: schedule['full_name'],
+                        patientName: schedule['full_name'] ?? schedule['username'],
                         appointmentTime:
                             formatAppointmentDateTime(schedule['session_time']),
                         appointmentEndTime:
                             formatAppointmentTime(schedule['session_end_time']),
-                        status: schedule['account_status'],
+                        status: schedule['account_status'] ?? 'idle',
                         appointmentEndDateTime: formatAppointmentDateTime(
                             schedule['session_end_time']),
                         complete: schedule['complete'],

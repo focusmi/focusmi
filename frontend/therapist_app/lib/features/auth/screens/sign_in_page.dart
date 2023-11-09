@@ -76,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     SizedBox(height: screenSize.height * 0.02), // Adjust spacing based on screen height
                     CustomButton(
-                      text: 'Sign Inner',
+                      text: 'Sign In',
                       onTap: () {
                         if (_signInFormKey.currentState!.validate()) {
                           signInUser();

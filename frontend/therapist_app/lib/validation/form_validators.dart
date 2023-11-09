@@ -139,4 +139,21 @@ class FormValidators {
 
     return null; // Return null if the passwords are valid.
   }
+
+  static String? validateNewPasswords(
+      String? newPassword, String? confirmPassword) {
+    if (newPassword == null || newPassword.isEmpty) {
+      return 'Please enter the new password';
+    }
+
+    if (confirmPassword == null || confirmPassword.isEmpty) {
+      return 'Please confirm the new password';
+    }
+
+    if (newPassword != confirmPassword) {
+      return 'Password not match';
+    }
+
+    return null;
+  }
 }
