@@ -1,17 +1,47 @@
-# therapist_app
-const userTRoutes = require("../routes/user-therapist");
+# Main Mobile Application
 
-A new Flutter project.
+Welcome to the documentation for our mobile application designed for normal users. This application provides a range of features including group and individual task planning, online video counseling sessions, a Pomodoro timer, and access to mindfulness courses.
 
-## Getting Started
+## Table of Contents
 
-This project is a starting point for a Flutter application.
+- [Overview](#overview)
+- [Technologies Used](#technologies-used)
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-A few resources to get you started if this is your first Flutter project:
+## Overview
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The normal user mobile application is part of our comprehensive therapist and user management system, offering a user-friendly interface with various tools to enhance personal growth and well-being.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Technologies Used
+
+- **Mobile Application:**
+  - Flutter
+
+- **Backend:**
+  - Express
+
+- **Database:**
+  - PostgreSQL
+
+## Features
+
+- **Group Task Planner:**
+  - Collaborate on tasks with other users, fostering teamwork and productivity.
+
+- **Individual Task Planner:**
+  - Plan and manage individual tasks for personal development and organization.
+
+- **Online Video Counseling Sessions:**
+  - Connect with therapists through video sessions for remote counseling.
+
+- **Pomodoro Timer:**
+  - Utilize the Pomodoro technique for effective time management during tasks.
+
+- **Mindfulness Courses:**
+  - Access and participate in mindfulness courses for personal growth and well-being.
